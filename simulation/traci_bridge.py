@@ -105,7 +105,13 @@ def build_telemetry(traci_module, scenario_name: str, vehicle_id: str, profile: 
     }
 
 
-def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float = 1.0) -> None:
+def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float = 1.0,
+        realtime_factor: float = 1.0) -> None:
+    """realtime_factor > 0 paces steps to wall-clock time (1.0 = one
+    step_length of simulated time per step_length seconds of real time), so
+    the "live" twin actually tracks real time and doesn't flood MQTT/the
+    twin-engine with messages faster than anything downstream can consume.
+    Set to 0 to run uncapped (e.g. for scenario validation)."""
     import traci
 
     traci.start(["sumo", "-c", sumocfg_path, "--step-length", str(step_length), "--no-warnings", "true"])
@@ -113,6 +119,7 @@ def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float =
 
     try:
         step = 0
+        next_deadline = time.monotonic()
         while traci.simulation.getMinExpectedNumber() > 0:
             traci.simulationStep()
             for vehicle_id in traci.vehicle.getIDList():
@@ -124,6 +131,14 @@ def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float =
             step += 1
             if step % 100 == 0:
                 log.info("%s: step %d, %d active vehicles", scenario_name, step, len(traci.vehicle.getIDList()))
+
+            if realtime_factor > 0:
+                next_deadline += step_length / realtime_factor
+                sleep_for = next_deadline - time.monotonic()
+                if sleep_for > 0:
+                    time.sleep(sleep_for)
+                else:
+                    next_deadline = time.monotonic()  # fell behind; don't try to catch up in a burst
     finally:
         traci.close()
 
@@ -133,6 +148,7 @@ def main() -> None:
     parser.add_argument("--scenario", required=True, choices=["city", "corridor"])
     parser.add_argument("--sumocfg", required=True)
     parser.add_argument("--step-length", type=float, default=1.0)
+    parser.add_argument("--realtime-factor", type=float, default=1.0)
     args = parser.parse_args()
 
     import paho.mqtt.client as mqtt
@@ -149,7 +165,8 @@ def main() -> None:
 
     log.info("starting %s scenario from %s", args.scenario, args.sumocfg)
     while True:
-        run(args.sumocfg, args.scenario, client, step_length=args.step_length)
+        run(args.sumocfg, args.scenario, client, step_length=args.step_length,
+            realtime_factor=args.realtime_factor)
         log.info("%s scenario finished, restarting for a continuous live demo", args.scenario)
 
 

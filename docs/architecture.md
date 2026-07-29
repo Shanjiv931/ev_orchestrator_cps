@@ -89,7 +89,29 @@ See `infra/postgres/init.sql` for extensions and the SQLAlchemy models under
 `backend/app/models/` (Phase 4) for the concrete schema matching the ER
 diagram in the build contract, Section 8.
 
+## Digital twin engine
+
+`twin-engine` subscribes to all five MQTT namespaces, caches the latest
+payload per entity in Redis at `twin:{entity_type}:{entity_id}`, and exposes
+`GET /state/{entity_type}`, `GET /state/{entity_type}/{entity_id}`, and a
+`/ws` WebSocket that broadcasts every update as it arrives.
+
+Deliberately **one Redis round-trip per message** (a bare `SET`, no separate
+index write): an earlier version also maintained a Redis SET index via
+`SADD` for fast listing, and under the ~100+ msgs/sec the simulation layer
+produces, that second blocking call was enough to build an unbounded
+backlog on Docker Desktop's WSL2-virtualized networking, delaying delivery
+by minutes instead of the required <1s. Listing now uses `SCAN` over the
+`twin:{entity_type}:*` key pattern instead of maintaining a second write.
+
+`sim-city`/`sim-corridor` also pace SUMO steps to real time
+(`--realtime-factor`, default 1.0) rather than stepping as fast as the CPU
+allows - both because a "live" twin should track real elapsed time, and
+because uncapped stepping was itself the original source of the message
+flood above.
+
 ## Data flow guarantee
 
 Twin state must reflect the underlying MQTT message within 1 second in all
-automated tests (see `twin-engine` test suite, Phase 3).
+automated tests (see `twin-engine/tests/test_live_latency.py`, which runs
+against a live `docker compose up` stack and is skipped otherwise).

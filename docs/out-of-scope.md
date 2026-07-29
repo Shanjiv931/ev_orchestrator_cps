@@ -28,5 +28,25 @@ draw, and a diurnal solar curve per solar-equipped site - all confirmed
 publishing real data on their MQTT topics via `mosquitto_sub` before any
 backend code was written, per Section 9's build order.
 
+## Phase 3 (digital twin engine)
+
+Nothing deferred. `twin-engine` subscribes to all five MQTT namespaces,
+caches every entity in Redis, exposes a read API (`GET /state/{type}` and
+`GET /state/{type}/{id}`) and a `/ws` WebSocket broadcast, and the <1s
+freshness requirement is verified against the live stack in
+`twin-engine/tests/test_live_latency.py`.
+
+That test caught a real bug during development, worth recording since it
+shaped the final design: the first implementation did two blocking Redis
+writes per MQTT message (a `SET` plus a `SADD` into an index set for
+listing). Under the simulation layer's real throughput (~100+ msgs/sec) and
+Docker Desktop's WSL2-virtualized networking, that second round-trip was
+enough to build an unbounded backlog, delaying twin state by minutes
+instead of the required <1s. Fixed by dropping to one write per message
+and listing entities via `SCAN` instead of a maintained index. Separately,
+`traci_bridge.py` was stepping SUMO as fast as the CPU allowed with no
+pacing, which was itself the larger source of message volume - it now
+paces to real time via `--realtime-factor`.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._
