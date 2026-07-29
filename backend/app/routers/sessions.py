@@ -6,8 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import ChargingSession, Telemetry, User, Vehicle
+from app.models import CarbonLedgerEntry, ChargingSession, Telemetry, User, Vehicle
 from app.schemas import SessionCreate, SessionRead, SessionUpdate, TelemetryCreate, TelemetryRead
+from ml.carbon_ledger import compute_carbon_impact
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
@@ -55,6 +56,16 @@ def update_session(session_id: uuid.UUID, payload: SessionUpdate, current_user: 
 def complete_session(session_id: uuid.UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> ChargingSession:
     session = _get_owned_session(session_id, current_user, db)
     session.end_time = datetime.now(timezone.utc)
+
+    if session.energy_kwh > 0:
+        vehicle = db.get(Vehicle, session.vehicle_id)
+        impact = compute_carbon_impact(session.energy_kwh, vehicle.vehicle_class)
+        db.add(CarbonLedgerEntry(
+            session_id=session.id,
+            co2_avoided_kg=impact.co2_avoided_kg,
+            equivalent_fuel_baseline=impact.equivalent_fuel_baseline,
+        ))
+
     db.commit()
     db.refresh(session)
     return session

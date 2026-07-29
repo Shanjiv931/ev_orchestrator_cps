@@ -7,6 +7,7 @@ from app.database import get_db
 from app.models import Charger, Station, SwapSlot
 from app.schemas import (
     ChargerCreate,
+    ChargerMaintenanceCheck,
     ChargerRead,
     ChargerUpdate,
     StationCreate,
@@ -16,6 +17,7 @@ from app.schemas import (
     SwapSlotRead,
     SwapSlotUpdate,
 )
+from ml.maintenance_predictor import ChargerTelemetryWindow, compute_maintenance_risk_score
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
@@ -76,6 +78,23 @@ def update_charger(charger_id: uuid.UUID, payload: ChargerUpdate, db: Session = 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="charger not found")
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(charger, field, value)
+    db.commit()
+    db.refresh(charger)
+    return charger
+
+
+@router.post("/chargers/{charger_id}/maintenance-check", response_model=ChargerRead)
+def run_maintenance_check(charger_id: uuid.UUID, payload: ChargerMaintenanceCheck, db: Session = Depends(get_db)) -> Charger:
+    charger = db.get(Charger, charger_id)
+    if charger is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="charger not found")
+    window = ChargerTelemetryWindow(
+        charger_id=str(charger_id),
+        total_sessions=payload.total_sessions,
+        aborted_sessions=payload.aborted_sessions,
+        error_count=payload.error_count,
+    )
+    charger.maintenance_risk_score = compute_maintenance_risk_score(window)
     db.commit()
     db.refresh(charger)
     return charger

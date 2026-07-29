@@ -116,6 +116,12 @@ class ChargerCreate(BaseModel):
     maintenance_risk_score: float = 0.0
 
 
+class ChargerMaintenanceCheck(BaseModel):
+    total_sessions: int
+    aborted_sessions: int
+    error_count: int
+
+
 class ChargerUpdate(BaseModel):
     status: str | None = None
     last_verified_at: datetime | None = None

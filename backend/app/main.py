@@ -5,7 +5,18 @@ from fastapi import FastAPI
 
 from app.config import settings
 from app.database import Base, engine
-from app.routers import auth, battery_health, carbon_ledger, feeders, sessions, stations, twin, vehicles
+from app.routers import (
+    advanced_features,
+    auth,
+    battery_health,
+    carbon_ledger,
+    feeders,
+    payments,
+    sessions,
+    stations,
+    twin,
+    vehicles,
+)
 from app.services import twin_client
 
 
@@ -26,6 +37,8 @@ app.include_router(feeders.router)
 app.include_router(sessions.router)
 app.include_router(battery_health.router)
 app.include_router(carbon_ledger.router)
+app.include_router(payments.router)
+app.include_router(advanced_features.router)
 app.include_router(twin.router)
 
 

@@ -88,5 +88,27 @@ simple energy/power division, not a full physical charge curve (unlike
 batch scheduling decision where the binding constraints are charger/feeder
 capacity, not second-by-second thermal behavior.
 
+## Phase 6 (beyond-scope modules)
+
+Multilingual/low-literacy frontend and offline-first PWA behavior (Section
+5 items 7 and 8) are deferred to Phase 7 - they have no backend component
+at all, being entirely about how the frontend renders and caches, so
+building them now would mean building them twice.
+
+`rural_minigrid.py` has no dedicated API endpoint yet, unlike the other
+nine backend modules - it's a capacity-planning function meant to back an
+admin-facing "can this village feeder handle N more EVs" tool, which
+belongs with the rest of the admin dashboard in Phase 7 rather than as a
+standalone endpoint with no UI consumer yet.
+
+The emergency-queue and V2G/blackout endpoints are stateless/in-memory for
+now (`advanced_features.py`'s `_priority_jump_trackers` dict, and V2G
+vehicle eligibility supplied directly in the request body rather than
+read from the `vehicles` table). Real queues live at actual chargers/swap
+slots (Phase 4's `Charger`/`SwapSlot` tables) and V2G-relevant vehicle
+attributes (opted_in, v2g_capable) don't exist in the Section 8 schema -
+wiring these to persistent state is Phase 7 work, once the frontend
+defines what a real request/response cycle for these features looks like.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

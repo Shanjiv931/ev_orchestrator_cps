@@ -13,6 +13,8 @@ import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
+from ml.safety_score import safety_penalty
+
 CHARGE_CONNECTORS = {"Bharat AC-001", "Bharat DC-001", "CCS2", "Type 2"}
 SWAP_CONNECTOR = "swap-cassette"
 
@@ -44,6 +46,7 @@ class Candidate:
     congestion_risk: float  # 0.0 (empty) - 1.0 (saturated)
     last_verified_at: datetime | None
     reported_status: str  # "available" | "occupied" | "offline"
+    safety_score: float = 1.0  # [0,1], 1.0 = perfectly safe; see ml.safety_score
 
 
 @dataclass
@@ -81,10 +84,13 @@ def _staleness_hours(candidate: Candidate, now: datetime) -> float:
 
 
 def score_candidate(vehicle: Vehicle, candidate: Candidate, user_lat: float, user_lon: float,
-                     now: datetime | None = None) -> RankedCandidate | None:
+                     now: datetime | None = None, hour_of_day: int | None = None,
+                     is_solo_traveler: bool = False) -> RankedCandidate | None:
     if not is_compatible(vehicle, candidate):
         return None
     now = now or datetime.now(timezone.utc)
+    if hour_of_day is None:
+        hour_of_day = now.hour
     if candidate.reported_status == "offline":
         return None
 
@@ -98,13 +104,15 @@ def score_candidate(vehicle: Vehicle, candidate: Candidate, user_lat: float, use
         + candidate.cost_rupees * _WEIGHT_COST_RUPEES
         + candidate.congestion_risk * _WEIGHT_CONGESTION
         + trust_penalty
+        + safety_penalty(candidate.safety_score, hour_of_day, is_solo_traveler)
     )
     return RankedCandidate(candidate=candidate, distance_km=distance_km, staleness_hours=staleness_hours, score=score)
 
 
 def rank_candidates(vehicle: Vehicle, candidates: list[Candidate], user_lat: float, user_lon: float,
-                     now: datetime | None = None) -> list[RankedCandidate]:
-    scored = [score_candidate(vehicle, c, user_lat, user_lon, now) for c in candidates]
+                     now: datetime | None = None, hour_of_day: int | None = None,
+                     is_solo_traveler: bool = False) -> list[RankedCandidate]:
+    scored = [score_candidate(vehicle, c, user_lat, user_lon, now, hour_of_day, is_solo_traveler) for c in candidates]
     ranked = [s for s in scored if s is not None]
     ranked.sort(key=lambda r: r.score)
     return ranked

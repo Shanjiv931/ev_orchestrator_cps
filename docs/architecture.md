@@ -173,6 +173,34 @@ and `fleet_scheduler.py`'s naive baseline had a dead `and`-expression that
 always picked the same charger, plus an unbounded `start` variable that let
 sessions run past the depot's operating window.
 
+## Beyond-scope modules (Section 5)
+
+Ten of the twelve Section 5 modules are backend services with their own
+`ml/` module, tests, and API endpoint - each a genuinely separate piece,
+not folded into an existing one:
+
+| Module | Code | Endpoint |
+|---|---|---|
+| V2G/V2H dispatch | `ml/v2g_dispatch.py` | `POST /v2g/dispatch` |
+| Blackout resilience | `ml/blackout_resilience.py` (built on v2g_dispatch) | `POST /blackout/plan` |
+| Solar-synced charging | `ml/solar_sync.py` | `POST /solar-sync/recommend` |
+| Safety score | `ml/safety_score.py`, wired into `ml/recommendation.py` | `POST /recommendations` |
+| Emergency priority queue | `ml/emergency_queue.py` | `POST /emergency-queue/insert` |
+| Mass-gathering stress test | `ml/event_stress_test.py` (analysis) + `simulation/event_stress_sim.py` (live burst) | `POST /stress-test/sweep` |
+| Simulated UPI payment | `ml/upi_simulator.py` | `POST /payments/sessions/{id}/initiate`, `POST /payments/{ref}/confirm` |
+| Carbon/ESG tracking | `ml/carbon_ledger.py`, wired into session completion | `GET /carbon-ledger/...` (Phase 4) |
+| Predictive maintenance | `ml/maintenance_predictor.py`, feeds `Charger.maintenance_risk_score` | `POST /stations/chargers/{id}/maintenance-check` |
+| Rural mini-grid mode | `ml/rural_minigrid.py` | capacity-planning function, no dedicated endpoint (used by admin tooling in Phase 7) |
+
+The remaining two - multilingual/low-literacy frontend and offline-first
+PWA behavior - are frontend-layer concerns with no backend component;
+they're built in Phase 7 alongside the rest of the UI.
+
+`event_stress_sim.py` is invoked on-demand against the `sim-station` image
+rather than as an always-running compose service, matching Section 5.6's
+"admin-triggerable disaster scenario" framing:
+`docker compose run --rm sim-station python event_stress_sim.py --station-id <id> --density-multiplier 5 --burst-minutes 30`.
+
 ## Data flow guarantee
 
 Twin state must reflect the underlying MQTT message within 1 second in all
