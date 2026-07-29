@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend-web/dist/
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SUMO / simulation outputs
+simulation/**/*.log
+simulation/sumo/**/*.out.xml
+
+# Docker
+*.pid
+
+# IDE
+.vscode/
+.idea/

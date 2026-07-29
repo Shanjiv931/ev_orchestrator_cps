@@ -1,0 +1,113 @@
+services:
+  postgres:
+    image: timescale/timescaledb-ha:pg16-all
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ev}
+      POSTGRES_DB: ${POSTGRES_DB:-ev_orchestrator}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/home/postgres/pgdata
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ev}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+    volumes:
+      - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  simulation:
+    build: ./simulation
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    volumes:
+      - ./simulation:/app
+
+  twin-engine:
+    build: ./twin-engine
+    depends_on:
+      - mosquitto
+      - redis
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "${TWIN_ENGINE_PORT:-8100}:8100"
+    volumes:
+      - ./twin-engine:/app
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    environment:
+      POSTGRES_DSN: postgresql+psycopg2://${POSTGRES_USER:-ev}:${POSTGRES_PASSWORD:-ev}@postgres:5432/${POSTGRES_DB:-ev_orchestrator}
+      REDIS_URL: redis://redis:6379/0
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+
+  frontend-web:
+    build: ./frontend-web
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:${BACKEND_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend-web:/app
+      - /app/node_modules
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - ./infra/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+
+volumes:
+  postgres_data:
+  grafana_data:
