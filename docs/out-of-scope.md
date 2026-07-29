@@ -67,5 +67,26 @@ station) - authentication exists, coarse-grained authorization does not.
 Acceptable for this phase since nothing in the Section 11 acceptance
 checklist requires it yet; revisit if a beyond-scope module needs it.
 
+## Phase 5 (AI/ML layer)
+
+`demand_forecast.py` uses XGBoost, not an LSTM - Section 4.5.1 explicitly
+allows either, and XGBoost is the better fit for this project's
+constraints: CPU-only, zero-cost, fast to train and test, and the
+zone/hour/day/weather feature set is tabular rather than a long sequence
+an RNN would meaningfully exploit.
+
+`recommendation.py` and `fleet_scheduler.py` don't yet read live data from
+the twin store or Postgres - they operate on `Candidate`/`DepotVehicle`
+dataclasses passed in by the caller. Wiring them to real backend queries
+(nearby compatible stations from PostGIS, depot vehicles from the
+`vehicles` table filtered by `fleet_depot_id`) happens in Phase 6/7 when
+there are API endpoints that actually need to call them.
+
+`fleet_scheduler.py`'s per-vehicle-per-charger duration is computed from a
+simple energy/power division, not a full physical charge curve (unlike
+`charge_controller.py`, which does model the curve) - reasonable for a
+batch scheduling decision where the binding constraints are charger/feeder
+capacity, not second-by-second thermal behavior.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._
