@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-07-29 18:04:13.704794 by randomTrips.py UNKNOWN
+<configuration>
+    <net-file value="sumo/corridor/corridor.net.xml"/>
+    <output-trip-file value="sumo/corridor/corridor.trips.xml"/>
+    <fringe-factor value="20"/>
+    <min-distance value="3000.0"/>
+    <validate value="True"/>
+    <end value="1800.0"/>
+    <period value="6.0"/>
+</configuration>
+-->
+
+<!-- generated on 2026-07-29 18:04:13 by Eclipse SUMO duarouter Version 1.18.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="sumo/corridor/corridor.net.xml"/>
+        <route-files value="sumo/corridor/corridor.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="sumo/corridor/corridor.trips.xml.tmp"/>
+        <alternatives-output value="NUL"/>
+        <write-trips value="true"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="1800.0"/>
+    </time>
+
+    <report>
+        <no-warnings value="true"/>
+        <ignore-errors value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <trip id="1" depart="6.00" from="380097966" to="382180802#1"/>
+    <trip id="6" depart="36.00" from="382191822" to="1108986785#1"/>
+    <trip id="7" depart="42.00" from="382191822" to="382180802#1"/>
+    <trip id="12" depart="72.00" from="382191822" to="382180802#1"/>
+    <trip id="15" depart="90.00" from="380097966" to="382180802#0"/>
+    <trip id="20" depart="120.00" from="382827763#0" to="235013184"/>
+    <trip id="25" depart="150.00" from="1108986785#1-AddedOffRampEdge" to="382180802#1"/>
+    <trip id="31" depart="186.00" from="382827763#0" to="383014904#1-AddedOnRampEdge"/>
+    <trip id="37" depart="222.00" from="382827763#0" to="383014904#1"/>
+    <trip id="47" depart="282.00" from="380097966" to="382180802#1"/>
+    <trip id="64" depart="384.00" from="380097966" to="1287284737"/>
+    <trip id="67" depart="402.00" from="382191822" to="382180802#1"/>
+    <trip id="69" depart="414.00" from="380097966" to="1108986785#1"/>
+    <trip id="70" depart="420.00" from="382191822" to="1287284737"/>
+    <trip id="82" depart="492.00" from="382191822" to="1287284737"/>
+    <trip id="83" depart="498.00" from="382827763#0" to="383014904#1"/>
+    <trip id="84" depart="504.00" from="363158875" to="235013184"/>
+    <trip id="87" depart="522.00" from="380097966" to="1287284737"/>
+    <trip id="90" depart="540.00" from="363158872" to="382180802#1"/>
+    <trip id="91" depart="546.00" from="380097966" to="382180802#1"/>
+    <trip id="92" depart="552.00" from="380097966" to="1287284737"/>
+    <trip id="93" depart="558.00" from="380097966" to="1287284737"/>
+    <trip id="110" depart="660.00" from="382827763#0" to="382988372#1"/>
+    <trip id="119" depart="714.00" from="382827763#0" to="383014904#1"/>
+    <trip id="138" depart="828.00" from="382827763#0-AddedOffRampEdge" to="235013184"/>
+    <trip id="139" depart="834.00" from="380097966" to="382180802#1"/>
+    <trip id="141" depart="846.00" from="382191822" to="1287284737"/>
+    <trip id="143" depart="858.00" from="363158875" to="383014904#1"/>
+    <trip id="147" depart="882.00" from="380097966" to="1287284737"/>
+    <trip id="151" depart="906.00" from="380097966" to="382180802#1"/>
+    <trip id="153" depart="918.00" from="380097966" to="1287284737"/>
+    <trip id="154" depart="924.00" from="363158875" to="235013184"/>
+    <trip id="156" depart="936.00" from="380097966" to="1287284737"/>
+    <trip id="160" depart="960.00" from="382827763#0" to="235013184"/>
+    <trip id="162" depart="972.00" from="382827763#0" to="235013184"/>
+    <trip id="164" depart="984.00" from="382191822" to="382180802#0"/>
+    <trip id="168" depart="1008.00" from="382191822" to="382180802#1"/>
+    <trip id="171" depart="1026.00" from="380097966" to="382180802#1"/>
+    <trip id="175" depart="1050.00" from="380097966" to="1287284737"/>
+    <trip id="176" depart="1056.00" from="363158872" to="382180802#1"/>
+    <trip id="186" depart="1116.00" from="382191822" to="382180802#1"/>
+    <trip id="195" depart="1170.00" from="363158875" to="235013184"/>
+    <trip id="196" depart="1176.00" from="382827763#0" to="383014904#1"/>
+    <trip id="203" depart="1218.00" from="380097966" to="382180802#1"/>
+    <trip id="206" depart="1236.00" from="363158875" to="383014904#1-AddedOnRampEdge"/>
+    <trip id="207" depart="1242.00" from="382827763#0" to="235013184"/>
+    <trip id="217" depart="1302.00" from="382827763#0" to="235013184"/>
+    <trip id="219" depart="1314.00" from="363158875" to="383014904#1"/>
+    <trip id="221" depart="1326.00" from="363158875" to="235013184"/>
+    <trip id="228" depart="1368.00" from="380097966" to="382180802#1"/>
+    <trip id="230" depart="1380.00" from="380097966" to="1287284737"/>
+    <trip id="235" depart="1410.00" from="382988372#1" to="383014904#1"/>
+    <trip id="236" depart="1416.00" from="382988372#1" to="383014904#1"/>
+    <trip id="237" depart="1422.00" from="363158872" to="382180802#1"/>
+    <trip id="240" depart="1440.00" from="382827763#0" to="235013184"/>
+    <trip id="243" depart="1458.00" from="382827763#0" to="383014904#1"/>
+    <trip id="246" depart="1476.00" from="380097966" to="382180802#1"/>
+    <trip id="273" depart="1638.00" from="363158875" to="383014904#1"/>
+    <trip id="274" depart="1644.00" from="382191822" to="382180802#1"/>
+    <trip id="276" depart="1656.00" from="382827763#0" to="383014904#1"/>
+    <trip id="277" depart="1662.00" from="380097966" to="1287284737"/>
+    <trip id="285" depart="1710.00" from="380097966" to="1287284737"/>
+    <trip id="290" depart="1740.00" from="1108986785#1" to="1287284737"/>
+    <trip id="293" depart="1758.00" from="382827763#0" to="383014904#1"/>
+    <trip id="294" depart="1764.00" from="363158875" to="383014904#1"/>
+</routes>

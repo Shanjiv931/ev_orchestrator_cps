@@ -19,6 +19,20 @@ jobs:
         working-directory: backend
         run: pytest
 
+  simulation-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install simulation dependencies
+        working-directory: simulation
+        run: pip install -r requirements.txt
+      - name: Run simulation tests
+        working-directory: simulation
+        run: pytest tests/
+
   frontend-build:
     runs-on: ubuntu-latest
     steps:

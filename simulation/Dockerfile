@@ -15,4 +15,6 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "run.py"]
+# No default CMD - every docker-compose service using this image (sim-city,
+# sim-corridor, sim-station, sim-swap, sim-grid, sim-solar) sets its own
+# command to run a specific simulator module.

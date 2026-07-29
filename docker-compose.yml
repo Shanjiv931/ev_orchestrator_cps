@@ -33,8 +33,66 @@ services:
     volumes:
       - ./infra/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
 
-  simulation:
+  sim-city:
     build: ./simulation
+    command: ["python", "traci_bridge.py", "--scenario", "city", "--sumocfg", "sumo/city/city.sumocfg"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    volumes:
+      - ./simulation:/app
+
+  sim-corridor:
+    build: ./simulation
+    command: ["python", "traci_bridge.py", "--scenario", "corridor", "--sumocfg", "sumo/corridor/corridor.sumocfg"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    volumes:
+      - ./simulation:/app
+
+  sim-station:
+    build: ./simulation
+    command: ["python", "station_sim.py"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      STATION_SIM_REALTIME_FACTOR: "0.2"
+    volumes:
+      - ./simulation:/app
+
+  sim-swap:
+    build: ./simulation
+    command: ["python", "swap_sim.py"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      SWAP_SIM_REALTIME_FACTOR: "0.2"
+    volumes:
+      - ./simulation:/app
+
+  sim-grid:
+    build: ./simulation
+    command: ["python", "grid_sim.py"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    volumes:
+      - ./simulation:/app
+
+  sim-solar:
+    build: ./simulation
+    command: ["python", "solar_sim.py"]
     depends_on:
       - mosquitto
     environment:

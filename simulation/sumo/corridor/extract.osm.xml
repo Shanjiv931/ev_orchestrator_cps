@@ -1,0 +1,1996 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API 0.7.62.11 87bfad18">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2026-07-29T18:01:51Z"/>
+
+  <node id="245617437" lat="13.0732415" lon="77.4397506">
+    <tag k="source" v="AND"/>
+  </node>
+  <node id="251360733" lat="13.0551280" lon="77.4792638"/>
+  <node id="251360734" lat="13.0593654" lon="77.4641298"/>
+  <node id="251360735" lat="13.0636849" lon="77.4567822"/>
+  <node id="313207118" lat="13.0895892" lon="77.4023501"/>
+  <node id="313207120" lat="13.0916976" lon="77.3973526"/>
+  <node id="503002013" lat="13.0449122" lon="77.4754409"/>
+  <node id="503002239" lat="13.0440303" lon="77.4751604"/>
+  <node id="503002243" lat="13.0449443" lon="77.4752316"/>
+  <node id="503002245" lat="13.0541908" lon="77.4767346">
+    <tag k="highway" v="motorway_junction"/>
+    <tag k="name" v="Tumkur Road"/>
+    <tag k="name:kn" v="ತುಮಕೂರು ರಸ್ತೆ"/>
+  </node>
+  <node id="503002252" lat="13.0551480" lon="77.4766721"/>
+  <node id="503002255" lat="13.0556250" lon="77.4762982"/>
+  <node id="503002259" lat="13.0559146" lon="77.4756076"/>
+  <node id="503002278" lat="13.0565498" lon="77.4772704"/>
+  <node id="503002280" lat="13.0567060" lon="77.4772383"/>
+  <node id="503002283" lat="13.0568952" lon="77.4771228"/>
+  <node id="503002287" lat="13.0570320" lon="77.4769278"/>
+  <node id="503002290" lat="13.0570648" lon="77.4766240"/>
+  <node id="503002294" lat="13.0569465" lon="77.4763248"/>
+  <node id="503002298" lat="13.0567212" lon="77.4754447"/>
+  <node id="503002299" lat="13.0567428" lon="77.4751761"/>
+  <node id="503002303" lat="13.0569461" lon="77.4743574"/>
+  <node id="503002346" lat="13.0547782" lon="77.4772106"/>
+  <node id="503002348" lat="13.0549819" lon="77.4774082"/>
+  <node id="503002352" lat="13.0551562" lon="77.4776768"/>
+  <node id="503002354" lat="13.0552917" lon="77.4780954"/>
+  <node id="503002361" lat="13.0555082" lon="77.4771283"/>
+  <node id="503002363" lat="13.0561430" lon="77.4772248"/>
+  <node id="503002398" lat="13.0598939" lon="77.4631317"/>
+  <node id="503002400" lat="13.0594562" lon="77.4639268"/>
+  <node id="571438271" lat="13.0555757" lon="77.4782969"/>
+  <node id="571438273" lat="13.0593313" lon="77.4646167"/>
+  <node id="571438274" lat="13.0597052" lon="77.4637494"/>
+  <node id="571438275" lat="13.0599616" lon="77.4632902"/>
+  <node id="571438277" lat="13.0638917" lon="77.4567000"/>
+  <node id="571438278" lat="13.0668015" lon="77.4516961"/>
+  <node id="571438279" lat="13.0732127" lon="77.4400975"/>
+  <node id="571438281" lat="13.0807965" lon="77.4223251"/>
+  <node id="571438282" lat="13.0899251" lon="77.4019188"/>
+  <node id="571438283" lat="13.0918154" lon="77.3973950"/>
+  <node id="690358253" lat="13.0811470" lon="77.4215787"/>
+  <node id="863291785" lat="13.0565167" lon="77.4771118"/>
+  <node id="863291880" lat="13.0563393" lon="77.4765158"/>
+  <node id="863291888" lat="13.0561736" lon="77.4770506"/>
+  <node id="863291894" lat="13.0569792" lon="77.4767207"/>
+  <node id="863291925" lat="13.0582057" lon="77.4688359"/>
+  <node id="863291986" lat="13.0567530" lon="77.4763357"/>
+  <node id="863292003" lat="13.0569060" lon="77.4764629"/>
+  <node id="863292026" lat="13.0566747" lon="77.4771001"/>
+  <node id="863292028" lat="13.0559636" lon="77.4772744"/>
+  <node id="863292035" lat="13.0567606" lon="77.4770655"/>
+  <node id="863292042" lat="13.0555883" lon="77.4769730"/>
+  <node id="863292056" lat="13.0569048" lon="77.4739461"/>
+  <node id="863292079" lat="13.0566572" lon="77.4763195"/>
+  <node id="863292093" lat="13.0569264" lon="77.4744641"/>
+  <node id="863292168" lat="13.0569677" lon="77.4768062"/>
+  <node id="863292176" lat="13.0563744" lon="77.4764541"/>
+  <node id="906646891" lat="13.0860762" lon="77.4108636"/>
+  <node id="906647031" lat="13.0717035" lon="77.4425356"/>
+  <node id="906647086" lat="13.0893284" lon="77.4033276"/>
+  <node id="906647097" lat="13.0702479" lon="77.4451710"/>
+  <node id="906647145" lat="13.0805364" lon="77.4228590"/>
+  <node id="906647226" lat="13.0800470" lon="77.4237021"/>
+  <node id="906647265" lat="13.0853770" lon="77.4121387"/>
+  <node id="906647280" lat="13.0624610" lon="77.4591108"/>
+  <node id="906647331" lat="13.0897279" lon="77.4023839"/>
+  <node id="906647342" lat="13.0703723" lon="77.4452087"/>
+  <node id="906647399" lat="13.0789381" lon="77.4269491"/>
+  <node id="906647439" lat="13.0794786" lon="77.4257942"/>
+  <node id="906647462" lat="13.0784320" lon="77.4288713"/>
+  <node id="906647502" lat="13.0878162" lon="77.4068297"/>
+  <node id="906647521" lat="13.0790436" lon="77.4270688"/>
+  <node id="906647559" lat="13.0882599" lon="77.4057961"/>
+  <node id="906647619" lat="13.0887842" lon="77.4045777"/>
+  <node id="1595757936" lat="13.0554856" lon="77.4764547"/>
+  <node id="1595757967" lat="13.0560626" lon="77.4750615"/>
+  <node id="1595758033" lat="13.0542594" lon="77.4770020"/>
+  <node id="1595758119" lat="13.0560300" lon="77.4751899"/>
+  <node id="1595758135" lat="13.0560922" lon="77.4749973"/>
+  <node id="1611847606" lat="13.0546173" lon="77.4807298"/>
+  <node id="2034274902" lat="13.0736445" lon="77.4390052"/>
+  <node id="2034274977" lat="13.0821576" lon="77.4198092"/>
+  <node id="2034274981" lat="13.0871722" lon="77.4079697"/>
+  <node id="2034275007" lat="13.0861697" lon="77.4102905"/>
+  <node id="2034275026" lat="13.0836165" lon="77.4162898"/>
+  <node id="2034275028" lat="13.0778536" lon="77.4300897"/>
+  <node id="2034275030" lat="13.0908095" lon="77.4000386">
+    <tag k="disused:barrier" v="toll_booth"/>
+    <tag k="note" v="No fee collected here"/>
+    <tag k="operator" v="JAS"/>
+  </node>
+  <node id="2034275054" lat="13.0779969" lon="77.4301357"/>
+  <node id="2034275064" lat="13.0799653" lon="77.4243648"/>
+  <node id="2034275065" lat="13.0872481" lon="77.4081515"/>
+  <node id="2034275077" lat="13.0753203" lon="77.4362583"/>
+  <node id="2034275082" lat="13.0834942" lon="77.4162386"/>
+  <node id="2034275093" lat="13.0752139" lon="77.4361907"/>
+  <node id="2034275104" lat="13.0914365" lon="77.3980357"/>
+  <node id="2090882367" lat="13.0902018" lon="77.4009385"/>
+  <node id="2110697943" lat="13.0738822" lon="77.4388894"/>
+  <node id="2110697974" lat="13.0781101" lon="77.4298080"/>
+  <node id="2130868549" lat="13.0564561" lon="77.4772718"/>
+  <node id="2130868561" lat="13.0573189" lon="77.4712695"/>
+  <node id="2130868578" lat="13.0570320" lon="77.4765051"/>
+  <node id="2130868582" lat="13.0571228" lon="77.4718737"/>
+  <node id="2130868590" lat="13.0568105" lon="77.4771895"/>
+  <node id="2130868598" lat="13.0574766" lon="77.4709295"/>
+  <node id="2130868640" lat="13.0568234" lon="77.4770257"/>
+  <node id="2130868648" lat="13.0570455" lon="77.4721417">
+    <tag k="barrier" v="toll_booth"/>
+    <tag k="motor_vehicle" v="yes"/>
+  </node>
+  <node id="2130868650" lat="13.0569125" lon="77.4726216"/>
+  <node id="2130868680" lat="13.0567844" lon="77.4759017"/>
+  <node id="2130868682" lat="13.0567726" lon="77.4750171"/>
+  <node id="2130868703" lat="13.0567248" lon="77.4753234"/>
+  <node id="2385444001" lat="13.0567491" lon="77.4757286"/>
+  <node id="2385444002" lat="13.0568903" lon="77.4762244"/>
+  <node id="2385444003" lat="13.0567247" lon="77.4755780"/>
+  <node id="2385444004" lat="13.0568474" lon="77.4761294"/>
+  <node id="2385452950" lat="13.0524657" lon="77.4766623"/>
+  <node id="2385452951" lat="13.0570681" lon="77.4768256"/>
+  <node id="2385452953" lat="13.0546288" lon="77.4771152"/>
+  <node id="2385452954" lat="13.0566144" lon="77.4772595"/>
+  <node id="2385452955" lat="13.0570796" lon="77.4767342"/>
+  <node id="2385452956" lat="13.0517773" lon="77.4765598"/>
+  <node id="2385452958" lat="13.0490077" lon="77.4760686"/>
+  <node id="2385452959" lat="13.0539922" lon="77.4768984"/>
+  <node id="2385452960" lat="13.0552245" lon="77.4778298"/>
+  <node id="2385452962" lat="13.0556274" lon="77.4775614">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="2385452963" lat="13.0542651" lon="77.4817214"/>
+  <node id="2385452964" lat="13.0544122" lon="77.4769463"/>
+  <node id="2385452965" lat="13.0548955" lon="77.4773086"/>
+  <node id="2385452967" lat="13.0553291" lon="77.4786198"/>
+  <node id="2385452969" lat="13.0569665" lon="77.4770390"/>
+  <node id="2385452970" lat="13.0552683" lon="77.4779604"/>
+  <node id="2385452971" lat="13.0550706" lon="77.4775325"/>
+  <node id="2385452972" lat="13.0545530" lon="77.4770832"/>
+  <node id="2385455892" lat="13.0565844" lon="77.4763179"/>
+  <node id="2385455893" lat="13.0568338" lon="77.4763860"/>
+  <node id="2385455896" lat="13.0569440" lon="77.4765473"/>
+  <node id="2385455899" lat="13.0569346" lon="77.4768936"/>
+  <node id="2385455900" lat="13.0569683" lon="77.4766383"/>
+  <node id="2385455901" lat="13.0568800" lon="77.4769703"/>
+  <node id="2385455904" lat="13.0562148" lon="77.4768112"/>
+  <node id="2385455908" lat="13.0562751" lon="77.4766939"/>
+  <node id="2385455910" lat="13.0565079" lon="77.4763463"/>
+  <node id="2385455912" lat="13.0564391" lon="77.4763879"/>
+  <node id="2385473939" lat="13.0525089" lon="77.4764651"/>
+  <node id="2385473942" lat="13.0479271" lon="77.4756994"/>
+  <node id="2385473943" lat="13.0516564" lon="77.4763267"/>
+  <node id="2385473945" lat="13.0544570" lon="77.4768020">
+    <tag k="maxspeed" v="30"/>
+    <tag k="traffic_sign" v="maxspeed"/>
+  </node>
+  <node id="2385512366" lat="13.0557974" lon="77.4759688"/>
+  <node id="2385512367" lat="13.0553374" lon="77.4765770"/>
+  <node id="2385512368" lat="13.0544711" lon="77.4767268"/>
+  <node id="2385512369" lat="13.0556983" lon="77.4761839"/>
+  <node id="2385512370" lat="13.0555563" lon="77.4763856"/>
+  <node id="2385512371" lat="13.0547488" lon="77.4767338"/>
+  <node id="2385512372" lat="13.0552618" lon="77.4766256"/>
+  <node id="2385512373" lat="13.0561264" lon="77.4749428"/>
+  <node id="2385512374" lat="13.0549388" lon="77.4767155"/>
+  <node id="2385512375" lat="13.0563156" lon="77.4747513"/>
+  <node id="2385512376" lat="13.0554093" lon="77.4765196"/>
+  <node id="2385512377" lat="13.0561861" lon="77.4748810"/>
+  <node id="2385512378" lat="13.0550530" lon="77.4766980"/>
+  <node id="2385541759" lat="13.0587327" lon="77.4662818"/>
+  <node id="2385541760" lat="13.0591964" lon="77.4645837"/>
+  <node id="2385541761" lat="13.0592752" lon="77.4643568"/>
+  <node id="2385541762" lat="13.0591251" lon="77.4648154"/>
+  <node id="2385541763" lat="13.0595900" lon="77.4636665"/>
+  <node id="2386078644" lat="13.0553024" lon="77.4782395"/>
+  <node id="2386085032" lat="13.0498534" lon="77.4760029"/>
+  <node id="2386085037" lat="13.0510372" lon="77.4762132"/>
+  <node id="2386493437" lat="13.0544462" lon="77.4770499"/>
+  <node id="2386493453" lat="13.0546876" lon="77.4771509"/>
+  <node id="2386493465" lat="13.0456275" lon="77.4755448"/>
+  <node id="2425683396" lat="13.0567870" lon="77.4731464"/>
+  <node id="2431206502" lat="13.0580672" lon="77.4693828">
+    <tag k="highway" v="motorway_junction"/>
+  </node>
+  <node id="2431206503" lat="13.0576125" lon="77.4713677"/>
+  <node id="2431206504" lat="13.0554030" lon="77.4791549">
+    <tag k="access" v="yes"/>
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="2431206505" lat="13.0552164" lon="77.4796992"/>
+  <node id="2431206506" lat="13.0549063" lon="77.4805747"/>
+  <node id="2431206507" lat="13.0546207" lon="77.4811455"/>
+  <node id="2431229911" lat="13.0830983" lon="77.4177092"/>
+  <node id="2431229958" lat="13.0831539" lon="77.4174872"/>
+  <node id="3639546819" lat="13.0540353" lon="77.4823850"/>
+  <node id="3639546855" lat="13.0541475" lon="77.4824656"/>
+  <node id="3673479635" lat="13.0801733" lon="77.4240391"/>
+  <node id="3673479636" lat="13.0796769" lon="77.4245193">
+    <tag k="barrier" v="toll_booth"/>
+  </node>
+  <node id="3673479637" lat="13.0808265" lon="77.4224593"/>
+  <node id="3673479638" lat="13.0803954" lon="77.4234410"/>
+  <node id="3673479639" lat="13.0793294" lon="77.4255492"/>
+  <node id="3673479640" lat="13.0791257" lon="77.4259746"/>
+  <node id="3673479641" lat="13.0840423" lon="77.4153621"/>
+  <node id="3673479642" lat="13.0802552" lon="77.4229978"/>
+  <node id="3673479643" lat="13.0804665" lon="77.4226864"/>
+  <node id="3673479644" lat="13.0819405" lon="77.4201204"/>
+  <node id="3673479646" lat="13.0812254" lon="77.4216756">
+    <tag k="barrier" v="toll_booth"/>
+    <tag k="motor_vehicle" v="yes"/>
+  </node>
+  <node id="3673493316" lat="13.0591262" lon="77.4653587"/>
+  <node id="3673493317" lat="13.0556361" lon="77.4784081"/>
+  <node id="3834482165" lat="13.0781441" lon="77.4292516"/>
+  <node id="3834512080" lat="13.0801682" lon="77.4231850"/>
+  <node id="3834512083" lat="13.0823601" lon="77.4186452"/>
+  <node id="3834512086" lat="13.0910714" lon="77.3989051"/>
+  <node id="3834512087" lat="13.0800844" lon="77.4233741"/>
+  <node id="3834512088" lat="13.0828565" lon="77.4175804"/>
+  <node id="3834512090" lat="13.0912821" lon="77.3984101"/>
+  <node id="3853785779" lat="13.0803222" lon="77.4230038"/>
+  <node id="3853785780" lat="13.0810271" lon="77.4215188"/>
+  <node id="3853785781" lat="13.0768161" lon="77.4330138"/>
+  <node id="3853785784" lat="13.0756064" lon="77.4354627"/>
+  <node id="3853785786" lat="13.0770173" lon="77.4325498"/>
+  <node id="3853785788" lat="13.0771218" lon="77.4322735"/>
+  <node id="3853785789" lat="13.0765364" lon="77.4335850"/>
+  <node id="3853785790" lat="13.0802176" lon="77.4232558"/>
+  <node id="3853785791" lat="13.0762779" lon="77.4341242"/>
+  <node id="3853785792" lat="13.0758049" lon="77.4350870"/>
+  <node id="3853785795" lat="13.0769283" lon="77.4327615"/>
+  <node id="3853785796" lat="13.0772627" lon="77.4318576"/>
+  <node id="3853785797" lat="13.0798635" lon="77.4242284"/>
+  <node id="3853785798" lat="13.0767175" lon="77.4332152"/>
+  <node id="3853785799" lat="13.0820909" lon="77.4192271"/>
+  <node id="3853795545" lat="13.0686853" lon="77.4479742"/>
+  <node id="3853795546" lat="13.0689785" lon="77.4474378"/>
+  <node id="3853810209" lat="13.0655803" lon="77.4535543"/>
+  <node id="3853810210" lat="13.0610137" lon="77.4612513"/>
+  <node id="3853810211" lat="13.0664064" lon="77.4521201"/>
+  <node id="3853810212" lat="13.0590635" lon="77.4650484"/>
+  <node id="3853810213" lat="13.0579321" lon="77.4693311"/>
+  <node id="3853810214" lat="13.0641589" lon="77.4559338"/>
+  <node id="3853810215" lat="13.0585838" lon="77.4668489"/>
+  <node id="3853810216" lat="13.0643950" lon="77.4555328"/>
+  <node id="3853810217" lat="13.0672058" lon="77.4506733"/>
+  <node id="3853810218" lat="13.0632135" lon="77.4575867"/>
+  <node id="3854854226" lat="13.0834409" lon="77.4169085"/>
+  <node id="3854854233" lat="13.0838952" lon="77.4158900"/>
+  <node id="3856843258" lat="13.0576750" lon="77.4710528"/>
+  <node id="3856843260" lat="13.0579699" lon="77.4700547"/>
+  <node id="3860422821" lat="13.0914834" lon="77.3983300"/>
+  <node id="3860422822" lat="13.0848351" lon="77.4136513"/>
+  <node id="3860422823" lat="13.0856703" lon="77.4118069"/>
+  <node id="3860422824" lat="13.0853174" lon="77.4126104"/>
+  <node id="3860529784" lat="13.0833135" lon="77.4169419"/>
+  <node id="3860529785" lat="13.0817225" lon="77.4200425"/>
+  <node id="3860529786" lat="13.0824801" lon="77.4187041"/>
+  <node id="3860529787" lat="13.0817303" lon="77.4203215"/>
+  <node id="3860529788" lat="13.0822061" lon="77.4192884"/>
+  <node id="3861909307" lat="13.0770225" lon="77.4328770"/>
+  <node id="3861909308" lat="13.0773594" lon="77.4320052"/>
+  <node id="3861909309" lat="13.0766573" lon="77.4336443"/>
+  <node id="3861909310" lat="13.0772785" lon="77.4322360"/>
+  <node id="3861909311" lat="13.0763955" lon="77.4341832"/>
+  <node id="3861909312" lat="13.0768392" lon="77.4332697"/>
+  <node id="3861909313" lat="13.0802218" lon="77.4236399"/>
+  <node id="3861909314" lat="13.0804103" lon="77.4231575"/>
+  <node id="3861909315" lat="13.0758310" lon="77.4353204"/>
+  <node id="3861909316" lat="13.0777408" lon="77.4308974"/>
+  <node id="3861909317" lat="13.0759564" lon="77.4350790"/>
+  <node id="3861909318" lat="13.0769075" lon="77.4331291"/>
+  <node id="3861909319" lat="13.0774797" lon="77.4316566"/>
+  <node id="3861909320" lat="13.0771480" lon="77.4325731"/>
+  <node id="3861910193" lat="13.0690877" lon="77.4475111"/>
+  <node id="3861910194" lat="13.0642872" lon="77.4560062"/>
+  <node id="3861910200" lat="13.0673292" lon="77.4507348"/>
+  <node id="3861910201" lat="13.0661176" lon="77.4529100"/>
+  <node id="3861910202" lat="13.0645283" lon="77.4556090"/>
+  <node id="3861910203" lat="13.0697591" lon="77.4463013"/>
+  <node id="3861910204" lat="13.0717581" lon="77.4427292"/>
+  <node id="3861910205" lat="13.0688003" lon="77.4480342"/>
+  <node id="3862137595" lat="13.0588657" lon="77.4663151"/>
+  <node id="3862137596" lat="13.0594370" lon="77.4643204"/>
+  <node id="3862137597" lat="13.0595418" lon="77.4640628"/>
+  <node id="3862137598" lat="13.0587145" lon="77.4668926"/>
+  <node id="3862137599" lat="13.0633641" lon="77.4576083"/>
+  <node id="3862137600" lat="13.0654175" lon="77.4541104"/>
+  <node id="3862137601" lat="13.0592328" lon="77.4649470"/>
+  <node id="3862137602" lat="13.0596129" lon="77.4639120"/>
+  <node id="3862191654" lat="13.0573738" lon="77.4718231"/>
+  <node id="3862191655" lat="13.0552238" lon="77.4794069"/>
+  <node id="3862191656" lat="13.0553864" lon="77.4788903"/>
+  <node id="4837474084" lat="13.0907765" lon="77.4001103"/>
+  <node id="6033543682" lat="13.0567301" lon="77.4732155"/>
+  <node id="6194323605" lat="13.0519177" lon="77.4763769"/>
+  <node id="10147067152" lat="13.0568871" lon="77.4735333"/>
+  <node id="10147067153" lat="13.0567759" lon="77.4734978"/>
+  <node id="10147067154" lat="13.0567030" lon="77.4737558"/>
+  <node id="10147067157" lat="13.0568135" lon="77.4737987"/>
+  <node id="11937821125" lat="13.0548498" lon="77.4768658">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="11937821135" lat="13.0559677" lon="77.4770233">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="11937821136" lat="13.0557309" lon="77.4782235"/>
+  <node id="11938003687" lat="13.0553119" lon="77.4783278"/>
+  <node id="11938745216" lat="13.0566016" lon="77.4771113">
+    <tag k="maxspeed" v="30"/>
+    <tag k="traffic_sign" v="maxspeed"/>
+  </node>
+  <node id="11938778171" lat="13.0572142" lon="77.4715423"/>
+  <node id="11938905600" lat="13.0783148" lon="77.4287565"/>
+  <node id="11938905601" lat="13.0784346" lon="77.4280378"/>
+  <node id="12722053560" lat="13.0438190" lon="77.4753842"/>
+  <node id="12722053561" lat="13.0438311" lon="77.4751402"/>
+  <node id="12841331908" lat="13.0908377" lon="77.3999637"/>
+  <node id="13247318211" lat="13.0529195" lon="77.4767554"/>
+  <node id="13247318212" lat="13.0529430" lon="77.4765435">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="13247318213" lat="13.0538593" lon="77.4768778">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="13247318214" lat="13.0541185" lon="77.4767231">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="13247318215" lat="13.0538480" lon="77.4766797">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <node id="13247318216" lat="13.0534782" lon="77.4766204">
+    <tag k="traffic_calming" v="rumble_strip"/>
+  </node>
+  <way id="41181487">
+    <nd ref="503002363"/>
+    <nd ref="503002361"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="left"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="45919149">
+    <nd ref="3862137598"/>
+    <nd ref="863291925"/>
+    <nd ref="2431206502"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="72708538">
+    <nd ref="863291888"/>
+    <nd ref="863291785"/>
+    <nd ref="11938745216"/>
+    <nd ref="863292026"/>
+    <nd ref="863292035"/>
+    <nd ref="2130868640"/>
+    <nd ref="2385455901"/>
+    <nd ref="2385455899"/>
+    <nd ref="863292168"/>
+    <nd ref="863291894"/>
+    <nd ref="2385455900"/>
+    <nd ref="2385455896"/>
+    <nd ref="863292003"/>
+    <nd ref="2385455893"/>
+    <nd ref="863291986"/>
+    <nd ref="863292079"/>
+    <nd ref="2385455892"/>
+    <nd ref="2385455910"/>
+    <nd ref="2385455912"/>
+    <nd ref="863292176"/>
+    <nd ref="863291880"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="30"/>
+    <tag k="maxspeed:type" v="sign"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="72708540">
+    <nd ref="503002245"/>
+    <nd ref="2385512368"/>
+    <nd ref="2385512371"/>
+    <nd ref="2385512374"/>
+    <nd ref="2385512378"/>
+    <nd ref="503002252"/>
+    <nd ref="2385512372"/>
+    <nd ref="2385512367"/>
+    <nd ref="2385512376"/>
+    <nd ref="1595757936"/>
+    <nd ref="2385512370"/>
+    <nd ref="503002255"/>
+    <nd ref="2385512369"/>
+    <nd ref="2385512366"/>
+    <nd ref="503002259"/>
+    <nd ref="1595758119"/>
+    <nd ref="1595757967"/>
+    <nd ref="1595758135"/>
+    <nd ref="2385512373"/>
+    <nd ref="2385512377"/>
+    <nd ref="2385512375"/>
+    <tag k="auto_rickshaw" v="No"/>
+    <tag k="destination" v="Tumkur Road"/>
+    <tag k="destination:ref" v="NH48"/>
+    <tag k="destination:street" v="Tumkur Road"/>
+    <tag k="foot" v="no"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="72708541">
+    <nd ref="863292042"/>
+    <nd ref="11937821135"/>
+    <nd ref="863291888"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="maxspeed:type" v="sign"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="both"/>
+    <tag k="shoulder:right:width" v="1"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="95809227">
+    <nd ref="3860529788"/>
+    <nd ref="3860529787"/>
+    <nd ref="690358253"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="146306402">
+    <nd ref="503002245"/>
+    <nd ref="2385473945"/>
+    <nd ref="11937821125"/>
+    <nd ref="863292042"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="30"/>
+    <tag k="maxspeed:type" v="sign"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="both"/>
+    <tag k="shoulder:right:width" v="1"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="192886208">
+    <nd ref="2034275093"/>
+    <nd ref="3853785784"/>
+    <nd ref="3853785792"/>
+    <nd ref="3853785791"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="192886242">
+    <nd ref="3861909311"/>
+    <nd ref="3861909317"/>
+    <nd ref="3861909315"/>
+    <nd ref="2034275077"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="230013375">
+    <nd ref="2130868680"/>
+    <nd ref="2385444004"/>
+    <nd ref="2385444002"/>
+    <nd ref="503002294"/>
+    <nd ref="2130868578"/>
+    <nd ref="503002290"/>
+    <nd ref="2385452955"/>
+    <nd ref="2385452951"/>
+    <nd ref="503002287"/>
+    <nd ref="2385452969"/>
+    <nd ref="503002283"/>
+    <nd ref="2130868590"/>
+    <nd ref="503002280"/>
+    <nd ref="2385452954"/>
+    <nd ref="503002278"/>
+    <nd ref="2130868549"/>
+    <nd ref="503002363"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="30"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="right"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="230079266">
+    <nd ref="2385452970"/>
+    <nd ref="2385452960"/>
+    <nd ref="503002352"/>
+    <nd ref="2385452971"/>
+    <nd ref="503002348"/>
+    <nd ref="2385452965"/>
+    <nd ref="503002346"/>
+    <nd ref="2386493453"/>
+    <nd ref="2385452953"/>
+    <nd ref="2385452972"/>
+    <nd ref="2386493437"/>
+    <nd ref="1595758033"/>
+    <nd ref="2385452959"/>
+    <tag k="auto_rickshaw" v="No"/>
+    <tag k="destination" v="Electronic City"/>
+    <tag k="destination:street" v="Magadi Road;Mysore Road;Kanakpura Road;Bannerghatta Road;Hosur Road"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="foot" v="no"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="right"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="235013183">
+    <nd ref="11937821136"/>
+    <nd ref="3673493317"/>
+    <nd ref="2431206504"/>
+    <nd ref="2431206505"/>
+    <nd ref="2431206506"/>
+    <nd ref="2431206507"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="235013184">
+    <nd ref="2431206502"/>
+    <nd ref="3856843260"/>
+    <nd ref="3856843258"/>
+    <nd ref="2431206503"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="1"/>
+    <tag k="maxspeed" v="50"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="363158872">
+    <nd ref="3673479640"/>
+    <nd ref="3673479639"/>
+    <nd ref="3673479636"/>
+    <nd ref="3834512087"/>
+    <nd ref="3834512080"/>
+    <nd ref="3673479642"/>
+    <nd ref="3673479643"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="363158873">
+    <nd ref="3673479641"/>
+    <nd ref="3854854233"/>
+    <nd ref="3854854226"/>
+    <nd ref="2431229958"/>
+    <nd ref="2431229911"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="1"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="363158875">
+    <nd ref="2034274977"/>
+    <nd ref="3673479644"/>
+    <nd ref="3673479646"/>
+    <nd ref="3673479637"/>
+    <nd ref="3673479638"/>
+    <nd ref="3673479635"/>
+    <nd ref="2034275064"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="380097966">
+    <nd ref="6033543682"/>
+    <nd ref="2425683396"/>
+    <nd ref="2130868650"/>
+    <nd ref="2130868648"/>
+    <nd ref="2130868582"/>
+    <nd ref="11938778171"/>
+    <nd ref="2130868561"/>
+    <nd ref="2130868598"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180799">
+    <nd ref="3853785791"/>
+    <nd ref="3853785789"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180800">
+    <nd ref="2034275082"/>
+    <nd ref="906647265"/>
+    <nd ref="2034275007"/>
+    <nd ref="2034274981"/>
+    <nd ref="313207118"/>
+    <nd ref="2090882367"/>
+    <nd ref="3834512086"/>
+    <nd ref="3834512090"/>
+    <nd ref="2034275104"/>
+    <nd ref="313207120"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180801">
+    <nd ref="3853785789"/>
+    <nd ref="3853785798"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180802">
+    <nd ref="11938905600"/>
+    <nd ref="906647399"/>
+    <nd ref="3853785797"/>
+    <nd ref="906647226"/>
+    <nd ref="3853785790"/>
+    <nd ref="3853785779"/>
+    <nd ref="3673479643"/>
+    <nd ref="3853785780"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180803">
+    <nd ref="3834512083"/>
+    <nd ref="3834512088"/>
+    <nd ref="2034275082"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180804">
+    <nd ref="3853785798"/>
+    <nd ref="3853785781"/>
+    <nd ref="3853785795"/>
+    <nd ref="3853785786"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180806">
+    <nd ref="3853785786"/>
+    <nd ref="3853785788"/>
+    <nd ref="3853785796"/>
+    <nd ref="2034275028"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180807">
+    <nd ref="3853785780"/>
+    <nd ref="3860529785"/>
+    <nd ref="3853785799"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382180809">
+    <nd ref="3853785799"/>
+    <nd ref="3834512083"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183626">
+    <nd ref="3853810215"/>
+    <nd ref="2385541759"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="382183634">
+    <nd ref="906647097"/>
+    <nd ref="906647031"/>
+    <nd ref="245617437"/>
+    <nd ref="2034274902"/>
+    <nd ref="2034275093"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183640">
+    <nd ref="3853810217"/>
+    <nd ref="3853795545"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183648">
+    <nd ref="2385541763"/>
+    <nd ref="503002398"/>
+    <nd ref="3853810210"/>
+    <nd ref="3853810218"/>
+    <nd ref="251360735"/>
+    <nd ref="3853810214"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183657">
+    <nd ref="3853810213"/>
+    <nd ref="3853810215"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="382183667">
+    <nd ref="2385541759"/>
+    <nd ref="3853810212"/>
+    <nd ref="2385541762"/>
+    <nd ref="2385541760"/>
+    <nd ref="2385541761"/>
+    <nd ref="251360734"/>
+    <nd ref="503002400"/>
+    <nd ref="2385541763"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="382183679">
+    <nd ref="3853795545"/>
+    <nd ref="3853795546"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183687">
+    <nd ref="3853810216"/>
+    <nd ref="3853810209"/>
+    <nd ref="3853810211"/>
+    <nd ref="3853810217"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183695">
+    <nd ref="3853810214"/>
+    <nd ref="3853810216"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382183709">
+    <nd ref="3853795546"/>
+    <nd ref="906647097"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382191822">
+    <nd ref="3639546819"/>
+    <nd ref="2385452963"/>
+    <nd ref="1611847606"/>
+    <nd ref="251360733"/>
+    <nd ref="2385452967"/>
+    <nd ref="2385452962"/>
+    <nd ref="10147067154"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382827763">
+    <nd ref="571438283"/>
+    <nd ref="3860422821"/>
+    <nd ref="12841331908"/>
+    <nd ref="2034275030"/>
+    <nd ref="4837474084"/>
+    <nd ref="571438282"/>
+    <nd ref="906647331"/>
+    <nd ref="906647086"/>
+    <nd ref="906647619"/>
+    <nd ref="906647559"/>
+    <nd ref="906647502"/>
+    <nd ref="2034275065"/>
+    <nd ref="906646891"/>
+    <nd ref="3860422823"/>
+    <nd ref="3860422824"/>
+    <nd ref="3860422822"/>
+    <nd ref="3673479641"/>
+    <nd ref="2034275026"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382840135">
+    <nd ref="3860529786"/>
+    <nd ref="3860529788"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382840136">
+    <nd ref="2034275026"/>
+    <nd ref="3860529784"/>
+    <nd ref="3860529786"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988369">
+    <nd ref="3861909312"/>
+    <nd ref="3861909309"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988370">
+    <nd ref="3861909320"/>
+    <nd ref="3861909307"/>
+    <nd ref="3861909318"/>
+    <nd ref="3861909312"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988372">
+    <nd ref="690358253"/>
+    <nd ref="571438281"/>
+    <nd ref="906647145"/>
+    <nd ref="3861909314"/>
+    <nd ref="3861909313"/>
+    <nd ref="2034275064"/>
+    <nd ref="906647439"/>
+    <nd ref="906647521"/>
+    <nd ref="906647462"/>
+    <nd ref="2110697974"/>
+    <nd ref="2034275054"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988373">
+    <nd ref="3861909309"/>
+    <nd ref="3861909311"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988374">
+    <nd ref="2034275054"/>
+    <nd ref="3861909316"/>
+    <nd ref="3861909319"/>
+    <nd ref="3861909308"/>
+    <nd ref="3861909310"/>
+    <nd ref="3861909320"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988465">
+    <nd ref="3861910205"/>
+    <nd ref="3861910200"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988467">
+    <nd ref="906647342"/>
+    <nd ref="3861910203"/>
+    <nd ref="3861910193"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988472">
+    <nd ref="2034275077"/>
+    <nd ref="2110697943"/>
+    <nd ref="571438279"/>
+    <nd ref="3861910204"/>
+    <nd ref="906647342"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="382988473">
+    <nd ref="3861910193"/>
+    <nd ref="3861910205"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="383013807">
+    <nd ref="3861910200"/>
+    <nd ref="571438278"/>
+    <nd ref="3861910201"/>
+    <nd ref="3862137600"/>
+    <nd ref="3861910202"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="383013808">
+    <nd ref="3861910202"/>
+    <nd ref="3861910194"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="383013809">
+    <nd ref="571438274"/>
+    <nd ref="3862137602"/>
+    <nd ref="3862137597"/>
+    <nd ref="3862137596"/>
+    <nd ref="571438273"/>
+    <nd ref="3862137601"/>
+    <nd ref="3673493316"/>
+    <nd ref="3862137595"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="embankment" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="383013810">
+    <nd ref="3862137595"/>
+    <nd ref="3862137598"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಹೆದ್ದಾರಿ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="383013812">
+    <nd ref="3861910194"/>
+    <nd ref="571438277"/>
+    <nd ref="3862137599"/>
+    <nd ref="906647280"/>
+    <nd ref="571438275"/>
+    <nd ref="571438274"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="383014904">
+    <nd ref="10147067157"/>
+    <nd ref="571438271"/>
+    <nd ref="3862191656"/>
+    <nd ref="3862191655"/>
+    <nd ref="2431206507"/>
+    <nd ref="3639546855"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="shoulder" v="left"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1108986783">
+    <nd ref="2431206502"/>
+    <nd ref="3862191654"/>
+    <nd ref="10147067152"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1108986784">
+    <nd ref="10147067152"/>
+    <nd ref="10147067157"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1108986785">
+    <nd ref="10147067153"/>
+    <nd ref="2130868598"/>
+    <nd ref="3853810213"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1108986786">
+    <nd ref="10147067154"/>
+    <nd ref="10147067153"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="bridge" v="yes"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="layer" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1203119801">
+    <nd ref="12722053561"/>
+    <nd ref="503002239"/>
+    <nd ref="503002243"/>
+    <nd ref="2385473942"/>
+    <nd ref="2386085032"/>
+    <nd ref="2386085037"/>
+    <nd ref="2385473943"/>
+    <nd ref="6194323605"/>
+    <nd ref="2385473939"/>
+    <nd ref="13247318212"/>
+    <nd ref="13247318216"/>
+    <nd ref="13247318215"/>
+    <nd ref="13247318214"/>
+    <nd ref="503002245"/>
+    <tag k="alt_name" v="NICE Road"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="destination" v="Pune;Tumkur;Bengaluru;Hyderabad"/>
+    <tag k="destination:colour" v="green"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="no"/>
+    <tag k="maxspeed" v="120"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="both"/>
+    <tag k="shoulder:right:width" v="1"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="1287153187">
+    <nd ref="2385455908"/>
+    <nd ref="2385455904"/>
+    <nd ref="863292028"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="1"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="no"/>
+  </way>
+  <way id="1287173591">
+    <nd ref="2385452959"/>
+    <nd ref="13247318213"/>
+    <nd ref="13247318211"/>
+    <nd ref="2385452950"/>
+    <nd ref="2385452956"/>
+    <nd ref="2385452958"/>
+    <nd ref="2386493465"/>
+    <nd ref="503002013"/>
+    <nd ref="12722053560"/>
+    <tag k="alt_name" v="NICE Road"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="lanes" v="3"/>
+    <tag k="lit" v="no"/>
+    <tag k="maxspeed" v="120"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="left"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1287173593">
+    <nd ref="2385452964"/>
+    <nd ref="2385452959"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="no"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="no"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1287173594">
+    <nd ref="503002361"/>
+    <nd ref="2385452964"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="shoulder" v="left"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  <way id="1287173596">
+    <nd ref="11938003687"/>
+    <nd ref="2386078644"/>
+    <nd ref="503002354"/>
+    <nd ref="2385452970"/>
+    <tag k="auto_rickshaw" v="No"/>
+    <tag k="destination" v="Electronic City"/>
+    <tag k="destination:street" v="Magadi Road;Mysore Road;Kanakpura Road;Bannerghatta Road;Hosur Road"/>
+    <tag k="foot" v="no"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1287173599">
+    <nd ref="863291880"/>
+    <nd ref="2385455908"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1287173600">
+    <nd ref="863292056"/>
+    <nd ref="503002303"/>
+    <nd ref="863292093"/>
+    <nd ref="2130868682"/>
+    <nd ref="503002299"/>
+    <nd ref="2130868703"/>
+    <nd ref="503002298"/>
+    <nd ref="2385444003"/>
+    <nd ref="2385444001"/>
+    <nd ref="2130868680"/>
+    <tag k="auto_rickshaw" v="no"/>
+    <tag k="foot" v="no"/>
+    <tag k="full_name" v="NICE Peripheral Ring Road"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="lanes" v="2"/>
+    <tag k="lit" v="yes"/>
+    <tag k="maxspeed" v="40"/>
+    <tag k="motorcycle:conditional" v="no @ (22:00-05:00)"/>
+    <tag k="name" v="NICE Road"/>
+    <tag k="name:kn" v="ನೈಸ್‌ ರಸ್ತೆ"/>
+    <tag k="name:ta" v="நைஸ் ரிங் சாலை"/>
+    <tag k="official_name" v="NICE Peripheral Ring Road"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="smoothness" v="excellent"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+  <way id="1287284737">
+    <nd ref="11938905600"/>
+    <nd ref="11938905601"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="yes"/>
+  </way>
+  <way id="1416782254">
+    <nd ref="2034275028"/>
+    <nd ref="3834482165"/>
+    <nd ref="11938905600"/>
+    <tag k="alt_name" v="Tumkur Road"/>
+    <tag k="alt_name_1" v="Delhi - Chennai Highway"/>
+    <tag k="alt_name_2" v="Bangalore - Mangalore Highway"/>
+    <tag k="alt_name_3" v="Hassan - Vellore Highway"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="int_ref" v="AH47"/>
+    <tag k="lanes" v="3"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Bangalore - Nelamangala Expressway"/>
+    <tag k="name:kn" v="ಬೆಂಗಳೂರು-ನೆಲಮಂಗಲ ಎಕ್ಸ್‌ಪ್ರೆಸ್‌ವೇ"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="ref" v="NH48;NH75"/>
+    <tag k="ref:old" v="NH4"/>
+    <tag k="ref_1" v="NH75"/>
+    <tag k="sidewalk" v="no"/>
+    <tag k="surface" v="asphalt"/>
+    <tag k="toll" v="yes"/>
+  </way>
+
+</osm>

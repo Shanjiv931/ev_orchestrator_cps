@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-07-29 18:04:13 by Eclipse SUMO duarouter Version 1.18.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="sumo/corridor/corridor.net.xml"/>
+        <route-files value="sumo/corridor/corridor.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="sumo/corridor/corridor.rou.xml"/>
+    </output>
+
+    <report>
+        <ignore-errors value="true"/>
+    </report>
+
+    <random_number>
+        <seed value="42"/>
+    </random_number>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vehicle id="1" depart="6.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="6" depart="36.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1"/>
+    </vehicle>
+    <vehicle id="7" depart="42.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="12" depart="72.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="15" depart="90.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0"/>
+    </vehicle>
+    <vehicle id="20" depart="120.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="25" depart="150.00">
+        <route edges="1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="31" depart="186.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge"/>
+    </vehicle>
+    <vehicle id="37" depart="222.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="47" depart="282.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="64" depart="384.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="67" depart="402.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="69" depart="414.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1"/>
+    </vehicle>
+    <vehicle id="70" depart="420.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="82" depart="492.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="83" depart="498.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="84" depart="504.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="87" depart="522.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="90" depart="540.00">
+        <route edges="363158872 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="91" depart="546.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="92" depart="552.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="93" depart="558.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="110" depart="660.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1"/>
+    </vehicle>
+    <vehicle id="119" depart="714.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="138" depart="828.00">
+        <route edges="382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="139" depart="834.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="141" depart="846.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="143" depart="858.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="147" depart="882.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="151" depart="906.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="153" depart="918.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="154" depart="924.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="156" depart="936.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="160" depart="960.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="162" depart="972.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="164" depart="984.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0"/>
+    </vehicle>
+    <vehicle id="168" depart="1008.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="171" depart="1026.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="175" depart="1050.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="176" depart="1056.00">
+        <route edges="363158872 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="186" depart="1116.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="195" depart="1170.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="196" depart="1176.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="203" depart="1218.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="206" depart="1236.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge"/>
+    </vehicle>
+    <vehicle id="207" depart="1242.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="217" depart="1302.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="219" depart="1314.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="221" depart="1326.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="228" depart="1368.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="230" depart="1380.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="235" depart="1410.00">
+        <route edges="382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="236" depart="1416.00">
+        <route edges="382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="237" depart="1422.00">
+        <route edges="363158872 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="240" depart="1440.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 235013184"/>
+    </vehicle>
+    <vehicle id="243" depart="1458.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="246" depart="1476.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="273" depart="1638.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="274" depart="1644.00">
+        <route edges="382191822 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 382180802#0 382180802#1-AddedOnRampEdge 382180802#1"/>
+    </vehicle>
+    <vehicle id="276" depart="1656.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="277" depart="1662.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="285" depart="1710.00">
+        <route edges="380097966 1108986785#1-AddedOnRampEdge 1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="290" depart="1740.00">
+        <route edges="1108986785#1 1108986785#1-AddedOffRampEdge 1287284737"/>
+    </vehicle>
+    <vehicle id="293" depart="1758.00">
+        <route edges="382827763#0 382827763#0-AddedOffRampEdge 382827763#1 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+    <vehicle id="294" depart="1764.00">
+        <route edges="363158875 382988372#1-AddedOnRampEdge 382988372#1 382988372#1-AddedOffRampEdge 1108986783 383014904#1-AddedOnRampEdge 383014904#1"/>
+    </vehicle>
+</routes>
