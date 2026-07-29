@@ -110,6 +110,18 @@ allows - both because a "live" twin should track real elapsed time, and
 because uncapped stepping was itself the original source of the message
 flood above.
 
+## Backend
+
+FastAPI + SQLAlchemy + PostgreSQL/PostGIS/TimescaleDB, implementing the
+Section 8 data model exactly, with one documented extension: `USERS` gains
+`email`/`hashed_password` since the ERD has no login-credential fields at
+all but Section 9.4 requires JWT auth. JWT auth via `python-jose` +
+`passlib[bcrypt]` (pinned to `bcrypt==4.0.1` - newer bcrypt releases dropped
+an attribute passlib 1.7.4's self-test depends on). The backend is the only
+service frontend clients talk to: it proxies read-only twin state
+(`GET /twin/{type}`, `GET /twin/{type}/{id}`) and relays twin-engine's
+WebSocket feed at `/ws/live`, so `twin-engine` itself stays internal-only.
+
 ## Data flow guarantee
 
 Twin state must reflect the underlying MQTT message within 1 second in all

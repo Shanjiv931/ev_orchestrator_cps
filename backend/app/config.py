@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     jwt_secret: str = "dev-only-secret-change-me"
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60 * 24
+    twin_engine_http_url: str = "http://twin-engine:8100"
+    twin_engine_ws_url: str = "ws://twin-engine:8100/ws"
 
 
 settings = Settings()

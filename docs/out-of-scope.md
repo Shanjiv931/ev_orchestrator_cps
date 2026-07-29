@@ -48,5 +48,24 @@ and listing entities via `SCAN` instead of a maintained index. Separately,
 pacing, which was itself the larger source of message volume - it now
 paces to real time via `--realtime-factor`.
 
+## Phase 4 (database + core backend CRUD)
+
+USERS gains `email` and `hashed_password` beyond the Section 8 ERD - the
+ERD has no login-credential fields at all, and Section 9.4 explicitly
+requires JWT auth, so this is the "strictly necessary" extension the
+contract allows for.
+
+STATIONS keeps plain `lat`/`lon` floats rather than a PostGIS geometry
+column for now, even though `geoalchemy2` is in the stack. Nearest-station
+queries don't exist yet (that's Phase 5's recommendation engine); a
+PostGIS geometry column with a spatial index is added then, when there's
+an actual query to optimize, rather than speculatively now.
+
+Station/charger/swap-slot/feeder write endpoints have no role restriction
+yet (e.g. only a city-admin persona should really be able to create a
+station) - authentication exists, coarse-grained authorization does not.
+Acceptable for this phase since nothing in the Section 11 acceptance
+checklist requires it yet; revisit if a beyond-scope module needs it.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._
