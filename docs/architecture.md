@@ -191,6 +191,7 @@ not folded into an existing one:
 | Carbon/ESG tracking | `ml/carbon_ledger.py`, wired into session completion | `GET /carbon-ledger/...` (Phase 4) |
 | Predictive maintenance | `ml/maintenance_predictor.py`, feeds `Charger.maintenance_risk_score` | `POST /stations/chargers/{id}/maintenance-check` |
 | Rural mini-grid mode | `ml/rural_minigrid.py` | capacity-planning function, no dedicated endpoint (used by admin tooling in Phase 7) |
+| What-if all-EV mode (Section 4.6) | `ml/event_stress_test.py::what_if_all_ev` | `POST /what-if/all-ev` |
 
 The remaining two - multilingual/low-literacy frontend and offline-first
 PWA behavior - are frontend-layer concerns with no backend component;

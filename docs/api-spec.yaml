@@ -1,0 +1,2421 @@
+openapi: 3.1.0
+info:
+  title: EV Charging Orchestrator API
+  version: 0.1.0
+paths:
+  /auth/register:
+    post:
+      tags:
+      - auth
+      summary: Register
+      operationId: register_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      operationId: login_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /auth/me:
+    get:
+      tags:
+      - auth
+      summary: Me
+      operationId: me_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRead'
+      security:
+      - OAuth2PasswordBearer: []
+  /vehicles:
+    get:
+      tags:
+      - vehicles
+      summary: List My Vehicles
+      operationId: list_my_vehicles_vehicles_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/VehicleRead'
+                type: array
+                title: Response List My Vehicles Vehicles Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - vehicles
+      summary: Create Vehicle
+      operationId: create_vehicle_vehicles_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /vehicles/{vehicle_id}:
+    get:
+      tags:
+      - vehicles
+      summary: Get Vehicle
+      operationId: get_vehicle_vehicles__vehicle_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - vehicles
+      summary: Update Vehicle
+      operationId: update_vehicle_vehicles__vehicle_id__patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - vehicles
+      summary: Delete Vehicle
+      operationId: delete_vehicle_vehicles__vehicle_id__delete
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations:
+    post:
+      tags:
+      - stations
+      summary: Create Station
+      operationId: create_station_stations_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - stations
+      summary: List Stations
+      operationId: list_stations_stations_get
+      parameters:
+      - name: station_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Station Type
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StationRead'
+                title: Response List Stations Stations Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/{station_id}:
+    get:
+      tags:
+      - stations
+      summary: Get Station
+      operationId: get_station_stations__station_id__get
+      parameters:
+      - name: station_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Station Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - stations
+      summary: Update Station
+      operationId: update_station_stations__station_id__patch
+      parameters:
+      - name: station_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Station Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StationUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/{station_id}/chargers:
+    post:
+      tags:
+      - stations
+      summary: Create Charger
+      operationId: create_charger_stations__station_id__chargers_post
+      parameters:
+      - name: station_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Station Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargerCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargerRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/chargers/{charger_id}:
+    patch:
+      tags:
+      - stations
+      summary: Update Charger
+      operationId: update_charger_stations_chargers__charger_id__patch
+      parameters:
+      - name: charger_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Charger Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargerUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargerRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/chargers/{charger_id}/maintenance-check:
+    post:
+      tags:
+      - stations
+      summary: Run Maintenance Check
+      operationId: run_maintenance_check_stations_chargers__charger_id__maintenance_check_post
+      parameters:
+      - name: charger_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Charger Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargerMaintenanceCheck'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargerRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/{station_id}/swap-slots:
+    post:
+      tags:
+      - stations
+      summary: Create Swap Slot
+      operationId: create_swap_slot_stations__station_id__swap_slots_post
+      parameters:
+      - name: station_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Station Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapSlotCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapSlotRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stations/swap-slots/{swap_slot_id}:
+    patch:
+      tags:
+      - stations
+      summary: Update Swap Slot
+      operationId: update_swap_slot_stations_swap_slots__swap_slot_id__patch
+      parameters:
+      - name: swap_slot_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Swap Slot Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwapSlotUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwapSlotRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /feeders:
+    post:
+      tags:
+      - feeders
+      summary: Create Feeder
+      operationId: create_feeder_feeders_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GridFeederCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridFeederRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - feeders
+      summary: List Feeders
+      operationId: list_feeders_feeders_get
+      parameters:
+      - name: is_rural_minigrid
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Rural Minigrid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridFeederRead'
+                title: Response List Feeders Feeders Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /feeders/{feeder_id}:
+    get:
+      tags:
+      - feeders
+      summary: Get Feeder
+      operationId: get_feeder_feeders__feeder_id__get
+      parameters:
+      - name: feeder_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Feeder Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridFeederRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - feeders
+      summary: Update Feeder
+      operationId: update_feeder_feeders__feeder_id__patch
+      parameters:
+      - name: feeder_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Feeder Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GridFeederUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridFeederRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /sessions:
+    get:
+      tags:
+      - sessions
+      summary: List My Sessions
+      operationId: list_my_sessions_sessions_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SessionRead'
+                type: array
+                title: Response List My Sessions Sessions Get
+      security:
+      - OAuth2PasswordBearer: []
+    post:
+      tags:
+      - sessions
+      summary: Start Session
+      operationId: start_session_sessions_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2PasswordBearer: []
+  /sessions/{session_id}:
+    get:
+      tags:
+      - sessions
+      summary: Get Session
+      operationId: get_session_sessions__session_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - sessions
+      summary: Update Session
+      operationId: update_session_sessions__session_id__patch
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /sessions/{session_id}/complete:
+    post:
+      tags:
+      - sessions
+      summary: Complete Session
+      operationId: complete_session_sessions__session_id__complete_post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /sessions/{session_id}/telemetry:
+    post:
+      tags:
+      - sessions
+      summary: Ingest Telemetry
+      operationId: ingest_telemetry_sessions__session_id__telemetry_post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - sessions
+      summary: List Telemetry
+      operationId: list_telemetry_sessions__session_id__telemetry_get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TelemetryRead'
+                title: Response List Telemetry Sessions  Session Id  Telemetry Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /vehicles/{vehicle_id}/battery-health:
+    post:
+      tags:
+      - battery-health
+      summary: Record Battery Health
+      operationId: record_battery_health_vehicles__vehicle_id__battery_health_post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatteryHealthCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatteryHealthRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - battery-health
+      summary: List Battery Health
+      operationId: list_battery_health_vehicles__vehicle_id__battery_health_get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BatteryHealthRead'
+                title: Response List Battery Health Vehicles  Vehicle Id  Battery
+                  Health Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /vehicles/{vehicle_id}/battery-health/latest:
+    get:
+      tags:
+      - battery-health
+      summary: Latest Battery Health
+      operationId: latest_battery_health_vehicles__vehicle_id__battery_health_latest_get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: vehicle_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Vehicle Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatteryHealthRead'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /carbon-ledger/sessions/{session_id}:
+    get:
+      tags:
+      - carbon-ledger
+      summary: List Entries For Session
+      operationId: list_entries_for_session_carbon_ledger_sessions__session_id__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CarbonLedgerRead'
+                title: Response List Entries For Session Carbon Ledger Sessions  Session
+                  Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /carbon-ledger/me/summary:
+    get:
+      tags:
+      - carbon-ledger
+      summary: My Carbon Summary
+      operationId: my_carbon_summary_carbon_ledger_me_summary_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response My Carbon Summary Carbon Ledger Me Summary Get
+      security:
+      - OAuth2PasswordBearer: []
+  /payments/sessions/{session_id}/initiate:
+    post:
+      tags:
+      - payments
+      summary: Initiate Session Payment
+      operationId: initiate_session_payment_payments_sessions__session_id__initiate_post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: session_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Session Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Initiate Session Payment Payments Sessions  Session
+                  Id  Initiate Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /payments/{reference}/confirm:
+    post:
+      tags:
+      - payments
+      summary: Confirm Simulated Payment
+      operationId: confirm_simulated_payment_payments__reference__confirm_post
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: reference
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Reference
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Confirm Simulated Payment Payments  Reference  Confirm
+                  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /payments/{reference}:
+    get:
+      tags:
+      - payments
+      summary: Get Simulated Payment
+      operationId: get_simulated_payment_payments__reference__get
+      security:
+      - OAuth2PasswordBearer: []
+      parameters:
+      - name: reference
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Reference
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Get Simulated Payment Payments  Reference  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /demand-forecast/zones:
+    get:
+      tags:
+      - advanced-features
+      summary: List Forecast Zones
+      operationId: list_forecast_zones_demand_forecast_zones_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+                title: Response List Forecast Zones Demand Forecast Zones Get
+  /demand-forecast/predict:
+    get:
+      tags:
+      - advanced-features
+      summary: Demand Forecast Predict
+      operationId: demand_forecast_predict_demand_forecast_predict_get
+      parameters:
+      - name: zone
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Zone
+      - name: hour
+        in: query
+        required: true
+        schema:
+          type: integer
+          title: Hour
+      - name: day_of_week
+        in: query
+        required: true
+        schema:
+          type: integer
+          title: Day Of Week
+      - name: weather
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 0
+          title: Weather
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Demand Forecast Predict Demand Forecast Predict Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v2g/dispatch:
+    post:
+      tags:
+      - advanced-features
+      summary: V2G Dispatch
+      operationId: v2g_dispatch_v2g_dispatch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V2GDispatchRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response V2G Dispatch V2G Dispatch Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /blackout/plan:
+    post:
+      tags:
+      - advanced-features
+      summary: Blackout Plan
+      operationId: blackout_plan_blackout_plan_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlackoutPlanRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Blackout Plan Blackout Plan Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /solar-sync/recommend:
+    post:
+      tags:
+      - advanced-features
+      summary: Solar Sync Recommend
+      operationId: solar_sync_recommend_solar_sync_recommend_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolarSyncRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Solar Sync Recommend Solar Sync Recommend Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /recommendations:
+    post:
+      tags:
+      - advanced-features
+      summary: Get Recommendations
+      operationId: get_recommendations_recommendations_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                type: array
+                title: Response Get Recommendations Recommendations Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /emergency-queue/insert:
+    post:
+      tags:
+      - advanced-features
+      summary: Emergency Queue Insert
+      operationId: emergency_queue_insert_emergency_queue_insert_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmergencyQueueRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Emergency Queue Insert Emergency Queue Insert Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /stress-test/sweep:
+    post:
+      tags:
+      - advanced-features
+      summary: Stress Test Sweep
+      operationId: stress_test_sweep_stress_test_sweep_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StressTestRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Stress Test Sweep Stress Test Sweep Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /what-if/all-ev:
+    post:
+      tags:
+      - advanced-features
+      summary: What If All Ev Endpoint
+      description: 'Pulls the real current EV count for a scenario from the live twin
+
+        (not a static estimate) and reports the real additional-capacity
+
+        number if every vehicle that count implies were charging, per
+
+        Section 4.6.'
+      operationId: what_if_all_ev_endpoint_what_if_all_ev_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WhatIfAllEvRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response What If All Ev Endpoint What If All Ev Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /admin/dpdp-retention-sweep:
+    post:
+      tags:
+      - advanced-features
+      summary: Dpdp Retention Sweep
+      description: 'Admin-triggerable DPDP retention enforcement (Section 4.7) - a
+        real
+
+        deployment would also run this on a schedule (see docs/security-notes.md).'
+      operationId: dpdp_retention_sweep_admin_dpdp_retention_sweep_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Dpdp Retention Sweep Admin Dpdp Retention Sweep Post
+  /twin/{entity_type}:
+    get:
+      tags:
+      - twin
+      summary: Get Twin State List
+      operationId: get_twin_state_list_twin__entity_type__get
+      parameters:
+      - name: entity_type
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entity Type
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Get Twin State List Twin  Entity Type  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /twin/{entity_type}/{entity_id}:
+    get:
+      tags:
+      - twin
+      summary: Get Twin State
+      operationId: get_twin_state_twin__entity_type___entity_id__get
+      parameters:
+      - name: entity_type
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entity Type
+      - name: entity_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Entity Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Get Twin State Twin  Entity Type   Entity Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Response Health Health Get
+components:
+  schemas:
+    BatteryHealthCreate:
+      properties:
+        soh_pct:
+          type: number
+          title: Soh Pct
+        projected_months_to_80pct:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Projected Months To 80Pct
+        trend_flag:
+          type: string
+          title: Trend Flag
+          default: stable
+        second_life_candidate:
+          type: string
+          title: Second Life Candidate
+          default: 'no'
+      type: object
+      required:
+      - soh_pct
+      title: BatteryHealthCreate
+    BatteryHealthRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        vehicle_id:
+          type: string
+          format: uuid
+          title: Vehicle Id
+        soh_pct:
+          type: number
+          title: Soh Pct
+        projected_months_to_80pct:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Projected Months To 80Pct
+        trend_flag:
+          type: string
+          title: Trend Flag
+        second_life_candidate:
+          type: string
+          title: Second Life Candidate
+        recorded_at:
+          type: string
+          format: date-time
+          title: Recorded At
+      type: object
+      required:
+      - id
+      - vehicle_id
+      - soh_pct
+      - projected_months_to_80pct
+      - trend_flag
+      - second_life_candidate
+      - recorded_at
+      title: BatteryHealthRead
+    BlackoutPlanRequest:
+      properties:
+        critical_load:
+          $ref: '#/components/schemas/CriticalLoad'
+        vehicles:
+          items:
+            $ref: '#/components/schemas/V2GVehicleIn'
+          type: array
+          title: Vehicles
+        vehicle_positions:
+          additionalProperties:
+            prefixItems:
+            - type: number
+            - type: number
+            type: array
+            maxItems: 2
+            minItems: 2
+          type: object
+          title: Vehicle Positions
+        max_radius_km:
+          type: number
+          title: Max Radius Km
+          default: 3.0
+        duration_hours:
+          type: number
+          title: Duration Hours
+          default: 2.0
+      type: object
+      required:
+      - critical_load
+      - vehicles
+      - vehicle_positions
+      title: BlackoutPlanRequest
+    Candidate:
+      properties:
+        id:
+          type: string
+          title: Id
+        kind:
+          type: string
+          title: Kind
+        connector_type:
+          type: string
+          title: Connector Type
+        lat:
+          type: number
+          title: Lat
+        lon:
+          type: number
+          title: Lon
+        predicted_wait_minutes:
+          type: number
+          title: Predicted Wait Minutes
+        cost_rupees:
+          type: number
+          title: Cost Rupees
+        congestion_risk:
+          type: number
+          title: Congestion Risk
+        last_verified_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Verified At
+        reported_status:
+          type: string
+          title: Reported Status
+        safety_score:
+          type: number
+          title: Safety Score
+          default: 1.0
+      type: object
+      required:
+      - id
+      - kind
+      - connector_type
+      - lat
+      - lon
+      - predicted_wait_minutes
+      - cost_rupees
+      - congestion_risk
+      - last_verified_at
+      - reported_status
+      title: Candidate
+    CarbonLedgerRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        session_id:
+          type: string
+          format: uuid
+          title: Session Id
+        co2_avoided_kg:
+          type: number
+          title: Co2 Avoided Kg
+        equivalent_fuel_baseline:
+          type: string
+          title: Equivalent Fuel Baseline
+      type: object
+      required:
+      - id
+      - session_id
+      - co2_avoided_kg
+      - equivalent_fuel_baseline
+      title: CarbonLedgerRead
+    ChargerCreate:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: available
+        power_kw:
+          type: number
+          title: Power Kw
+        maintenance_risk_score:
+          type: number
+          title: Maintenance Risk Score
+          default: 0.0
+      type: object
+      required:
+      - power_kw
+      title: ChargerCreate
+    ChargerMaintenanceCheck:
+      properties:
+        total_sessions:
+          type: integer
+          title: Total Sessions
+        aborted_sessions:
+          type: integer
+          title: Aborted Sessions
+        error_count:
+          type: integer
+          title: Error Count
+      type: object
+      required:
+      - total_sessions
+      - aborted_sessions
+      - error_count
+      title: ChargerMaintenanceCheck
+    ChargerRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        station_id:
+          type: string
+          format: uuid
+          title: Station Id
+        status:
+          type: string
+          title: Status
+        last_verified_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Verified At
+        power_kw:
+          type: number
+          title: Power Kw
+        maintenance_risk_score:
+          type: number
+          title: Maintenance Risk Score
+      type: object
+      required:
+      - id
+      - station_id
+      - status
+      - last_verified_at
+      - power_kw
+      - maintenance_risk_score
+      title: ChargerRead
+    ChargerUpdate:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        last_verified_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Verified At
+        maintenance_risk_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Maintenance Risk Score
+      type: object
+      title: ChargerUpdate
+    CriticalLoad:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        lat:
+          type: number
+          title: Lat
+        lon:
+          type: number
+          title: Lon
+        required_kw:
+          type: number
+          title: Required Kw
+      type: object
+      required:
+      - id
+      - name
+      - lat
+      - lon
+      - required_kw
+      title: CriticalLoad
+    EmergencyQueueRequest:
+      properties:
+        queue_key:
+          type: string
+          title: Queue Key
+        request_id:
+          type: string
+          title: Request Id
+        vehicle_id:
+          type: string
+          title: Vehicle Id
+        is_emergency:
+          type: boolean
+          title: Is Emergency
+      type: object
+      required:
+      - queue_key
+      - request_id
+      - vehicle_id
+      - is_emergency
+      title: EmergencyQueueRequest
+    GridFeederCreate:
+      properties:
+        station_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Station Id
+        feeder_zone:
+          type: string
+          title: Feeder Zone
+        capacity_kw:
+          type: number
+          title: Capacity Kw
+        current_load_kw:
+          type: number
+          title: Current Load Kw
+          default: 0.0
+        is_rural_minigrid:
+          type: boolean
+          title: Is Rural Minigrid
+          default: false
+      type: object
+      required:
+      - feeder_zone
+      - capacity_kw
+      title: GridFeederCreate
+    GridFeederRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        station_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Station Id
+        feeder_zone:
+          type: string
+          title: Feeder Zone
+        capacity_kw:
+          type: number
+          title: Capacity Kw
+        current_load_kw:
+          type: number
+          title: Current Load Kw
+        is_rural_minigrid:
+          type: boolean
+          title: Is Rural Minigrid
+      type: object
+      required:
+      - id
+      - station_id
+      - feeder_zone
+      - capacity_kw
+      - current_load_kw
+      - is_rural_minigrid
+      title: GridFeederRead
+    GridFeederUpdate:
+      properties:
+        current_load_kw:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Current Load Kw
+      type: object
+      title: GridFeederUpdate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LoginRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: LoginRequest
+    RecommendationRequest:
+      properties:
+        vehicle:
+          $ref: '#/components/schemas/Vehicle'
+        candidates:
+          items:
+            $ref: '#/components/schemas/Candidate'
+          type: array
+          title: Candidates
+        user_lat:
+          type: number
+          title: User Lat
+        user_lon:
+          type: number
+          title: User Lon
+        hour_of_day:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Hour Of Day
+        is_solo_traveler:
+          type: boolean
+          title: Is Solo Traveler
+          default: false
+      type: object
+      required:
+      - vehicle
+      - candidates
+      - user_lat
+      - user_lon
+      title: RecommendationRequest
+    SessionCreate:
+      properties:
+        vehicle_id:
+          type: string
+          format: uuid
+          title: Vehicle Id
+        charger_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Charger Id
+        is_emergency_priority:
+          type: boolean
+          title: Is Emergency Priority
+          default: false
+      type: object
+      required:
+      - vehicle_id
+      title: SessionCreate
+    SessionRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        user_id:
+          type: string
+          format: uuid
+          title: User Id
+        vehicle_id:
+          type: string
+          format: uuid
+          title: Vehicle Id
+        charger_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Charger Id
+        start_time:
+          type: string
+          format: date-time
+          title: Start Time
+        end_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Time
+        energy_kwh:
+          type: number
+          title: Energy Kwh
+        cost:
+          type: number
+          title: Cost
+        is_emergency_priority:
+          type: boolean
+          title: Is Emergency Priority
+      type: object
+      required:
+      - id
+      - user_id
+      - vehicle_id
+      - charger_id
+      - start_time
+      - end_time
+      - energy_kwh
+      - cost
+      - is_emergency_priority
+      title: SessionRead
+    SessionUpdate:
+      properties:
+        end_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Time
+        energy_kwh:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Energy Kwh
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+      type: object
+      title: SessionUpdate
+    SolarSyncRequest:
+      properties:
+        current_hour:
+          type: integer
+          title: Current Hour
+        session_duration_hours:
+          type: integer
+          title: Session Duration Hours
+        station_has_solar:
+          type: boolean
+          title: Station Has Solar
+        peak_generation_kw:
+          type: number
+          title: Peak Generation Kw
+        load_kw:
+          type: number
+          title: Load Kw
+      type: object
+      required:
+      - current_hour
+      - session_duration_hours
+      - station_has_solar
+      - peak_generation_kw
+      - load_kw
+      title: SolarSyncRequest
+    StationCreate:
+      properties:
+        station_type:
+          type: string
+          title: Station Type
+        lat:
+          type: number
+          title: Lat
+        lon:
+          type: number
+          title: Lon
+        safety_score:
+          type: number
+          title: Safety Score
+          default: 0.0
+        has_solar:
+          type: boolean
+          title: Has Solar
+          default: false
+      type: object
+      required:
+      - station_type
+      - lat
+      - lon
+      title: StationCreate
+    StationRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        station_type:
+          type: string
+          title: Station Type
+        lat:
+          type: number
+          title: Lat
+        lon:
+          type: number
+          title: Lon
+        safety_score:
+          type: number
+          title: Safety Score
+        has_solar:
+          type: boolean
+          title: Has Solar
+        chargers:
+          items:
+            $ref: '#/components/schemas/ChargerRead'
+          type: array
+          title: Chargers
+          default: []
+        swap_slots:
+          items:
+            $ref: '#/components/schemas/SwapSlotRead'
+          type: array
+          title: Swap Slots
+          default: []
+      type: object
+      required:
+      - id
+      - station_type
+      - lat
+      - lon
+      - safety_score
+      - has_solar
+      title: StationRead
+    StationUpdate:
+      properties:
+        safety_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Safety Score
+        has_solar:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Has Solar
+      type: object
+      title: StationUpdate
+    StressTestRequest:
+      properties:
+        feeder_id:
+          type: string
+          title: Feeder Id
+        feeder_capacity_kw:
+          type: number
+          title: Feeder Capacity Kw
+        baseline_vehicle_count:
+          type: integer
+          title: Baseline Vehicle Count
+        avg_charger_power_kw:
+          type: number
+          title: Avg Charger Power Kw
+        simultaneous_charge_fraction:
+          type: number
+          title: Simultaneous Charge Fraction
+        density_multipliers:
+          items:
+            type: number
+          type: array
+          title: Density Multipliers
+        station_capacity_kw:
+          type: number
+          title: Station Capacity Kw
+          default: 100.0
+      type: object
+      required:
+      - feeder_id
+      - feeder_capacity_kw
+      - baseline_vehicle_count
+      - avg_charger_power_kw
+      - simultaneous_charge_fraction
+      - density_multipliers
+      title: StressTestRequest
+    SwapSlotCreate:
+      properties:
+        status:
+          type: string
+          title: Status
+          default: available
+        batteries_available:
+          type: integer
+          title: Batteries Available
+          default: 0
+      type: object
+      title: SwapSlotCreate
+    SwapSlotRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        station_id:
+          type: string
+          format: uuid
+          title: Station Id
+        status:
+          type: string
+          title: Status
+        batteries_available:
+          type: integer
+          title: Batteries Available
+      type: object
+      required:
+      - id
+      - station_id
+      - status
+      - batteries_available
+      title: SwapSlotRead
+    SwapSlotUpdate:
+      properties:
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        batteries_available:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Batteries Available
+      type: object
+      title: SwapSlotUpdate
+    TelemetryCreate:
+      properties:
+        battery_pct:
+          type: number
+          title: Battery Pct
+        cell_temp_c:
+          type: number
+          title: Cell Temp C
+        power_kw:
+          type: number
+          title: Power Kw
+      type: object
+      required:
+      - battery_pct
+      - cell_temp_c
+      - power_kw
+      title: TelemetryCreate
+    TelemetryRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        session_id:
+          type: string
+          format: uuid
+          title: Session Id
+        ts:
+          type: string
+          format: date-time
+          title: Ts
+        battery_pct:
+          type: number
+          title: Battery Pct
+        cell_temp_c:
+          type: number
+          title: Cell Temp C
+        power_kw:
+          type: number
+          title: Power Kw
+      type: object
+      required:
+      - id
+      - session_id
+      - ts
+      - battery_pct
+      - cell_temp_c
+      - power_kw
+      title: TelemetryRead
+    TokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          title: Token Type
+          default: bearer
+      type: object
+      required:
+      - access_token
+      title: TokenResponse
+    UserCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          title: Password
+        persona:
+          type: string
+          title: Persona
+        dpdp_consent_flag:
+          type: boolean
+          title: Dpdp Consent Flag
+          default: false
+      type: object
+      required:
+      - name
+      - email
+      - password
+      - persona
+      title: UserCreate
+    UserRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          format: email
+          title: Email
+        persona:
+          type: string
+          title: Persona
+        dpdp_consent_flag:
+          type: boolean
+          title: Dpdp Consent Flag
+        consent_expiry:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Consent Expiry
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - persona
+      - dpdp_consent_flag
+      - consent_expiry
+      title: UserRead
+    V2GDispatchRequest:
+      properties:
+        vehicles:
+          items:
+            $ref: '#/components/schemas/V2GVehicleIn'
+          type: array
+          title: Vehicles
+        feeder_deficit_kw:
+          type: number
+          title: Feeder Deficit Kw
+        duration_hours:
+          type: number
+          title: Duration Hours
+          default: 1.0
+      type: object
+      required:
+      - vehicles
+      - feeder_deficit_kw
+      title: V2GDispatchRequest
+    V2GVehicleIn:
+      properties:
+        id:
+          type: string
+          title: Id
+        is_pluggable:
+          type: boolean
+          title: Is Pluggable
+        v2g_capable:
+          type: boolean
+          title: V2G Capable
+        opted_in:
+          type: boolean
+          title: Opted In
+        is_parked:
+          type: boolean
+          title: Is Parked
+        soc_pct:
+          type: number
+          title: Soc Pct
+        battery_capacity_kwh:
+          type: number
+          title: Battery Capacity Kwh
+        max_discharge_kw:
+          type: number
+          title: Max Discharge Kw
+      type: object
+      required:
+      - id
+      - is_pluggable
+      - v2g_capable
+      - opted_in
+      - is_parked
+      - soc_pct
+      - battery_capacity_kwh
+      - max_discharge_kw
+      title: V2GVehicleIn
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Vehicle:
+      properties:
+        connector_type:
+          type: string
+          title: Connector Type
+        is_pluggable:
+          type: boolean
+          title: Is Pluggable
+      type: object
+      required:
+      - connector_type
+      - is_pluggable
+      title: Vehicle
+    VehicleCreate:
+      properties:
+        vehicle_class:
+          type: string
+          title: Vehicle Class
+        connector_type:
+          type: string
+          title: Connector Type
+        battery_chemistry:
+          type: string
+          title: Battery Chemistry
+        is_pluggable:
+          type: boolean
+          title: Is Pluggable
+          default: true
+        fleet_depot_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fleet Depot Id
+      type: object
+      required:
+      - vehicle_class
+      - connector_type
+      - battery_chemistry
+      title: VehicleCreate
+    VehicleRead:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        user_id:
+          type: string
+          format: uuid
+          title: User Id
+        vehicle_class:
+          type: string
+          title: Vehicle Class
+        connector_type:
+          type: string
+          title: Connector Type
+        battery_chemistry:
+          type: string
+          title: Battery Chemistry
+        is_pluggable:
+          type: boolean
+          title: Is Pluggable
+        fleet_depot_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fleet Depot Id
+      type: object
+      required:
+      - id
+      - user_id
+      - vehicle_class
+      - connector_type
+      - battery_chemistry
+      - is_pluggable
+      - fleet_depot_id
+      title: VehicleRead
+    VehicleUpdate:
+      properties:
+        connector_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Connector Type
+        battery_chemistry:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Battery Chemistry
+        is_pluggable:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Pluggable
+        fleet_depot_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fleet Depot Id
+      type: object
+      title: VehicleUpdate
+    WhatIfAllEvRequest:
+      properties:
+        scenario:
+          type: string
+          title: Scenario
+        feeder_id:
+          type: string
+          title: Feeder Id
+        feeder_capacity_kw:
+          type: number
+          title: Feeder Capacity Kw
+        avg_charger_power_kw:
+          type: number
+          title: Avg Charger Power Kw
+        simultaneous_charge_fraction:
+          type: number
+          title: Simultaneous Charge Fraction
+        station_capacity_kw:
+          type: number
+          title: Station Capacity Kw
+          default: 100.0
+        current_adoption_rate:
+          type: number
+          title: Current Adoption Rate
+          default: 0.02
+      type: object
+      required:
+      - scenario
+      - feeder_id
+      - feeder_capacity_kw
+      - avg_charger_power_kw
+      - simultaneous_charge_fraction
+      title: WhatIfAllEvRequest
+  securitySchemes:
+    OAuth2PasswordBearer:
+      type: oauth2
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/login

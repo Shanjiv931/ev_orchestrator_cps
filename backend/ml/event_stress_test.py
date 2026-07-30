@@ -61,3 +61,44 @@ def recommend_additional_stations(additional_capacity_needed_kw: float, station_
     if additional_capacity_needed_kw <= 0:
         return 0
     return math.ceil(additional_capacity_needed_kw / station_capacity_kw)
+
+
+# India's on-road EV adoption rate is roughly 2% of the total vehicle fleet
+# as of the mid-2020s (the ~5.9M registered EVs the build contract cites,
+# against India's much larger overall vehicle population) - the realistic
+# baseline for "what if every vehicle currently on the road were an EV".
+CURRENT_INDIA_EV_ADOPTION_RATE = 0.02
+
+
+def what_if_all_ev(feeder_id: str, feeder_capacity_kw: float, current_ev_vehicle_count: int,
+                    avg_charger_power_kw: float, simultaneous_charge_fraction: float,
+                    station_capacity_kw: float = 100.0,
+                    current_adoption_rate: float = CURRENT_INDIA_EV_ADOPTION_RATE) -> dict:
+    """Section 4.6's "what-if all vehicles were EV" mode: `current_ev_vehicle_count`
+    is a real number pulled from a live simulation run (the twin's current EV
+    count for a scenario), not a static estimate. Since that count already
+    represents only the ~2% of total traffic that's EV today, it implies a
+    total on-road vehicle population of current_ev_vehicle_count /
+    current_adoption_rate - and "all vehicles were EV" means charging demand
+    for that entire implied population, not just today's EV slice."""
+    if current_adoption_rate <= 0:
+        raise ValueError("current_adoption_rate must be positive")
+    all_ev_multiplier = 1.0 / current_adoption_rate
+
+    report = sweep_density(
+        feeder_id, feeder_capacity_kw, current_ev_vehicle_count,
+        avg_charger_power_kw, simultaneous_charge_fraction, [1.0, all_ev_multiplier],
+    )
+    today, all_ev = report.results
+    additional_stations = recommend_additional_stations(
+        max(0.0, all_ev.simultaneous_load_kw - feeder_capacity_kw), station_capacity_kw
+    )
+    return {
+        "feeder_id": feeder_id,
+        "today_ev_vehicle_count": today.vehicle_count,
+        "today_load_kw": today.simultaneous_load_kw,
+        "all_ev_vehicle_count": all_ev.vehicle_count,
+        "all_ev_load_kw": all_ev.simultaneous_load_kw,
+        "all_ev_is_overloaded": all_ev.is_overloaded,
+        "additional_stations_needed": additional_stations,
+    }

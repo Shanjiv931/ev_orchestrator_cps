@@ -10,13 +10,18 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
+import httpx
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
+from app.config import settings
+from app.database import get_db
+from app.services.retention_job import run_retention_sweep
 from ml.blackout_resilience import CriticalLoad, plan_emergency_backup
 from ml.demand_forecast import ZONES, predict_sessions, train_and_evaluate
 from ml.emergency_queue import PriorityJumpTracker, QueuedRequest, insert_with_priority
-from ml.event_stress_test import recommend_additional_stations, sweep_density
+from ml.event_stress_test import recommend_additional_stations, sweep_density, what_if_all_ev
 from ml.recommendation import Candidate, Vehicle, rank_candidates
 from ml.solar_sync import recommend_charging_window
 from ml.v2g_dispatch import V2GVehicle, dispatch_v2g
@@ -182,3 +187,44 @@ def stress_test_sweep(payload: StressTestRequest) -> dict:
         "additional_capacity_needed_kw": report.additional_capacity_needed_kw,
         "recommended_additional_stations": additional_stations,
     }
+
+
+class WhatIfAllEvRequest(BaseModel):
+    scenario: str  # "city" | "corridor" - matches simulation/traci_bridge.py's --scenario
+    feeder_id: str
+    feeder_capacity_kw: float
+    avg_charger_power_kw: float
+    simultaneous_charge_fraction: float
+    station_capacity_kw: float = 100.0
+    current_adoption_rate: float = 0.02
+
+
+@router.post("/what-if/all-ev")
+async def what_if_all_ev_endpoint(payload: WhatIfAllEvRequest) -> dict:
+    """Pulls the real current EV count for a scenario from the live twin
+    (not a static estimate) and reports the real additional-capacity
+    number if every vehicle that count implies were charging, per
+    Section 4.6."""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{settings.twin_engine_http_url}/state/ev")
+    all_ev_state = response.json() if response.status_code == 200 else {}
+    current_ev_count = sum(
+        1 for v in all_ev_state.values() if v.get("scenario") == payload.scenario
+    )
+    return what_if_all_ev(
+        feeder_id=payload.feeder_id,
+        feeder_capacity_kw=payload.feeder_capacity_kw,
+        current_ev_vehicle_count=current_ev_count,
+        avg_charger_power_kw=payload.avg_charger_power_kw,
+        simultaneous_charge_fraction=payload.simultaneous_charge_fraction,
+        station_capacity_kw=payload.station_capacity_kw,
+        current_adoption_rate=payload.current_adoption_rate,
+    )
+
+
+@router.post("/admin/dpdp-retention-sweep")
+def dpdp_retention_sweep(db: Session = Depends(get_db)) -> dict:
+    """Admin-triggerable DPDP retention enforcement (Section 4.7) - a real
+    deployment would also run this on a schedule (see docs/security-notes.md)."""
+    erased_count = run_retention_sweep(db)
+    return {"users_erased": erased_count}

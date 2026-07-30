@@ -183,5 +183,41 @@ to have latency/error visibility, and it exists to be extended to the
 other services later if that becomes valuable, not because they're
 unimportant.
 
+## Phase 9 (docs)
+
+While finalizing docs, a real gap surfaced against Section 4.7: it
+explicitly says "write the retention job, don't just document the
+intent," but only the `consent_expiry`/`dpdp_consent_flag` columns
+existed - no job. Fixed in this phase:
+`backend/app/services/retention_job.py` does a real cascading erasure of
+every table referencing an expired user, callable as a script or via
+`POST /admin/dpdp-retention-sweep`, tested end-to-end. Documented in
+`docs/security-notes.md` alongside the MQTT/OCPP signing design.
+
+Also surfaced while reviewing the Section 11 checklist directly: the
+"what-if all vehicles were EV" mode (Section 4.6) wasn't actually built as
+its own thing - `stress-test/sweep` covers a related but different
+question (density spikes). Added `POST /what-if/all-ev`
+(`ml/event_stress_test.py::what_if_all_ev`): it pulls the real current EV
+count for a scenario from the live twin (not a static estimate), treats
+that as the ~2% of total traffic that's EV today (India's real approximate
+adoption rate, the same figure the build contract's own problem statement
+cites), extrapolates the implied total vehicle population, and reports a
+real additional-station number for that population all charging - verified
+live against the running stack (339 real simulated vehicles -> 16,950
+extrapolated -> a real computed overload and station count, not a
+hardcoded response).
+
+`docs/api-spec.yaml` is generated directly from the running backend's
+`/openapi.json` (converted to YAML) rather than hand-written, so it can
+never drift from the real endpoints - regenerate it after backend
+changes with the one-liner in this file's own git history rather than
+hand-editing it.
+
+This file (`out-of-scope.md`) itself has grown into the closest thing
+this repo has to a build log of judgment calls, not just a deferred-work
+list - that's an intentional reading of Section 2.7's instruction to
+record *why*, not just *what*, whenever a real tradeoff was made.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._
