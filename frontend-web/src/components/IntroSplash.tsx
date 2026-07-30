@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IntroScene } from "./3d/IntroScene";
 
 const SESSION_KEY = "meridiangrid_intro_seen";
-const AUTO_DISMISS_MS = 4200;
 
 const BRAND_LETTERS = "MeridianGrid".split("");
 
@@ -18,8 +17,7 @@ export function IntroSplash({ onDone }: { onDone: () => void }) {
       return;
     }
     setVisible(true);
-    const timer = setTimeout(dismiss, AUTO_DISMISS_MS);
-    return () => clearTimeout(timer);
+    // no auto-dismiss timer - stays until the user explicitly presses Skip
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -33,13 +31,10 @@ export function IntroSplash({ onDone }: { onDone: () => void }) {
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-50 bg-[#05070D] flex flex-col items-center justify-center cursor-pointer select-none"
+          className="fixed inset-0 z-50 bg-[#05070D] flex flex-col items-center justify-center select-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          onClick={dismiss}
-          role="button"
-          aria-label="Skip intro"
         >
           <div className="absolute inset-0">
             <IntroScene />
@@ -76,7 +71,7 @@ export function IntroSplash({ onDone }: { onDone: () => void }) {
               AI-orchestrated EV charging, mapped across India in real time.
             </motion.p>
             <motion.button
-              onClick={(e) => { e.stopPropagation(); dismiss(); }}
+              onClick={dismiss}
               className="mt-8 text-xs text-slate-500 hover:text-slate-300 underline underline-offset-4 cursor-pointer"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
