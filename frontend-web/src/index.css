@@ -84,3 +84,33 @@ h1, h2, h3, .font-display {
   border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
 }
+
+/* FloatingPathsBackground: pure CSS transform/opacity keyframes, not a JS
+   animation loop - only these two properties can run entirely on the
+   compositor thread, independent of React's render cycle and whatever the
+   main thread is doing to get a page's actual content on screen. A
+   per-frame JS-driven animation (the previous Framer Motion version,
+   animating stroke-dasharray/stroke-dashoffset - a paint-triggering
+   property on every single frame, across 36 elements) can never be
+   "independent" of page rendering, because it's competing with page
+   rendering for the same main thread. */
+@keyframes floating-paths-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-2%, 1.5%, 0) scale(1.03); }
+}
+
+@keyframes floating-paths-breathe {
+  0%, 100% { opacity: var(--fp-opacity-min); }
+  50% { opacity: var(--fp-opacity-max); }
+}
+
+.floating-paths-group {
+  animation: floating-paths-drift 40s ease-in-out infinite;
+  will-change: transform;
+}
+
+.floating-paths-line {
+  animation: floating-paths-breathe var(--fp-duration) ease-in-out infinite;
+  animation-delay: var(--fp-delay);
+  will-change: opacity;
+}
