@@ -21,6 +21,19 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
+      # Pending (not-yet-OTP-verified) registrations live in Redis, not
+      # Postgres - see backend/app/pending_registration.py - so the test
+      # suite now needs a real Redis to talk to, same as it already needs
+      # Postgres.
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,6 +48,8 @@ jobs:
             "CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSION IF NOT EXISTS timescaledb;"
       - name: Run backend tests
         working-directory: backend
+        env:
+          REDIS_URL: redis://localhost:6379/0
         run: pytest
 
   simulation-tests:
