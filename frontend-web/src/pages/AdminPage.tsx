@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
+import { SquaresFourIcon } from "@phosphor-icons/react";
 import { api } from "../api/client";
 import type { TwinFeederState } from "../api/types";
+import { GlassCard } from "../components/ui/GlassCard";
+import { Button } from "../components/ui/Button";
+import { Select } from "../components/ui/Input";
 
 interface ForecastPoint {
   hour: number;
@@ -16,6 +20,9 @@ interface StressTestResult {
   additional_capacity_needed_kw: number;
   recommended_additional_stations: number;
 }
+
+const CHART_TOOLTIP_STYLE = { background: "#0f1420", border: "1px solid rgba(148,163,184,0.2)", borderRadius: 8, fontSize: 12 };
+const AXIS_PROPS = { stroke: "#64748b", tick: { fill: "#94a3b8", fontSize: 11 } };
 
 export function AdminPage() {
   const { t } = useTranslation();
@@ -69,72 +76,73 @@ export function AdminPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-6">{t("admin.title")}</h1>
+      <div className="flex items-center gap-2 mb-6">
+        <SquaresFourIcon size={24} weight="duotone" className="text-emerald-400" />
+        <h1 className="font-display text-2xl font-bold">{t("admin.title")}</h1>
+      </div>
 
-      <section className="mb-8">
-        <h2 className="font-medium mb-2">{t("admin.demandForecast")}</h2>
-        <select value={selectedZone} onChange={(e) => setSelectedZone(e.target.value)}
-                className="border rounded-md px-2 py-1 mb-3 dark:bg-slate-900 dark:border-slate-700">
-          {zones.map((z) => <option key={z} value={z}>{z}</option>)}
-        </select>
+      <GlassCard className="mb-6">
+        <h2 className="font-medium mb-3">{t("admin.demandForecast")}</h2>
+        <Select value={selectedZone} onChange={(e) => setSelectedZone(e.target.value)} className="w-auto mb-3">
+          {zones.map((z) => <option key={z} value={z} className="bg-slate-900">{z}</option>)}
+        </Select>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={forecast}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="hour" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="predicted_sessions" fill="#059669" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" />
+              <XAxis dataKey="hour" {...AXIS_PROPS} />
+              <YAxis {...AXIS_PROPS} />
+              <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+              <Bar dataKey="predicted_sessions" fill="#10b981" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </section>
+      </GlassCard>
 
-      <section className="mb-8">
-        <h2 className="font-medium mb-2">{t("admin.gridStress")}</h2>
+      <div className="mb-6">
+        <h2 className="font-medium mb-3">{t("admin.gridStress")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {feeders.map((f) => (
-            <div key={f.feeder_id} className={`border rounded-lg p-3 ${f.is_overloaded ? "border-red-500" : "dark:border-slate-800"}`}>
+            <GlassCard key={f.feeder_id} className={f.is_overloaded ? "border-red-500/50" : ""}>
               <p className="font-medium text-sm">{f.feeder_zone}</p>
               <p className="text-xs text-slate-500">{f.current_load_kw.toFixed(0)} / {f.capacity_kw.toFixed(0)} kW</p>
-              <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 mt-2">
-                <div className={`h-2 rounded-full ${f.is_overloaded ? "bg-red-600" : "bg-emerald-600"}`}
+              <div className="w-full bg-white/10 rounded-full h-2 mt-2">
+                <div className={`h-2 rounded-full ${f.is_overloaded ? "bg-red-500" : "bg-emerald-500"}`}
                      style={{ width: `${Math.min(100, f.loading_percent)}%` }} />
               </div>
-              {f.is_rural_minigrid && <p className="text-xs text-amber-600 mt-1">Rural mini-grid</p>}
-              <button onClick={() => runStressTest(f)} disabled={stressBusy}
-                      className="mt-2 text-xs border rounded-md px-2 py-1 dark:border-slate-700 disabled:opacity-50">
+              {f.is_rural_minigrid && <p className="text-xs text-amber-400 mt-1">Rural mini-grid</p>}
+              <Button variant="ghost" onClick={() => runStressTest(f)} disabled={stressBusy} className="mt-2 !py-1 !px-2 text-xs">
                 {t("admin.runStressTest")}
-              </button>
-            </div>
+              </Button>
+            </GlassCard>
           ))}
         </div>
-      </section>
+      </div>
 
       {stressResult && (
-        <section className="border rounded-lg p-4 dark:border-slate-800">
+        <GlassCard>
           <h2 className="font-medium mb-2">{t("admin.stressTest")}: {stressResult.feeder_id}</h2>
-          <p className="text-sm">
-            Breaking point: density x{stressResult.breaking_point_multiplier ?? "n/a"} ·
-            Additional capacity needed: {stressResult.additional_capacity_needed_kw.toFixed(0)} kW ·
-            Recommended additional stations: <strong>{stressResult.recommended_additional_stations}</strong>
+          <p className="text-sm text-slate-400">
+            Breaking point: density x{stressResult.breaking_point_multiplier ?? "n/a"} &middot;
+            {" "}Additional capacity needed: {stressResult.additional_capacity_needed_kw.toFixed(0)} kW &middot;
+            {" "}Recommended additional stations: <strong className="text-slate-200">{stressResult.recommended_additional_stations}</strong>
           </p>
           <div className="h-48 mt-3">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stressResult.results}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="density_multiplier" label={{ value: "density x", position: "insideBottom", offset: -2 }} />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" />
+                <XAxis dataKey="density_multiplier" label={{ value: "density x", position: "insideBottom", offset: -2, fill: "#64748b" }} {...AXIS_PROPS} />
+                <YAxis {...AXIS_PROPS} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                 <Bar dataKey="simultaneous_load_kw">
                   {stressResult.results.map((r, i) => (
-                    <Cell key={i} fill={r.is_overloaded ? "#dc2626" : "#059669"} />
+                    <Cell key={i} fill={r.is_overloaded ? "#ef4444" : "#10b981"} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </section>
+        </GlassCard>
       )}
     </div>
   );

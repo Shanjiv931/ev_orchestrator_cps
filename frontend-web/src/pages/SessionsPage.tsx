@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ListChecksIcon, LeafIcon, LightningIcon, QrCodeIcon } from "@phosphor-icons/react";
 import { api } from "../api/client";
 import type { ChargingSession, Vehicle } from "../api/types";
+import { GlassCard } from "../components/ui/GlassCard";
+import { Button } from "../components/ui/Button";
+import { Select } from "../components/ui/Input";
 
 interface PaymentInfo {
   reference: string;
@@ -64,66 +68,65 @@ export function SessionsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">{t("sessions.title")}</h1>
+      <div className="flex items-center gap-2 mb-4">
+        <ListChecksIcon size={24} weight="duotone" className="text-emerald-400" />
+        <h1 className="font-display text-2xl font-bold">{t("sessions.title")}</h1>
+      </div>
 
       {carbonSummary && (
-        <div className="mb-4 text-sm bg-emerald-50 dark:bg-emerald-950 rounded-lg px-3 py-2 inline-block">
+        <div className="mb-4 text-sm bg-emerald-500/10 border border-emerald-400/20 rounded-lg px-3 py-2 inline-flex items-center gap-2">
+          <LeafIcon size={16} weight="fill" className="text-emerald-400" />
           {t("sessions.carbonSummary")}: <strong>{carbonSummary.total_co2_avoided_kg} kg CO2</strong>
         </div>
       )}
 
       {vehicles.length > 0 && (
-        <div className="flex flex-wrap items-center gap-3 mb-6 bg-slate-100 dark:bg-slate-900 p-3 rounded-lg">
-          <select value={selectedVehicleId} onChange={(e) => setSelectedVehicleId(e.target.value)}
-                  className="border rounded-md px-2 py-1 dark:bg-slate-800 dark:border-slate-700">
-            {vehicles.map((v) => <option key={v.id} value={v.id}>{v.vehicle_class} - {v.connector_type}</option>)}
-          </select>
-          <label className="flex items-center gap-1 text-sm">
+        <GlassCard className="flex flex-wrap items-center gap-3 mb-6">
+          <Select value={selectedVehicleId} onChange={(e) => setSelectedVehicleId(e.target.value)} className="w-auto">
+            {vehicles.map((v) => (
+              <option key={v.id} value={v.id} className="bg-slate-900">
+                {v.brand ? `${v.brand} ${v.vehicle_model}` : `${v.vehicle_class} - ${v.connector_type}`}
+              </option>
+            ))}
+          </Select>
+          <label className="flex items-center gap-1.5 text-sm text-slate-300">
             <input type="checkbox" checked={isEmergency} onChange={(e) => setIsEmergency(e.target.checked)} />
             {t("sessions.emergency")}
           </label>
-          <button onClick={startSession} className="bg-emerald-600 text-white rounded-md px-3 py-1.5 text-sm">
-            {t("sessions.start")}
-          </button>
-        </div>
+          <Button onClick={startSession}>{t("sessions.start")}</Button>
+        </GlassCard>
       )}
 
       {payment && (
-        <div className="border-2 border-emerald-500 rounded-lg p-4 mb-6 max-w-sm">
-          <p className="text-xs uppercase tracking-wide text-amber-600 font-semibold mb-1">{t("sessions.payNote")}</p>
-          <p className="text-sm mb-2">₹{payment.amount_rupees.toFixed(2)} · {payment.reference}</p>
-          <p className="text-xs break-all text-slate-500 mb-2 font-mono">{payment.qr_payload}</p>
+        <GlassCard glow="brand" className="mb-6 max-w-sm">
+          <p className="text-xs uppercase tracking-wide text-amber-400 font-semibold mb-1 flex items-center gap-1">
+            <QrCodeIcon size={14} /> {payment.note}
+          </p>
+          <p className="text-sm mb-2">₹{payment.amount_rupees.toFixed(2)} &middot; {payment.reference}</p>
+          <p className="text-xs break-all text-slate-500 mb-3 font-mono bg-black/20 rounded p-2">{payment.qr_payload}</p>
           <p className="text-sm mb-2">Status: <strong>{payment.status}</strong></p>
-          {payment.status === "pending" && (
-            <button onClick={confirmPayment} className="bg-emerald-600 text-white rounded-md px-3 py-1.5 text-sm">
-              {t("sessions.pay")}
-            </button>
-          )}
-        </div>
+          {payment.status === "pending" && <Button onClick={confirmPayment}>{t("sessions.pay")}</Button>}
+        </GlassCard>
       )}
 
       <div className="space-y-3">
         {sessions.map((s) => (
-          <div key={s.id} className="border rounded-lg p-3 flex flex-wrap items-center justify-between gap-2 dark:border-slate-800">
+          <GlassCard key={s.id} className="flex flex-wrap items-center justify-between gap-2">
             <div className="text-sm">
               <span className="font-mono text-xs text-slate-500">{s.id.slice(0, 8)}</span>
-              {s.is_emergency_priority && <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">🚨 {t("sessions.emergency")}</span>}
-              <p>{t("sessions.energy")}: {s.energy_kwh} · {t("sessions.cost")}: ₹{s.cost}</p>
+              {s.is_emergency_priority && (
+                <span className="ml-2 text-xs bg-red-500/15 text-red-300 border border-red-400/30 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                  <LightningIcon size={10} weight="fill" /> {t("sessions.emergency")}
+                </span>
+              )}
+              <p>{t("sessions.energy")}: {s.energy_kwh} &middot; {t("sessions.cost")}: ₹{s.cost}</p>
               <p className="text-slate-500">{s.end_time ? "Completed" : "In progress"}</p>
             </div>
             <div className="flex gap-2">
-              {!s.end_time && (
-                <button onClick={() => completeSession(s.id)} className="text-sm border rounded-md px-3 py-1.5 dark:border-slate-700">
-                  {t("sessions.complete")}
-                </button>
-              )}
-              {s.end_time && (
-                <button onClick={() => initiatePayment(s.id)} className="text-sm border rounded-md px-3 py-1.5 dark:border-slate-700">
-                  {t("sessions.pay")}
-                </button>
-              )}
+              {!s.end_time && <Button variant="ghost" onClick={() => completeSession(s.id)}>{t("sessions.complete")}</Button>}
+              {s.end_time && <Button variant="ghost" onClick={() => initiatePayment(s.id)}>{t("sessions.pay")}</Button>}
             </div>
-          </div>
+          </GlassCard>
         ))}
       </div>
     </div>

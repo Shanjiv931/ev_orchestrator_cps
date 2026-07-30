@@ -1,116 +1,57 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { BatteryChargingIcon, SunIcon } from "@phosphor-icons/react";
 import { api } from "../api/client";
-import type { Station, Vehicle } from "../api/types";
-import { isStaleVerification, safetyBadgeClasses } from "../lib/format";
-
-interface RankedResult {
-  candidate_id: string;
-  distance_km: number;
-  staleness_hours: number;
-  score: number;
-}
+import type { Station } from "../api/types";
+import { GlassCard } from "../components/ui/GlassCard";
+import { safetyBadgeClasses } from "../lib/format";
 
 export function StationsPage() {
-  const { t } = useTranslation();
   const [stations, setStations] = useState<Station[]>([]);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [selectedVehicleId, setSelectedVehicleId] = useState<string>("");
-  const [isSolo, setIsSolo] = useState(false);
-  const [ranked, setRanked] = useState<RankedResult[] | null>(null);
+  const [filter, setFilter] = useState<string>("all");
 
   useEffect(() => {
     api.get<Station[]>("/stations").then(setStations).catch(() => setStations([]));
-    api.get<Vehicle[]>("/vehicles").then((vs) => {
-      setVehicles(vs);
-      if (vs.length > 0) setSelectedVehicleId(vs[0].id);
-    }).catch(() => setVehicles([]));
   }, []);
 
-  async function findBestStation() {
-    const vehicle = vehicles.find((v) => v.id === selectedVehicleId);
-    if (!vehicle) return;
-
-    const candidates = stations.flatMap((station) =>
-      station.chargers.map((charger) => ({
-        id: charger.id,
-        kind: "charge" as const,
-        connector_type: vehicle.connector_type,
-        lat: station.lat,
-        lon: station.lon,
-        predicted_wait_minutes: charger.status === "occupied" ? 15 : 0,
-        cost_rupees: 20,
-        congestion_risk: charger.status === "occupied" ? 0.6 : 0.1,
-        last_verified_at: charger.last_verified_at,
-        reported_status: charger.status,
-        safety_score: station.safety_score,
-      }))
-    );
-
-    const results = await api.post<RankedResult[]>("/recommendations", {
-      vehicle: { connector_type: vehicle.connector_type, is_pluggable: vehicle.is_pluggable },
-      candidates,
-      user_lat: 12.9716,
-      user_lon: 77.5946,
-      hour_of_day: new Date().getHours(),
-      is_solo_traveler: isSolo,
-    });
-    setRanked(results);
-  }
+  const types = ["all", ...new Set(stations.map((s) => s.station_type))];
+  const visible = filter === "all" ? stations : stations.filter((s) => s.station_type === filter);
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">{t("stations.title")}</h1>
+      <div className="flex items-center gap-2 mb-4">
+        <BatteryChargingIcon size={24} weight="duotone" className="text-emerald-400" />
+        <h1 className="font-display text-2xl font-bold">Charging & swap stations</h1>
+      </div>
 
-      {vehicles.length > 0 && (
-        <div className="flex flex-wrap items-center gap-3 mb-6 bg-slate-100 dark:bg-slate-900 p-3 rounded-lg">
-          <select value={selectedVehicleId} onChange={(e) => setSelectedVehicleId(e.target.value)}
-                  className="border rounded-md px-2 py-1 dark:bg-slate-800 dark:border-slate-700">
-            {vehicles.map((v) => (
-              <option key={v.id} value={v.id}>{v.vehicle_class} - {v.connector_type}</option>
-            ))}
-          </select>
-          <label className="flex items-center gap-1 text-sm">
-            <input type="checkbox" checked={isSolo} onChange={(e) => setIsSolo(e.target.checked)} />
-            {t("stations.solo")}
-          </label>
-          <button onClick={findBestStation} className="bg-emerald-600 text-white rounded-md px-3 py-1.5 text-sm">
-            {t("stations.recommend")}
+      <div className="flex gap-2 mb-5 flex-wrap">
+        {types.map((type) => (
+          <button key={type} onClick={() => setFilter(type)}
+                  className={`text-xs px-3 py-1.5 rounded-full border cursor-pointer transition-colors ${
+                    filter === type ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-300" : "border-white/10 text-slate-400"
+                  }`}>
+            {type === "all" ? "All" : type.replace(/_/g, " ")}
           </button>
-        </div>
-      )}
-
-      {ranked && (
-        <div className="mb-6">
-          {ranked.length === 0 ? (
-            <p className="text-sm text-slate-500">{t("stations.noResults")}</p>
-          ) : (
-            <ol className="list-decimal list-inside text-sm space-y-1">
-              {ranked.map((r) => (
-                <li key={r.candidate_id}>
-                  {t("stations.distanceKm", { km: r.distance_km.toFixed(1) })} - score {r.score.toFixed(1)}
-                  {isStaleVerification(r.staleness_hours) && <span className="text-amber-600"> (stale verification)</span>}
-                </li>
-              ))}
-            </ol>
-          )}
-        </div>
-      )}
+        ))}
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {stations.map((station) => (
-          <div key={station.id} className="border rounded-lg p-4 dark:border-slate-800">
+        {visible.map((station) => (
+          <GlassCard key={station.id} hoverLift>
             <div className="flex justify-between items-start">
-              <h2 className="font-medium">{station.station_type}</h2>
+              <h2 className="font-medium capitalize">{station.station_type.replace(/_/g, " ")}</h2>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${safetyBadgeClasses(station.safety_score)}`}>
-                {t("stations.safety")}: {(station.safety_score * 100).toFixed(0)}%
+                {(station.safety_score * 100).toFixed(0)}%
               </span>
             </div>
-            <p className="text-sm text-slate-500 mt-1">
-              {t("stations.chargers")}: {station.chargers.length} · {t("stations.swapSlots")}: {station.swap_slots.length}
+            <p className="text-sm text-slate-400 mt-1.5">
+              Chargers: {station.chargers.length} &middot; Swap slots: {station.swap_slots.length}
             </p>
-            {station.has_solar && <p className="text-xs text-amber-600 mt-1">☀ Solar-equipped</p>}
-          </div>
+            {station.has_solar && (
+              <p className="text-xs text-amber-400 mt-1.5 flex items-center gap-1">
+                <SunIcon size={13} weight="fill" /> Solar-equipped
+              </p>
+            )}
+          </GlassCard>
         ))}
       </div>
     </div>

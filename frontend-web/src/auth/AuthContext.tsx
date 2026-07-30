@@ -7,6 +7,9 @@ interface AuthContextValue {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, persona: Persona) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
+  loginWithSimulatedApple: (simulatedAppleId: string, name: string) => Promise<void>;
+  updateLocation: (locationState: string, locationCity: string, lat: number, lon: number) => Promise<void>;
   logout: () => void;
 }
 
@@ -45,13 +48,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }, [loadCurrentUser]);
 
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const { access_token } = await api.post<{ access_token: string }>("/oauth/google", { id_token: idToken });
+    setToken(access_token);
+    await loadCurrentUser();
+  }, [loadCurrentUser]);
+
+  const loginWithSimulatedApple = useCallback(async (simulatedAppleId: string, name: string) => {
+    const { access_token } = await api.post<{ access_token: string }>("/oauth/apple/simulated", {
+      simulated_apple_id: simulatedAppleId, name,
+    });
+    setToken(access_token);
+    await loadCurrentUser();
+  }, [loadCurrentUser]);
+
+  const updateLocation = useCallback(async (locationState: string, locationCity: string, lat: number, lon: number) => {
+    const updated = await api.patch<User>("/auth/me/location", {
+      location_state: locationState, location_city: locationCity, lat, lon,
+    });
+    setUser(updated);
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{
+      user, loading, login, register, loginWithGoogle, loginWithSimulatedApple, updateLocation, logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );

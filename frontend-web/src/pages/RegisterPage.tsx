@@ -1,10 +1,18 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { useAuth } from "../auth/AuthContext";
 import type { Persona } from "../api/types";
+import { GlassCard } from "../components/ui/GlassCard";
+import { Button } from "../components/ui/Button";
+import { Input, Select, FieldLabel } from "../components/ui/Input";
+import { GoogleSignInButton } from "../components/GoogleSignInButton";
+import { AppleSignInButtonSimulated } from "../components/AppleSignInButtonSimulated";
 
-const PERSONAS: Persona[] = ["individual_driver", "fleet_operator", "housing_society_resident", "city_admin"];
+// city_admin is deliberately excluded - nobody can self-register as admin,
+// see backend app/routers/admin.py's approval workflow.
+const PERSONAS: Persona[] = ["individual_driver", "fleet_operator", "housing_society_resident"];
 
 export function RegisterPage() {
   const { t } = useTranslation();
@@ -23,7 +31,7 @@ export function RegisterPage() {
     setSubmitting(true);
     try {
       await register(name, email, password, persona);
-      navigate("/map");
+      navigate("/onboarding/location");
     } catch {
       setError(t("auth.error"));
     } finally {
@@ -32,33 +40,63 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto mt-16">
-      <h1 className="text-2xl font-semibold mb-6">{t("auth.register")}</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input required placeholder={t("auth.name")} value={name} onChange={(e) => setName(e.target.value)}
-               className="border rounded-md px-3 py-2 dark:bg-slate-900 dark:border-slate-700" />
-        <input type="email" required placeholder={t("auth.email")} value={email}
-               onChange={(e) => setEmail(e.target.value)}
-               className="border rounded-md px-3 py-2 dark:bg-slate-900 dark:border-slate-700" />
-        <input type="password" required placeholder={t("auth.password")} value={password}
-               onChange={(e) => setPassword(e.target.value)}
-               className="border rounded-md px-3 py-2 dark:bg-slate-900 dark:border-slate-700" />
-        <label className="text-sm text-slate-600 dark:text-slate-400">{t("auth.persona")}</label>
-        <select value={persona} onChange={(e) => setPersona(e.target.value as Persona)}
-                className="border rounded-md px-3 py-2 dark:bg-slate-900 dark:border-slate-700">
-          {PERSONAS.map((p) => (
-            <option key={p} value={p}>{t(`persona.${p}`)}</option>
-          ))}
-        </select>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-        <button type="submit" disabled={submitting}
-                className="bg-emerald-600 text-white rounded-md px-3 py-2 disabled:opacity-50">
-          {t("auth.submit")}
-        </button>
-      </form>
-      <p className="mt-4 text-sm">
-        {t("auth.haveAccount")} <Link to="/login" className="text-emerald-600 underline">{t("auth.login")}</Link>
-      </p>
+    <div className="min-h-screen flex items-center justify-center px-4 py-10">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-sm"
+      >
+        <div className="text-center mb-6">
+          <h1 className="font-display text-2xl font-bold bg-gradient-to-br from-emerald-300 to-cyan-400 bg-clip-text text-transparent">
+            MeridianGrid
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">{t("auth.register")}</p>
+        </div>
+
+        <GlassCard className="p-6">
+          <div className="flex flex-col gap-3 mb-5">
+            <GoogleSignInButton onDone={() => navigate("/onboarding/location")} onError={setError} />
+            <AppleSignInButtonSimulated onDone={() => navigate("/onboarding/location")} onError={setError} />
+          </div>
+
+          <div className="flex items-center gap-3 my-4">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-xs text-slate-500">or</span>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <Input required placeholder={t("auth.name")} value={name} onChange={(e) => setName(e.target.value)} />
+            <Input type="email" required placeholder={t("auth.email")} value={email}
+                   onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+            <Input type="password" required placeholder={t("auth.password")} value={password}
+                   onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+            <div>
+              <FieldLabel>{t("auth.persona")}</FieldLabel>
+              <Select value={persona} onChange={(e) => setPersona(e.target.value as Persona)}>
+                {PERSONAS.map((p) => (
+                  <option key={p} value={p} className="bg-slate-900">{t(`persona.${p}`)}</option>
+                ))}
+              </Select>
+              <p className="text-xs text-slate-500 mt-1">
+                Need city admin access? Request it after signing up.
+              </p>
+            </div>
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+            <Button type="submit" fullWidth disabled={submitting}>
+              {t("auth.submit")}
+            </Button>
+          </form>
+        </GlassCard>
+
+        <p className="mt-5 text-center text-sm text-slate-500">
+          {t("auth.haveAccount")}{" "}
+          <Link to="/login" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4">
+            {t("auth.login")}
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 }

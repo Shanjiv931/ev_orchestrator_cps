@@ -33,11 +33,11 @@ export default defineConfig({
         type: 'module',
       },
       manifest: {
-        name: 'EV Charging Orchestrator',
-        short_name: 'EV Orchestrator',
+        name: 'MeridianGrid',
+        short_name: 'MeridianGrid',
         description: 'AI-driven EV charging orchestration for India',
-        theme_color: '#0f172a',
-        background_color: '#0f172a',
+        theme_color: '#05070D',
+        background_color: '#05070D',
         display: 'standalone',
         start_url: '/',
         icons: [

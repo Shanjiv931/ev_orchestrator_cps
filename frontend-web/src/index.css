@@ -1,7 +1,28 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+
+  --color-bg: #05070d;
+  --color-bg-elevated: #0b0f1a;
+  --color-surface: #0f1420;
+  --color-surface-hover: #141a29;
+  --color-border-subtle: rgba(148, 163, 184, 0.12);
+  --color-border-strong: rgba(148, 163, 184, 0.24);
+
+  --color-brand: #10b981;
+  --color-brand-glow: #34d399;
+  --color-electric: #22d3ee;
+  --color-own-vehicle: #ef4444;
+  --color-warn: #f59e0b;
+
+  --shadow-glow-brand: 0 0 32px -4px rgba(16, 185, 129, 0.45);
+  --shadow-glow-electric: 0 0 32px -4px rgba(34, 211, 238, 0.4);
+}
+
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
 html, body, #root {
@@ -10,11 +31,56 @@ html, body, #root {
 }
 
 body {
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
-  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at 20% -10%, rgba(16, 185, 129, 0.12), transparent 45%),
+              radial-gradient(circle at 100% 0%, rgba(34, 211, 238, 0.08), transparent 40%),
+              var(--color-bg);
+  color: #e2e8f0;
+  min-height: 100dvh;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.35);
+}
+
+/* Slim, unobtrusive scrollbar that still respects dark mode */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.glass-panel {
+  background: rgba(15, 20, 32, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .leaflet-container {
   width: 100%;
   height: 100%;
+  background: var(--color-bg-elevated) !important;
+}
+
+/* Restyle Leaflet's default light popup chrome to match the dark theme */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: var(--color-surface);
+  color: #e2e8f0;
+}
+.leaflet-popup-content-wrapper {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
 }

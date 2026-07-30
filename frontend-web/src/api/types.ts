@@ -7,6 +7,11 @@ export interface User {
   persona: Persona;
   dpdp_consent_flag: boolean;
   consent_expiry: string | null;
+  auth_provider: "password" | "google" | "apple-simulated";
+  location_state: string | null;
+  location_city: string | null;
+  lat: number | null;
+  lon: number | null;
 }
 
 export interface Vehicle {
@@ -17,6 +22,46 @@ export interface Vehicle {
   battery_chemistry: string;
   is_pluggable: boolean;
   fleet_depot_id: string | null;
+  brand: string | null;
+  vehicle_model: string | null;
+  battery_capacity_kwh: number | null;
+  color_hex: string | null;
+  is_paired: boolean;
+}
+
+export interface CatalogEntry {
+  brand: string;
+  vehicle_model: string;
+  vehicle_class: "2W" | "3W" | "4W";
+  connector_type: string;
+  battery_chemistry: string;
+  battery_capacity_kwh: number;
+  is_pluggable: boolean;
+  color_hex: string;
+}
+
+export interface VehiclePairingResponse {
+  pairing_code: string;
+  vehicle_id: string;
+}
+
+export interface VehicleLiveTelemetry {
+  vehicle_id: string;
+  is_simulated: boolean;
+  battery_pct: number;
+  is_charging: boolean;
+  range_km: number;
+  odometer_km: number;
+  last_updated: string;
+}
+
+export interface AdminRequest {
+  id: string;
+  user_id: string;
+  status: "pending" | "approved" | "rejected";
+  requested_at: string;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
 }
 
 export interface Charger {

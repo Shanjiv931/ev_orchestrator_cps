@@ -4,16 +4,22 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { Layout } from "./components/Layout";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { OnboardingLocationPage } from "./pages/OnboardingLocationPage";
 import { MapPage } from "./pages/MapPage";
 import { StationsPage } from "./pages/StationsPage";
 import { VehiclesPage } from "./pages/VehiclesPage";
 import { SessionsPage } from "./pages/SessionsPage";
 import { AdminPage } from "./pages/AdminPage";
+import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
+import { AdminApprovalsPage } from "./pages/admin/AdminApprovalsPage";
+import { StationHealthPage } from "./pages/admin/StationHealthPage";
+import { Station3DPage } from "./pages/admin/Station3DPage";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-500">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+  if (user.lat === null) return <Navigate to="/onboarding/location" replace />;
   return <>{children}</>;
 }
 
@@ -31,6 +37,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/onboarding/location" element={<OnboardingLocationPage />} />
       <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<DefaultRoute />} />
         <Route path="map" element={<MapPage />} />
@@ -38,6 +45,10 @@ function AppRoutes() {
         <Route path="vehicles" element={<VehiclesPage />} />
         <Route path="sessions" element={<SessionsPage />} />
         <Route path="admin" element={<AdminPage />} />
+        <Route path="admin/users" element={<AdminUsersPage />} />
+        <Route path="admin/approvals" element={<AdminApprovalsPage />} />
+        <Route path="admin/station-health" element={<StationHealthPage />} />
+        <Route path="admin/stations/:stationId/3d" element={<Station3DPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
