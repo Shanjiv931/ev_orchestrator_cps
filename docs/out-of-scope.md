@@ -152,5 +152,14 @@ real backend behavior already tested in Phase 6). A richer visual
 treatment (e.g. a red safety badge, a queue-position indicator) is
 possible polish, not a functional gap.
 
+Docker Desktop's Windows bind mount doesn't reliably forward file-change
+events into the container, so Vite's default `chokidar` watcher can miss
+edits entirely - no error, just silently stale HMR (a real instance of
+this: a station safety-score badge's contrast fix was edited, tests and
+`npm run build` both passed against the edited file, but the running dev
+container kept serving the pre-edit version until `server.watch.usePolling`
+was added to `vite.config.ts`). Anyone developing on Windows should expect
+this and know the fix already exists in the committed config.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

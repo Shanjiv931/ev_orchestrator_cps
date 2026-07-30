@@ -8,6 +8,13 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   server: {
     host: true,
+    // Docker Desktop's Windows bind mount doesn't reliably forward inotify
+    // events into the container, so chokidar's default watcher misses file
+    // changes silently (no error, just stale HMR). Polling works around it.
+    watch: {
+      usePolling: true,
+      interval: 300,
+    },
   },
   plugins: [
     react(),

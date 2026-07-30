@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../api/client";
 import type { Station, Vehicle } from "../api/types";
-import { isStaleVerification } from "../lib/format";
+import { isStaleVerification, safetyBadgeClasses } from "../lib/format";
 
 interface RankedResult {
   candidate_id: string;
@@ -102,8 +102,7 @@ export function StationsPage() {
           <div key={station.id} className="border rounded-lg p-4 dark:border-slate-800">
             <div className="flex justify-between items-start">
               <h2 className="font-medium">{station.station_type}</h2>
-              <span className="text-xs px-2 py-0.5 rounded-full"
-                    style={{ background: station.safety_score >= 0.7 ? "#dcfce7" : "#fef3c7" }}>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${safetyBadgeClasses(station.safety_score)}`}>
                 {t("stations.safety")}: {(station.safety_score * 100).toFixed(0)}%
               </span>
             </div>
