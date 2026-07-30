@@ -31,7 +31,11 @@ class Settings(BaseSettings):
     # Seeded once at startup if no admin exists yet - see app/seed.py. Change
     # these via .env before first boot; printed to the backend log once so
     # you're not locked out.
-    admin_seed_email: str = "admin@meridiangrid.local"
+    # ".local" is a special-use domain that email-validator (used by every
+    # EmailStr field, including LoginRequest) rejects outright - the seeded
+    # admin could never actually log in through the real /auth/login
+    # endpoint with the old default. ".app" is a real, registered gTLD.
+    admin_seed_email: str = "admin@meridiangrid.app"
     admin_seed_password: str = "change-me-admin-2026"
     admin_seed_name: str = "MeridianGrid Admin"
 
