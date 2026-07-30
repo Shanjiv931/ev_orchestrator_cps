@@ -110,5 +110,47 @@ attributes (opted_in, v2g_capable) don't exist in the Section 8 schema -
 wiring these to persistent state is Phase 7 work, once the frontend
 defines what a real request/response cycle for these features looks like.
 
+## Phase 7 (frontend)
+
+`react-router-dom` is on the latest 7.x despite `npm audit` flagging a high
+severity advisory (GHSA-qwww-vcr4-c8h2) in that range: the advisory is
+specifically a CSRF bypass in RSC (React Server Components) *mode*. This
+app is a plain client-side Vite SPA using `createBrowserRouter`-style
+routing with no RSC, no framework data mode, no server actions - the
+vulnerable code path doesn't exist in how this app uses the library.
+Downgrading to the one non-flagged version (7.11.0) turned out to
+re-trigger a *different* advisory in the opposite direction when tested,
+suggesting the two advisories' ranges don't leave a clean gap; latest was
+judged the better tradeoff (most bug fixes, inapplicable CVE) over an
+older version with its own flagged issues.
+
+`vite-plugin-pwa` (and transitively `workbox-build`) also has flagged
+dev-time-only dependencies (old `rollup-plugin-off-main-thread`,
+`brace-expansion`, `ejs`, `filelist`, `jake`, `minimatch`). These run only
+during `vite build`/`npm run dev`, never ship to the browser bundle, and
+the only realistic exploit path requires already controlling the dev
+machine's build inputs - accepted rather than forcing a major-version
+downgrade of the PWA plugin for a local, zero-cost academic project.
+
+The DB-backed `stations`/`chargers` (Phase 4 schema, what the frontend
+renders as static infrastructure) and the simulation layer's own
+`registry.py` stations (Phase 2, what actually publishes live MQTT
+telemetry) are two independent datasets with no shared identifier - the
+frontend was seeded with a handful of demo stations via the API for a
+working UI, but their `chargers[].status` won't reflect the simulator's
+live per-charger state the way `/twin/feeder` genuinely does for grid
+load. Unifying them (e.g. a sync job, or having the simulator write
+through the backend's own CRUD instead of only MQTT) is real integration
+work for a future pass, not required by the Section 11 checklist as
+written.
+
+No frontend equivalent of "safety-score-driven ranking flip" or
+"emergency-priority queue jump" has its own dedicated UI beyond what
+`StationsPage`/`SessionsPage` already expose (a checkbox for
+solo-traveler context and emergency priority, respectively, both wired to
+real backend behavior already tested in Phase 6). A richer visual
+treatment (e.g. a red safety badge, a queue-position indicator) is
+possible polish, not a functional gap.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

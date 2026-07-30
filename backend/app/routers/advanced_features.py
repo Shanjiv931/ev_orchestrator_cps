@@ -14,6 +14,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from ml.blackout_resilience import CriticalLoad, plan_emergency_backup
+from ml.demand_forecast import ZONES, predict_sessions, train_and_evaluate
 from ml.emergency_queue import PriorityJumpTracker, QueuedRequest, insert_with_priority
 from ml.event_stress_test import recommend_additional_stations, sweep_density
 from ml.recommendation import Candidate, Vehicle, rank_candidates
@@ -26,6 +27,30 @@ router = APIRouter(tags=["advanced-features"])
 # A production deployment would key these per station/swap-point in Redis
 # (twin-engine already owns that store) rather than backend process memory.
 _priority_jump_trackers: dict[str, PriorityJumpTracker] = {}
+
+# Trained once per process (XGBoost fit takes a couple of seconds); a real
+# deployment would retrain on a schedule against real session history
+# instead of on first request against synthetic history.
+_demand_model_cache: dict = {}
+
+
+def _get_demand_model():
+    if "model" not in _demand_model_cache:
+        _demand_model_cache["model"] = train_and_evaluate()
+    return _demand_model_cache["model"]
+
+
+@router.get("/demand-forecast/zones")
+def list_forecast_zones() -> list[str]:
+    return ZONES
+
+
+@router.get("/demand-forecast/predict")
+def demand_forecast_predict(zone: str, hour: int, day_of_week: int, weather: int = 0) -> dict:
+    result = _get_demand_model()
+    predicted = predict_sessions(result["model"], zone, hour, day_of_week, weather)
+    return {"zone": zone, "hour": hour, "day_of_week": day_of_week, "weather": weather,
+            "predicted_sessions": round(predicted, 2), "model_mae": round(result["mae"], 3)}
 
 
 class V2GVehicleIn(BaseModel):

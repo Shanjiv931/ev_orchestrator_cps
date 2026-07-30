@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 60 * 24
     twin_engine_http_url: str = "http://twin-engine:8100"
     twin_engine_ws_url: str = "ws://twin-engine:8100/ws"
+    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
 
 settings = Settings()

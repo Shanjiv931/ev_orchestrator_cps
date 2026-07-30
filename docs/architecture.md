@@ -201,6 +201,36 @@ rather than as an always-running compose service, matching Section 5.6's
 "admin-triggerable disaster scenario" framing:
 `docker compose run --rm sim-station python event_stress_sim.py --station-id <id> --density-multiplier 5 --burst-minutes 30`.
 
+## Frontend (`frontend-web/`)
+
+React 19 + TypeScript + Vite, Tailwind CSS v4, react-router-dom, react-i18next
+(English + Hindi, key-parity enforced by a test), Leaflet/react-leaflet for
+the live map, Recharts for the admin dashboard, and `vite-plugin-pwa` for
+offline-first behavior (`NetworkFirst` caching on `/stations`, `/feeders`,
+`/twin/*` - the last-known station/feeder list stays available read-only
+with no network, per Section 5.8).
+
+The frontend talks only to the backend - `twin-engine` stays internal-only.
+Live data (EV positions, feeder load) comes over the backend's `/ws/live`
+relay; static data (stations, vehicles, sessions) over REST.
+
+Persona-based default views (Section 4.1): `city_admin` lands on `/admin`,
+`fleet_operator` on `/vehicles`, everyone else on `/map` - a real routing
+difference, not a theme swap. The nav bar itself also differs by persona
+(admins don't see "My Vehicles"/"Sessions"; non-admins don't see "City
+Admin").
+
+Verified end-to-end against the live stack in the browser, not just built:
+register → add vehicle → start/complete a session → carbon ledger entry
+appears → simulated UPI payment → confirm. Separately as `city_admin`:
+demand-forecast chart, live grid-stress view (real feeder data flowing
+sim → MQTT → twin-engine → backend → frontend), and the mass-gathering
+stress-test trigger, all producing real numbers from real backend calls.
+
+A real bug surfaced during this verification and was fixed: the backend
+had no CORS middleware, so the browser's preflight `OPTIONS` request to
+`/auth/register` failed with 405 before a single form ever worked.
+
 ## Data flow guarantee
 
 Twin state must reflect the underlying MQTT message within 1 second in all
