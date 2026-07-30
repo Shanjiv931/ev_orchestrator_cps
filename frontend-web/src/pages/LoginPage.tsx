@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useAuth } from "../auth/AuthContext";
+import { ApiError } from "../api/client";
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
@@ -26,8 +27,14 @@ export function LoginPage() {
     try {
       await login(email, password);
       navigate("/");
-    } catch {
-      setError(t("auth.error"));
+    } catch (err) {
+      console.error("Login failed:", err);
+      // ApiError carries the backend's own message (e.g. "invalid email or
+      // password") - safe to show directly. Anything else (network/CORS
+      // failure before a response even comes back) gets a distinct message
+      // instead of the same generic string, so a connectivity problem
+      // doesn't look identical to a wrong password.
+      setError(err instanceof ApiError ? err.message : "Couldn't reach the server - check your connection and try again");
     } finally {
       setSubmitting(false);
     }

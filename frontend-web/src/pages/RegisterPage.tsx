@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useAuth } from "../auth/AuthContext";
+import { ApiError } from "../api/client";
 import type { Persona } from "../api/types";
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
@@ -31,8 +32,9 @@ export function RegisterPage() {
     try {
       await register(name, email, password, persona);
       navigate("/verify-otp");
-    } catch {
-      setError(t("auth.error"));
+    } catch (err) {
+      console.error("Registration failed:", err);
+      setError(err instanceof ApiError ? err.message : "Couldn't reach the server - check your connection and try again");
     } finally {
       setSubmitting(false);
     }

@@ -13,7 +13,20 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 60 * 24
     twin_engine_http_url: str = "http://twin-engine:8100"
     twin_engine_ws_url: str = "ws://twin-engine:8100/ws"
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Starlette's CORSMiddleware hard-400s the preflight itself for any
+    # origin not in an explicit list - a custom FRONTEND_PORT, a network-IP
+    # origin, or any other reasonable variant of "wherever the frontend
+    # happens to be served from" would otherwise break every API call
+    # before it even reaches a route handler, surfacing only as a generic
+    # frontend error with nothing in the backend logs to explain it (that's
+    # exactly what happened here). Wildcarding the origin is safe only
+    # because this app carries no CORS "credentials" (browser-managed
+    # cookies) to leak - auth is a Bearer token in a normal header, sent
+    # with fetch()'s default credentials mode, which CORS doesn't treat as
+    # credentialed - so allow_origins=["*"] + allow_credentials=False (the
+    # only combination the CORS spec permits for a wildcard origin) can't
+    # expose anything a same-origin request couldn't already reach.
+    cors_origins: list[str] = ["*"]
 
     # Seeded once at startup if no admin exists yet - see app/seed.py. Change
     # these via .env before first boot; printed to the backend log once so
