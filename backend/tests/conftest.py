@@ -29,6 +29,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
+from app.auth import create_access_token, hash_password
 from app.database import Base, get_db
 from app.main import app
 from app.models import User
@@ -76,22 +77,24 @@ def client(_test_client, db_session):
 
 
 @pytest.fixture()
-def auth_headers(client, db_session):
+def auth_headers(db_session):
     def _register(email: str, persona: str = "individual_driver") -> dict:
-        response = client.post("/auth/register", json={
-            "name": "Test User",
-            "email": email,
-            "password": "correct-horse-battery-staple",
-            "persona": persona,
-        })
-        assert response.status_code == 201, response.text
-        token = response.json()["access_token"]
-        # Registration now requires OTP email confirmation before most
-        # endpoints work (see app/routers/auth.py) - tests care about
-        # exercising the feature under test, not re-deriving the OTP from
-        # server logs each time, so verify directly at the DB level.
-        db_session.query(User).filter(User.email == email).update({"email_verified": True})
+        # POST /auth/register no longer persists a User row or returns a
+        # token at all - it only creates a pending (Redis-backed)
+        # registration, and the real account only exists once its OTP is
+        # verified (see app/routers/auth.py). Tests care about exercising
+        # the feature under test with a working authenticated user, not
+        # re-deriving that OTP dance every time, so this constructs the
+        # verified account directly, the same way test_admin_workflow.py's
+        # _make_admin_headers does.
+        user = User(
+            name="Test User", email=email, hashed_password=hash_password("correct-horse-battery-staple"),
+            persona=persona, dpdp_consent_flag=True, email_verified=True,
+        )
+        db_session.add(user)
         db_session.commit()
+        db_session.refresh(user)
+        token = create_access_token(user.id, user.persona)
         return {"Authorization": f"Bearer {token}"}
 
     return _register

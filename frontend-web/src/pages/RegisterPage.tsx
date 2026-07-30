@@ -30,8 +30,8 @@ export function RegisterPage() {
     setError(null);
     setSubmitting(true);
     try {
-      await register(name, email, password, persona);
-      navigate("/verify-otp");
+      const pending = await register(name, email, password, persona);
+      navigate("/verify-otp", { state: pending });
     } catch (err) {
       console.error("Registration failed:", err);
       setError(err instanceof ApiError ? err.message : "Couldn't reach the server - check your connection and try again");

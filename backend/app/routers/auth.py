@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
@@ -15,11 +15,25 @@ from app.auth import (
     verify_otp_code,
     verify_password,
 )
-from app.config import settings
 from app.database import get_db
 from app.email_service import send_otp_email
 from app.models import User
-from app.schemas import LocationUpdate, LoginRequest, OtpVerifyRequest, TokenResponse, UserCreate, UserRead
+from app.pending_registration import (
+    create_pending_registration,
+    delete_pending_registration,
+    get_pending_registration,
+    update_pending_registration_otp,
+)
+from app.schemas import (
+    LocationUpdate,
+    LoginRequest,
+    OtpVerifyRequest,
+    PendingRegistrationResponse,
+    ResendOtpRequest,
+    TokenResponse,
+    UserCreate,
+    UserRead,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -28,76 +42,83 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 _OTP_RESEND_COOLDOWN_SECONDS = 30
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
-def register(payload: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
+@router.post("/register", response_model=PendingRegistrationResponse, status_code=status.HTTP_201_CREATED)
+def register(payload: UserCreate, db: Session = Depends(get_db)) -> PendingRegistrationResponse:
     if payload.persona == "city_admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="city_admin can't be self-registered - sign up as individual_driver, "
                    "then request admin approval via POST /admin/requests",
         )
+    if db.query(User).filter(User.email == payload.email).first() is not None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="email already registered")
+
+    # No User row yet - per the project owner's requirement, registration is
+    # only ever persisted once the OTP is verified (see verify_otp below).
+    # Everything needed to create that row lives in Redis until then.
     otp_code = generate_otp_code()
-    user = User(
+    pending_id = create_pending_registration(
         name=payload.name,
         email=payload.email,
         hashed_password=hash_password(payload.password),
         persona=payload.persona,
         dpdp_consent_flag=payload.dpdp_consent_flag,
-        email_verified=False,
         otp_code_hash=hash_otp_code(otp_code),
         otp_expires_at=otp_expiry(),
+    )
+    send_otp_email(payload.email, otp_code)
+    return PendingRegistrationResponse(pending_registration_id=pending_id, email=payload.email)
+
+
+@router.post("/verify-otp", response_model=TokenResponse)
+def verify_otp(payload: OtpVerifyRequest, db: Session = Depends(get_db)) -> TokenResponse:
+    pending = get_pending_registration(payload.pending_registration_id)
+    expired_or_wrong = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="incorrect or expired code")
+    if pending is None:
+        raise expired_or_wrong
+    otp_expires_at = datetime.fromisoformat(pending["otp_expires_at"])
+    if otp_expires_at < datetime.now(timezone.utc) or not verify_otp_code(payload.otp_code, pending["otp_code_hash"]):
+        raise expired_or_wrong
+
+    user = User(
+        name=pending["name"],
+        email=pending["email"],
+        hashed_password=pending["hashed_password"],
+        persona=pending["persona"],
+        dpdp_consent_flag=pending["dpdp_consent_flag"],
+        email_verified=True,  # the OTP just confirmed this
     )
     db.add(user)
     try:
         db.commit()
     except IntegrityError:
+        # someone else registered (and verified) the same email in the
+        # window between this registration and this verification
         db.rollback()
+        delete_pending_registration(payload.pending_registration_id)
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="email already registered")
     db.refresh(user)
-    send_otp_email(user.email, otp_code)
-    # Issued immediately so the frontend has an identity to call /auth/me and
-    # /auth/verify-otp with - get_current_user (used by every other route)
-    # rejects it until email_verified flips true, see app/auth.py.
+    delete_pending_registration(payload.pending_registration_id)
     return TokenResponse(access_token=create_access_token(user.id, user.persona))
 
 
-@router.post("/verify-otp", response_model=UserRead)
-def verify_otp(payload: OtpVerifyRequest, current_user: User = Depends(get_current_user_allow_unverified),
-               db: Session = Depends(get_db)) -> User:
-    if current_user.email_verified:
-        return current_user
-    if (
-        current_user.otp_code_hash is None
-        or current_user.otp_expires_at is None
-        or current_user.otp_expires_at < datetime.now(timezone.utc)
-        or not verify_otp_code(payload.otp_code, current_user.otp_code_hash)
-    ):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="incorrect or expired code")
-    current_user.email_verified = True
-    current_user.otp_code_hash = None
-    current_user.otp_expires_at = None
-    db.commit()
-    db.refresh(current_user)
-    return current_user
-
-
 @router.post("/resend-otp", status_code=status.HTTP_204_NO_CONTENT)
-def resend_otp(current_user: User = Depends(get_current_user_allow_unverified), db: Session = Depends(get_db)) -> None:
-    if current_user.email_verified:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="already verified")
-    if current_user.otp_expires_at is not None:
-        sent_at = current_user.otp_expires_at - timedelta(minutes=settings.otp_expire_minutes)
-        seconds_since_last_send = (datetime.now(timezone.utc) - sent_at).total_seconds()
-        if seconds_since_last_send < _OTP_RESEND_COOLDOWN_SECONDS:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=f"please wait {round(_OTP_RESEND_COOLDOWN_SECONDS - seconds_since_last_send)}s before requesting another code",
-            )
+def resend_otp(payload: ResendOtpRequest) -> None:
+    pending = get_pending_registration(payload.pending_registration_id)
+    if pending is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="registration expired - please register again")
+    last_sent_at = datetime.fromisoformat(pending["last_sent_at"])
+    seconds_since_last_send = (datetime.now(timezone.utc) - last_sent_at).total_seconds()
+    if seconds_since_last_send < _OTP_RESEND_COOLDOWN_SECONDS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"please wait {round(_OTP_RESEND_COOLDOWN_SECONDS - seconds_since_last_send)}s before requesting another code",
+        )
     otp_code = generate_otp_code()
-    current_user.otp_code_hash = hash_otp_code(otp_code)
-    current_user.otp_expires_at = otp_expiry()
-    db.commit()
-    send_otp_email(current_user.email, otp_code)
+    update_pending_registration_otp(
+        payload.pending_registration_id, otp_code_hash=hash_otp_code(otp_code), otp_expires_at=otp_expiry(),
+    )
+    send_otp_email(pending["email"], otp_code)
 
 
 @router.post("/login", response_model=TokenResponse)

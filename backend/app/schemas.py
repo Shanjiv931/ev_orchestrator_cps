@@ -58,8 +58,21 @@ class GoogleSignInRequest(BaseModel):
     id_token: str
 
 
+class PendingRegistrationResponse(BaseModel):
+    """Returned instead of a TokenResponse - no User row (and therefore no
+    valid access token) exists yet until the OTP is verified, see
+    app/routers/auth.py."""
+    pending_registration_id: str
+    email: EmailStr
+
+
 class OtpVerifyRequest(BaseModel):
+    pending_registration_id: str
     otp_code: str
+
+
+class ResendOtpRequest(BaseModel):
+    pending_registration_id: str
 
 
 class AdminRequestRead(BaseModel):

@@ -1,3 +1,4 @@
+from app.auth import create_access_token, hash_password
 from app.config import settings
 from app.models import User
 from app.seed import seed_admin_if_missing
@@ -17,15 +18,18 @@ def test_seed_admin_if_missing_is_idempotent(db_session):
     assert db_session.query(User).filter(User.persona == "city_admin").count() == 1
 
 
-def _make_admin_headers(client, db_session, email: str) -> dict:
-    reg = client.post("/auth/register", json={
-        "name": "Admin", "email": email, "password": "adminpass123", "persona": "individual_driver",
-    })
-    token = reg.json()["access_token"]
-    user = db_session.query(User).filter(User.email == email).first()
-    user.persona = "city_admin"
-    user.email_verified = True
+def _make_admin_headers(db_session, email: str) -> dict:
+    # POST /auth/register no longer persists a row until its OTP is
+    # verified (see app/routers/auth.py), so this constructs the admin
+    # account directly rather than going through the endpoint.
+    user = User(
+        name="Admin", email=email, hashed_password=hash_password("adminpass123"),
+        persona="city_admin", dpdp_consent_flag=True, email_verified=True,
+    )
+    db_session.add(user)
     db_session.commit()
+    db_session.refresh(user)
+    token = create_access_token(user.id, user.persona)
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -38,7 +42,7 @@ def test_cannot_register_as_city_admin_directly(client):
 
 def test_request_admin_access_and_approval_flow(client, auth_headers, db_session):
     normal_headers = auth_headers("wants-admin@example.com")
-    admin_headers = _make_admin_headers(client, db_session, "admin1@example.com")
+    admin_headers = _make_admin_headers(db_session, "admin1@example.com")
 
     req = client.post("/admin/requests", headers=normal_headers)
     assert req.status_code == 201
@@ -71,7 +75,7 @@ def test_duplicate_pending_request_rejected(client, auth_headers):
 
 def test_reject_admin_request(client, auth_headers, db_session):
     normal_headers = auth_headers("gets-rejected@example.com")
-    admin_headers = _make_admin_headers(client, db_session, "admin3@example.com")
+    admin_headers = _make_admin_headers(db_session, "admin3@example.com")
 
     request_id = client.post("/admin/requests", headers=normal_headers).json()["id"]
     rejected = client.post(f"/admin/requests/{request_id}/reject", headers=admin_headers)
@@ -83,7 +87,7 @@ def test_reject_admin_request(client, auth_headers, db_session):
 
 
 def test_admin_users_list_requires_admin(client, auth_headers, db_session):
-    admin_headers = _make_admin_headers(client, db_session, "admin2@example.com")
+    admin_headers = _make_admin_headers(db_session, "admin2@example.com")
     normal_headers = auth_headers("list-test-user@example.com")
 
     forbidden = client.get("/admin/users", headers=normal_headers)

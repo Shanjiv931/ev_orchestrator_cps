@@ -2,14 +2,19 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 import { api, setToken } from "../api/client";
 import type { Persona, User } from "../api/types";
 
+interface PendingRegistration {
+  pendingRegistrationId: string;
+  email: string;
+}
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, persona: Persona) => Promise<void>;
+  register: (name: string, email: string, password: string, persona: Persona) => Promise<PendingRegistration>;
   loginWithGoogle: (idToken: string) => Promise<void>;
-  verifyOtp: (otpCode: string) => Promise<void>;
-  resendOtp: () => Promise<void>;
+  verifyOtp: (pendingRegistrationId: string, otpCode: string) => Promise<void>;
+  resendOtp: (pendingRegistrationId: string) => Promise<void>;
   updateLocation: (locationState: string, locationCity: string, lat: number, lon: number) => Promise<void>;
   logout: () => void;
 }
@@ -42,12 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadCurrentUser]);
 
   const register = useCallback(async (name: string, email: string, password: string, persona: Persona) => {
-    const { access_token } = await api.post<{ access_token: string }>("/auth/register", {
+    // No token yet - registration isn't persisted (no User row exists) until
+    // the OTP is verified, see backend/app/routers/auth.py.
+    const response = await api.post<{ pending_registration_id: string; email: string }>("/auth/register", {
       name, email, password, persona, dpdp_consent_flag: true,
     });
-    setToken(access_token);
-    await loadCurrentUser();
-  }, [loadCurrentUser]);
+    return { pendingRegistrationId: response.pending_registration_id, email: response.email };
+  }, []);
 
   const loginWithGoogle = useCallback(async (idToken: string) => {
     const { access_token } = await api.post<{ access_token: string }>("/oauth/google", { id_token: idToken });
@@ -55,13 +61,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }, [loadCurrentUser]);
 
-  const verifyOtp = useCallback(async (otpCode: string) => {
-    const updated = await api.post<User>("/auth/verify-otp", { otp_code: otpCode });
-    setUser(updated);
-  }, []);
+  const verifyOtp = useCallback(async (pendingRegistrationId: string, otpCode: string) => {
+    // This is the point the account actually gets created server-side - see
+    // backend/app/routers/auth.py's verify_otp. Only now does a real token exist.
+    const { access_token } = await api.post<{ access_token: string }>("/auth/verify-otp", {
+      pending_registration_id: pendingRegistrationId, otp_code: otpCode,
+    });
+    setToken(access_token);
+    await loadCurrentUser();
+  }, [loadCurrentUser]);
 
-  const resendOtp = useCallback(async () => {
-    await api.post("/auth/resend-otp", {});
+  const resendOtp = useCallback(async (pendingRegistrationId: string) => {
+    await api.post("/auth/resend-otp", { pending_registration_id: pendingRegistrationId });
   }, []);
 
   const updateLocation = useCallback(async (locationState: string, locationCity: string, lat: number, lon: number) => {

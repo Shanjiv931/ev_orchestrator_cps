@@ -38,7 +38,10 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-500">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (!user.email_verified) return <Navigate to="/verify-otp" replace />;
+  // No dangling "authenticated but unverified" state is reachable anymore -
+  // a token is only ever issued once verify-otp creates the User row (or,
+  // for Google/Firebase sign-in, at account creation, since Google already
+  // confirmed the email) - see backend/app/routers/auth.py.
   if (user.lat === null) return <Navigate to="/onboarding/location" replace />;
   return <>{children}</>;
 }
