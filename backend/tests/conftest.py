@@ -10,7 +10,18 @@ from pathlib import Path
 # simulation/ and twin-engine/ test suites).
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-os.environ.setdefault("POSTGRES_DSN", "postgresql+psycopg2://ev:ev@localhost:5432/ev_orchestrator_test")
+# Tests truncate tables between cases and drop the whole schema at session
+# end (see _schema below) - running that against whatever database the app
+# itself is already pointed at would wipe real data. `docker compose exec
+# backend` inherits POSTGRES_DSN from docker-compose.yml (the real
+# ev_orchestrator database), so `setdefault` here was a no-op and every test
+# run was silently dropping the live dev database's schema. Force a
+# "_test"-suffixed database name unconditionally instead, keeping whatever
+# host/user/password is already configured for this environment.
+_default_dsn = "postgresql+psycopg2://ev:ev@localhost:5432/ev_orchestrator_test"
+_base_dsn = os.environ.get("POSTGRES_DSN", _default_dsn)
+_dsn_base, _, _db_name = _base_dsn.rpartition("/")
+os.environ["POSTGRES_DSN"] = _base_dsn if _db_name.endswith("_test") else f"{_dsn_base}/{_db_name}_test"
 os.environ.setdefault("TWIN_ENGINE_WS_URL", "ws://127.0.0.1:1/ws")  # deliberately unreachable in tests
 
 import pytest
