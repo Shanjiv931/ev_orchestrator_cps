@@ -219,5 +219,37 @@ this repo has to a build log of judgment calls, not just a deferred-work
 list - that's an intentional reading of Section 2.7's instruction to
 record *why*, not just *what*, whenever a real tradeoff was made.
 
+## Post-Phase-9 verification pass
+
+Explicitly re-checked the Section 11 checklist item "frontend ... functions
+read-only with no network" by inspecting the running container's actual
+service-worker state, not just trusting the `vite.config.ts` I'd written.
+Found two real bugs doing that:
+
+1. `vite-plugin-pwa`'s service worker is disabled by default in dev mode,
+   and `docker compose`'s `frontend-web` service runs `npm run dev` (every
+   service in this stack runs its live-mounted source directly - the
+   backend via `uvicorn` against mounted code is the same pattern), so the
+   entire offline-first behavior was silently inactive in what
+   `docker compose up` actually served, despite being correctly configured
+   and present in `npm run build` output. Fixed with `devOptions.enabled:
+   true` in `vite.config.ts`.
+2. Once the service worker was actually active, its cache turned out to be
+   keyed wrong: the `urlPattern` regex (`/\/(stations|feeders|twin)\/?.*/`)
+   had no origin check, so it also matched the frontend's *own*
+   same-origin client-side route at `/stations` (the SPA page itself, not
+   an API call) and cached the wrong response under that key - meaning a
+   real offline lookup for the backend's `/stations` response would have
+   missed. Fixed by requiring `!sameOrigin` in the pattern, verified by
+   clearing all service-worker state, reloading, and confirming the cache
+   key is `http://localhost:8000/stations` (the real backend URL the app
+   actually fetches), not `http://localhost:5173/stations`.
+
+Both bugs would have been invisible to `npm run build` succeeding, to
+every existing Vitest test, and to casual manual testing (the app *looks*
+identical either way with the network up) - they only surfaced by
+inspecting `caches.keys()` and `navigator.serviceWorker.getRegistrations()`
+directly in the running container.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

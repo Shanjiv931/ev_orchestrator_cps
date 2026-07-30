@@ -21,6 +21,17 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      // docker-compose runs this service via `npm run dev`, not a
+      // production build (every other service in this stack runs its
+      // live-mounted source directly too, e.g. the backend via uvicorn
+      // against mounted code) - vite-plugin-pwa's service worker is
+      // disabled in dev mode by default, which would make the whole
+      // offline-first behavior silently inactive in what `docker compose
+      // up` actually serves. devOptions keeps it active in dev too.
+      devOptions: {
+        enabled: true,
+        type: 'module',
+      },
       manifest: {
         name: 'EV Charging Orchestrator',
         short_name: 'EV Orchestrator',
@@ -38,9 +49,18 @@ export default defineConfig({
         // Offline-first: last-known nearby station/swap-point list stays
         // available read-only with no network (Section 5.8), syncing
         // again automatically once connectivity returns.
+        //
+        // urlPattern must require cross-origin (the backend API's own
+        // origin, e.g. localhost:8000), not just a path substring match -
+        // a plain /stations/ regex with no origin check also matches the
+        // frontend's OWN same-origin client-side route at "/stations"
+        // (the SPA page itself), which Workbox then intercepts as
+        // navigation and caches under the wrong key entirely, silently
+        // breaking the real API cache lookup used when offline.
         runtimeCaching: [
           {
-            urlPattern: /\/(stations|feeders|twin)\/?.*/,
+            urlPattern: ({ url, sameOrigin }) =>
+              !sameOrigin && /\/(stations|feeders|twin)(\/|$)/.test(url.pathname),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
