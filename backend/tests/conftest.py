@@ -1,7 +1,17 @@
 import os
+import sys
+from pathlib import Path
 
-os.environ["POSTGRES_DSN"] = "postgresql+psycopg2://ev:ev@localhost:5432/ev_orchestrator_test"
-os.environ["TWIN_ENGINE_WS_URL"] = "ws://127.0.0.1:1/ws"  # deliberately unreachable in tests
+# backend/tests has no __init__.py, so pytest's default import mode inserts
+# backend/tests (not backend/) onto sys.path - `app`/`ml` are only
+# importable here because `python -m pytest` happens to add the cwd too.
+# CI invokes the bare `pytest` command, which does not get that implicit
+# insertion, so this must be explicit (same pattern already used in the
+# simulation/ and twin-engine/ test suites).
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+os.environ.setdefault("POSTGRES_DSN", "postgresql+psycopg2://ev:ev@localhost:5432/ev_orchestrator_test")
+os.environ.setdefault("TWIN_ENGINE_WS_URL", "ws://127.0.0.1:1/ws")  # deliberately unreachable in tests
 
 import pytest
 from fastapi.testclient import TestClient
