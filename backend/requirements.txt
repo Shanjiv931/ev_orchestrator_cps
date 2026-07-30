@@ -20,3 +20,5 @@ scikit-learn==1.5.2
 xgboost-cpu==2.1.4
 ortools==9.11.4210
 prometheus-fastapi-instrumentator==7.0.0
+google-auth==2.35.0
+requests==2.32.3

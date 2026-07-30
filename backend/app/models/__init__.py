@@ -1,4 +1,5 @@
 from app.models.entities import (
+    AdminRequest,
     BatteryHealth,
     CarbonLedgerEntry,
     Charger,
@@ -12,6 +13,7 @@ from app.models.entities import (
 )
 
 __all__ = [
+    "AdminRequest",
     "BatteryHealth",
     "CarbonLedgerEntry",
     "Charger",

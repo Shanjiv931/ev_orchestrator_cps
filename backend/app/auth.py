@@ -44,3 +44,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise unauthorized
     return user
+
+
+def get_current_admin(current_user: User = Depends(get_current_user)) -> User:
+    """City-admin-only dependency. Registration can never set this persona
+    directly - see app/routers/admin.py's approval workflow."""
+    if current_user.persona != "city_admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="admin access required")
+    return current_user

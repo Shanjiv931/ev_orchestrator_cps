@@ -251,5 +251,38 @@ identical either way with the network up) - they only surfaced by
 inspecting `caches.keys()` and `navigator.serviceWorker.getRegistrations()`
 directly in the running container.
 
+## Phase 10 (MeridianGrid redesign - backend)
+
+Three explicit adaptations, agreed with the project owner before building:
+
+1. **"Sign in with Apple"** is simulated (`app/routers/oauth.py`), not real.
+   Real Sign in with Apple requires a paid Apple Developer Program
+   membership ($99/yr) to register a Services ID - a hard conflict with
+   this project's zero-cost rule, and there's no way around it short of
+   that payment. Google Sign-In is genuinely real (server-side ID-token
+   verification against Google's public keys via `google-auth`), gated
+   behind a `GOOGLE_OAUTH_CLIENT_ID` env var the project owner supplies -
+   until set, the endpoint returns 501 rather than silently failing or
+   faking success.
+2. **Vehicle-to-app pairing/telemetry** (`app/routers/vehicle_link.py`) is
+   simulated. No real manufacturer telematics API (Tata iRA, MG iSMART,
+   Ather app, etc.) is integrated - none exist as a free, partnerless
+   option, and Section 2's own constraint #2 ("no physical hardware,
+   simulate every output") already calls for exactly this pattern. A fake
+   pairing code plus deterministic-but-live-looking simulated telemetry
+   gives the same UX shape as a real integration.
+3. **Real Indian EV catalog** (`app/vehicle_catalog.py`) uses only public,
+   non-copyrightable technical specifications (brand, model, battery
+   chemistry, usable capacity, connector standard) - no manufacturer
+   copy, logos, or trademarked imagery.
+
+**Migration note**: adding columns to `users`/`vehicles` (OAuth/location/
+pairing fields) after the live database already had real accounts in it
+required an explicit additive migration (`app/migrate.py`,
+`ALTER TABLE ... ADD COLUMN IF NOT EXISTS`) rather than relying on
+`create_all()`, which only creates missing tables and never alters
+existing ones. Verified against the live `ev_orchestrator` database
+(6 existing users, all preserved) before rebuilding the container.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

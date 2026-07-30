@@ -22,6 +22,11 @@ class UserRead(BaseModel):
     persona: str
     dpdp_consent_flag: bool
     consent_expiry: datetime | None
+    auth_provider: str
+    location_state: str | None
+    location_city: str | None
+    lat: float | None
+    lon: float | None
 
 
 class UserUpdate(BaseModel):
@@ -29,6 +34,13 @@ class UserUpdate(BaseModel):
     persona: str | None = None
     dpdp_consent_flag: bool | None = None
     consent_expiry: datetime | None = None
+
+
+class LocationUpdate(BaseModel):
+    location_state: str
+    location_city: str
+    lat: float
+    lon: float
 
 
 class LoginRequest(BaseModel):
@@ -41,12 +53,40 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class GoogleSignInRequest(BaseModel):
+    id_token: str
+
+
+class SimulatedAppleSignInRequest(BaseModel):
+    """Apple Sign-In is simulated (see docs/out-of-scope.md): Sign in with
+    Apple requires a paid Apple Developer account, which this zero-cost
+    project deliberately does not have. This creates/logs in a demo account
+    keyed off a client-supplied simulated identifier - no real Apple
+    authentication happens."""
+    simulated_apple_id: str
+    name: str
+
+
+class AdminRequestRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    user_id: uuid.UUID
+    status: str
+    requested_at: datetime
+    reviewed_by: uuid.UUID | None
+    reviewed_at: datetime | None
+
+
 class VehicleCreate(BaseModel):
     vehicle_class: str
     connector_type: str
     battery_chemistry: str
     is_pluggable: bool = True
     fleet_depot_id: str | None = None
+    brand: str | None = None
+    vehicle_model: str | None = None
+    battery_capacity_kwh: float | None = None
+    color_hex: str | None = None
 
 
 class VehicleUpdate(BaseModel):
@@ -54,6 +94,10 @@ class VehicleUpdate(BaseModel):
     battery_chemistry: str | None = None
     is_pluggable: bool | None = None
     fleet_depot_id: str | None = None
+    brand: str | None = None
+    vehicle_model: str | None = None
+    battery_capacity_kwh: float | None = None
+    color_hex: str | None = None
 
 
 class VehicleRead(BaseModel):
@@ -65,6 +109,26 @@ class VehicleRead(BaseModel):
     battery_chemistry: str
     is_pluggable: bool
     fleet_depot_id: str | None
+    brand: str | None
+    vehicle_model: str | None
+    battery_capacity_kwh: float | None
+    color_hex: str | None
+    is_paired: bool
+
+
+class VehiclePairingResponse(BaseModel):
+    pairing_code: str
+    vehicle_id: uuid.UUID
+
+
+class VehicleLiveTelemetry(BaseModel):
+    vehicle_id: uuid.UUID
+    is_simulated: bool = True
+    battery_pct: float
+    is_charging: bool
+    range_km: float
+    odometer_km: float
+    last_updated: datetime
 
 
 class StationCreate(BaseModel):

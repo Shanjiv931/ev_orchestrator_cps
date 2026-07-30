@@ -32,6 +32,15 @@ class User(Base):
     consent_expiry: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    # "password" | "google" | "apple-simulated" - see app/routers/oauth.py for why
+    # apple is simulated rather than real (Sign in with Apple requires a paid
+    # Apple Developer account, which breaks this project's zero-cost rule).
+    auth_provider: Mapped[str] = mapped_column(String, default="password", nullable=False)
+    oauth_subject: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
+    location_state: Mapped[str | None] = mapped_column(String, nullable=True)
+    location_city: Mapped[str | None] = mapped_column(String, nullable=True)
+    lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lon: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     vehicles: Mapped[list["Vehicle"]] = relationship(back_populates="user")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="user")
@@ -47,6 +56,14 @@ class Vehicle(Base):
     battery_chemistry: Mapped[str] = mapped_column(String, nullable=False)
     is_pluggable: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fleet_depot_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    brand: Mapped[str | None] = mapped_column(String, nullable=True)
+    vehicle_model: Mapped[str | None] = mapped_column(String, nullable=True)
+    battery_capacity_kwh: Mapped[float | None] = mapped_column(Float, nullable=True)
+    color_hex: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Simulated vehicle-to-app pairing (Section 5.8-adjacent extension) - no
+    # real manufacturer telematics API exists here, see app/routers/vehicle_link.py.
+    is_paired: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    pairing_code: Mapped[str | None] = mapped_column(String, nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="vehicles")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="vehicle")
@@ -162,3 +179,19 @@ class CarbonLedgerEntry(Base):
     equivalent_fuel_baseline: Mapped[str] = mapped_column(String, nullable=False)
 
     session: Mapped["ChargingSession"] = relationship(back_populates="carbon_ledger_entries")
+
+
+class AdminRequest(Base):
+    """Only an existing admin can approve a new admin - no user can grant
+    themselves the city_admin persona at registration time."""
+    __tablename__ = "admin_requests"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String, default="pending", nullable=False)  # pending | approved | rejected
+    requested_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+    reviewed_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+    reviewer: Mapped["User | None"] = relationship(foreign_keys=[reviewed_by])

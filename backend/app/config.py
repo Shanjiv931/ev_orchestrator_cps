@@ -15,5 +15,19 @@ class Settings(BaseSettings):
     twin_engine_ws_url: str = "ws://twin-engine:8100/ws"
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
+    # Seeded once at startup if no admin exists yet - see app/seed.py. Change
+    # these via .env before first boot; printed to the backend log once so
+    # you're not locked out.
+    admin_seed_email: str = "admin@meridiangrid.local"
+    admin_seed_password: str = "change-me-admin-2026"
+    admin_seed_name: str = "MeridianGrid Admin"
+
+    # Google Sign-In: real OAuth, verified server-side against Google's
+    # public keys. Leave unset to keep the button visibly "not configured"
+    # rather than silently failing. Get a free Client ID from
+    # https://console.cloud.google.com/apis/credentials (OAuth 2.0 Client ID,
+    # type "Web application").
+    google_oauth_client_id: str | None = None
+
 
 settings = Settings()
