@@ -1,15 +1,7 @@
-"""Real Google Sign-In (server-side ID-token verification against Google's
-public keys) and a clearly-simulated Apple Sign-In.
-
-Apple is simulated, not real, because Sign in with Apple requires a paid
-Apple Developer Program membership ($99/year) to register a Services ID -
-that breaks this project's zero-cost rule outright, and there is no way to
-make it genuinely real without that paid account. The simulated flow below
-never contacts Apple and must never be described to end users as real
-authentication.
+"""Real Google Sign-In: server-side ID-token verification against Google's
+public keys.
 """
 import secrets
-import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from google.auth.transport import requests as google_requests
@@ -20,7 +12,7 @@ from app.auth import create_access_token, hash_password
 from app.config import settings
 from app.database import get_db
 from app.models import User
-from app.schemas import GoogleSignInRequest, SimulatedAppleSignInRequest, TokenResponse
+from app.schemas import GoogleSignInRequest, TokenResponse
 
 router = APIRouter(prefix="/oauth", tags=["oauth"])
 
@@ -72,18 +64,5 @@ def google_sign_in(payload: GoogleSignInRequest, db: Session = Depends(get_db)) 
     user = _find_or_create_oauth_user(
         db, oauth_subject=claims["sub"], email=claims["email"],
         name=claims.get("name", claims["email"]), provider="google",
-    )
-    return TokenResponse(access_token=create_access_token(user.id, user.persona))
-
-
-@router.post("/apple/simulated", response_model=TokenResponse)
-def apple_sign_in_simulated(payload: SimulatedAppleSignInRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    fake_subject = f"simulated-apple:{payload.simulated_apple_id}"
-    # example.com is the RFC 2606 domain reserved for documentation/testing -
-    # a real TLD as far as email-validator is concerned, unlike .local/.test,
-    # which it correctly rejects as non-deliverable reserved names.
-    fake_email = f"simulated-apple-{uuid.uuid5(uuid.NAMESPACE_DNS, fake_subject)}@example.com"
-    user = _find_or_create_oauth_user(
-        db, oauth_subject=fake_subject, email=fake_email, name=payload.name, provider="apple-simulated",
     )
     return TokenResponse(access_token=create_access_token(user.id, user.persona))

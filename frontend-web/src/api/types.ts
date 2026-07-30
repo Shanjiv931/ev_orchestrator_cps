@@ -7,6 +7,8 @@ export interface User {
   persona: Persona;
   dpdp_consent_flag: boolean;
   consent_expiry: string | null;
+  // "apple-simulated" can still appear on accounts created before Apple
+  // Sign-In was removed from the product - kept as a valid display value.
   auth_provider: "password" | "google" | "apple-simulated";
   location_state: string | null;
   location_city: string | null;

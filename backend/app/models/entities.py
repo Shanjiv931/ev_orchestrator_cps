@@ -32,9 +32,7 @@ class User(Base):
     consent_expiry: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
-    # "password" | "google" | "apple-simulated" - see app/routers/oauth.py for why
-    # apple is simulated rather than real (Sign in with Apple requires a paid
-    # Apple Developer account, which breaks this project's zero-cost rule).
+    # "password" | "google"
     auth_provider: Mapped[str] = mapped_column(String, default="password", nullable=False)
     oauth_subject: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
     location_state: Mapped[str | None] = mapped_column(String, nullable=True)

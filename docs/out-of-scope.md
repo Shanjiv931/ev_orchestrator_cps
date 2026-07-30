@@ -255,15 +255,18 @@ directly in the running container.
 
 Three explicit adaptations, agreed with the project owner before building:
 
-1. **"Sign in with Apple"** is simulated (`app/routers/oauth.py`), not real.
-   Real Sign in with Apple requires a paid Apple Developer Program
-   membership ($99/yr) to register a Services ID - a hard conflict with
-   this project's zero-cost rule, and there's no way around it short of
-   that payment. Google Sign-In is genuinely real (server-side ID-token
-   verification against Google's public keys via `google-auth`), gated
-   behind a `GOOGLE_OAUTH_CLIENT_ID` env var the project owner supplies -
-   until set, the endpoint returns 501 rather than silently failing or
-   faking success.
+1. **"Sign in with Apple"** was prototyped as a simulated flow and then
+   removed at the project owner's request once a real Google Client ID was
+   available, rather than shipping a fake auth provider alongside a real
+   one. Real Sign in with Apple would have required a paid Apple Developer
+   Program membership ($99/yr) to register a Services ID - a hard conflict
+   with this project's zero-cost rule. Google Sign-In is genuinely real
+   (server-side ID-token verification against Google's public keys via
+   `google-auth`), gated behind a `GOOGLE_OAUTH_CLIENT_ID` env var the
+   project owner supplies - until set, the endpoint returns 501 rather than
+   silently failing or faking success. Accounts created via the old
+   simulated Apple flow (`auth_provider = "apple-simulated"`) are left as
+   historical data rather than migrated or deleted.
 2. **Vehicle-to-app pairing/telemetry** (`app/routers/vehicle_link.py`) is
    simulated. No real manufacturer telematics API (Tata iRA, MG iSMART,
    Ather app, etc.) is integrated - none exist as a free, partnerless

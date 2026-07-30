@@ -57,16 +57,6 @@ class GoogleSignInRequest(BaseModel):
     id_token: str
 
 
-class SimulatedAppleSignInRequest(BaseModel):
-    """Apple Sign-In is simulated (see docs/out-of-scope.md): Sign in with
-    Apple requires a paid Apple Developer account, which this zero-cost
-    project deliberately does not have. This creates/logs in a demo account
-    keyed off a client-supplied simulated identifier - no real Apple
-    authentication happens."""
-    simulated_apple_id: str
-    name: str
-
-
 class AdminRequestRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID

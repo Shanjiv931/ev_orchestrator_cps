@@ -8,7 +8,6 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { Input, Select, FieldLabel } from "../components/ui/Input";
 import { GoogleSignInButton } from "../components/GoogleSignInButton";
-import { AppleSignInButtonSimulated } from "../components/AppleSignInButtonSimulated";
 
 // city_admin is deliberately excluded - nobody can self-register as admin,
 // see backend app/routers/admin.py's approval workflow.
@@ -57,7 +56,6 @@ export function RegisterPage() {
         <GlassCard className="p-6">
           <div className="flex flex-col gap-3 mb-5">
             <GoogleSignInButton onDone={() => navigate("/onboarding/location")} onError={setError} />
-            <AppleSignInButtonSimulated onDone={() => navigate("/onboarding/location")} onError={setError} />
           </div>
 
           <div className="flex items-center gap-3 my-4">

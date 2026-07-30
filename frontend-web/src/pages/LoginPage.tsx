@@ -7,7 +7,6 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { GoogleSignInButton } from "../components/GoogleSignInButton";
-import { AppleSignInButtonSimulated } from "../components/AppleSignInButtonSimulated";
 import { IntroSplash } from "../components/IntroSplash";
 
 export function LoginPage() {
@@ -56,7 +55,6 @@ export function LoginPage() {
         <GlassCard className="p-6">
           <div className="flex flex-col gap-3 mb-5">
             <GoogleSignInButton onDone={() => navigate("/")} onError={setError} />
-            <AppleSignInButtonSimulated onDone={() => navigate("/")} onError={setError} />
           </div>
 
           <div className="flex items-center gap-3 my-4">
