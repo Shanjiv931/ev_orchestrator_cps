@@ -30,7 +30,7 @@ export function RegisterPage() {
     setSubmitting(true);
     try {
       await register(name, email, password, persona);
-      navigate("/onboarding/location");
+      navigate("/verify-otp");
     } catch {
       setError(t("auth.error"));
     } finally {

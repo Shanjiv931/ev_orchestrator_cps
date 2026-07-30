@@ -1,5 +1,7 @@
-"""Real Google Sign-In: server-side ID-token verification against Google's
-public keys.
+"""Real Google Sign-In via Firebase Authentication: the frontend runs
+Firebase's Google popup and sends us the resulting Firebase ID token, which
+we verify server-side against Firebase's public keys - no Firebase Admin SDK
+or service-account key needed.
 """
 import secrets
 
@@ -53,17 +55,17 @@ def _find_or_create_oauth_user(db: Session, oauth_subject: str, email: str, name
 
 @router.post("/google", response_model=TokenResponse)
 def google_sign_in(payload: GoogleSignInRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    if not settings.google_oauth_client_id:
+    if not settings.firebase_project_id:
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail="Google Sign-In is not configured on this server yet - set GOOGLE_OAUTH_CLIENT_ID",
+            detail="Google Sign-In is not configured on this server yet - set FIREBASE_PROJECT_ID",
         )
     try:
-        claims = google_id_token.verify_oauth2_token(
-            payload.id_token, google_requests.Request(), settings.google_oauth_client_id,
+        claims = google_id_token.verify_firebase_token(
+            payload.id_token, google_requests.Request(), audience=settings.firebase_project_id,
         )
     except ValueError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid Google ID token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid Firebase ID token")
 
     user = _find_or_create_oauth_user(
         db, oauth_subject=claims["sub"], email=claims["email"],

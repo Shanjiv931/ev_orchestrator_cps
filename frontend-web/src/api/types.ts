@@ -10,6 +10,7 @@ export interface User {
   // "apple-simulated" can still appear on accounts created before Apple
   // Sign-In was removed from the product - kept as a valid display value.
   auth_provider: "password" | "google" | "apple-simulated";
+  email_verified: boolean;
   location_state: string | null;
   location_city: string | null;
   lat: number | null;

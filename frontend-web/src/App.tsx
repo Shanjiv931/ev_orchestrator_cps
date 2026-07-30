@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { Layout } from "./components/Layout";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { VerifyOtpPage } from "./pages/VerifyOtpPage";
 import { OnboardingLocationPage } from "./pages/OnboardingLocationPage";
 import { MapPage } from "./pages/MapPage";
 import { StationsPage } from "./pages/StationsPage";
@@ -19,6 +20,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-500">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+  if (!user.email_verified) return <Navigate to="/verify-otp" replace />;
   if (user.lat === null) return <Navigate to="/onboarding/location" replace />;
   return <>{children}</>;
 }
@@ -37,6 +39,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/verify-otp" element={<VerifyOtpPage />} />
       <Route path="/onboarding/location" element={<OnboardingLocationPage />} />
       <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<DefaultRoute />} />

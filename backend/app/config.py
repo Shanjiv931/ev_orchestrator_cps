@@ -22,12 +22,16 @@ class Settings(BaseSettings):
     admin_seed_password: str = "change-me-admin-2026"
     admin_seed_name: str = "MeridianGrid Admin"
 
-    # Google Sign-In: real OAuth, verified server-side against Google's
-    # public keys. Leave unset to keep the button visibly "not configured"
-    # rather than silently failing. Get a free Client ID from
-    # https://console.cloud.google.com/apis/credentials (OAuth 2.0 Client ID,
-    # type "Web application").
-    google_oauth_client_id: str | None = None
+    # Google Sign-In via Firebase Authentication: the frontend runs Firebase's
+    # Google sign-in popup and hands us the resulting Firebase ID token,
+    # verified server-side with `google.oauth2.id_token.verify_firebase_token`
+    # against the project ID below - no Firebase Admin SDK or service-account
+    # key needed, matching this project's zero-cost/no-extra-secrets stance.
+    # Leave unset to keep the button visibly "not configured" rather than
+    # silently failing. Get the project ID from your Firebase project
+    # settings (also the `projectId` field of the same web app config the
+    # frontend needs - see .env.example's VITE_FIREBASE_* variables).
+    firebase_project_id: str | None = None
 
     # Resend (https://resend.com) for the OTP account-confirmation email
     # sent on password registration. Leave unset to keep working in dev: the

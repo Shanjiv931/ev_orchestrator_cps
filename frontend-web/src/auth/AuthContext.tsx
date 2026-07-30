@@ -8,6 +8,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, persona: Persona) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
+  verifyOtp: (otpCode: string) => Promise<void>;
+  resendOtp: () => Promise<void>;
   updateLocation: (locationState: string, locationCity: string, lat: number, lon: number) => Promise<void>;
   logout: () => void;
 }
@@ -53,6 +55,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }, [loadCurrentUser]);
 
+  const verifyOtp = useCallback(async (otpCode: string) => {
+    const updated = await api.post<User>("/auth/verify-otp", { otp_code: otpCode });
+    setUser(updated);
+  }, []);
+
+  const resendOtp = useCallback(async () => {
+    await api.post("/auth/resend-otp", {});
+  }, []);
+
   const updateLocation = useCallback(async (locationState: string, locationCity: string, lat: number, lon: number) => {
     const updated = await api.patch<User>("/auth/me/location", {
       location_state: locationState, location_city: locationCity, lat, lon,
@@ -67,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{
-      user, loading, login, register, loginWithGoogle, updateLocation, logout,
+      user, loading, login, register, loginWithGoogle, verifyOtp, resendOtp, updateLocation, logout,
     }}>
       {children}
     </AuthContext.Provider>
