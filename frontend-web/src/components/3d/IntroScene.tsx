@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { useCanvasResizeKick } from "../../hooks/useCanvasResizeKick";
+import { ShaderBackground } from "./ShaderBackground";
 
 function GridGlobe() {
   const groupRef = useRef<THREE.Group>(null);
@@ -60,6 +61,7 @@ export function IntroScene() {
       gl={{ antialias: true, alpha: true }}
     >
       <ambientLight intensity={0.6} />
+      <ShaderBackground />
       <GridGlobe />
       <ParticleField />
     </Canvas>
