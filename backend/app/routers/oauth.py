@@ -26,8 +26,11 @@ def _find_or_create_oauth_user(db: Session, oauth_subject: str, email: str, name
     if existing_email_user is not None:
         # Same person previously registered with password auth - link the
         # OAuth identity to that existing account rather than erroring.
+        # Google having confirmed this address is at least as strong a
+        # signal as our own OTP, so this also clears any pending OTP gate.
         existing_email_user.oauth_subject = oauth_subject
         existing_email_user.auth_provider = provider
+        existing_email_user.email_verified = True
         db.commit()
         db.refresh(existing_email_user)
         return existing_email_user
@@ -40,6 +43,7 @@ def _find_or_create_oauth_user(db: Session, oauth_subject: str, email: str, name
         dpdp_consent_flag=True,
         auth_provider=provider,
         oauth_subject=oauth_subject,
+        email_verified=True,  # Google already confirmed ownership of this address
     )
     db.add(user)
     db.commit()

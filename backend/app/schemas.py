@@ -23,6 +23,7 @@ class UserRead(BaseModel):
     dpdp_consent_flag: bool
     consent_expiry: datetime | None
     auth_provider: str
+    email_verified: bool
     location_state: str | None
     location_city: str | None
     lat: float | None
@@ -55,6 +56,10 @@ class TokenResponse(BaseModel):
 
 class GoogleSignInRequest(BaseModel):
     id_token: str
+
+
+class OtpVerifyRequest(BaseModel):
+    otp_code: str
 
 
 class AdminRequestRead(BaseModel):

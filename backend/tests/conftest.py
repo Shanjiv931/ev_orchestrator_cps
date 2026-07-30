@@ -31,6 +31,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.database import Base, get_db
 from app.main import app
+from app.models import User
 
 engine = create_engine(os.environ["POSTGRES_DSN"])
 TestingSessionLocal = sessionmaker(bind=engine)
@@ -75,7 +76,7 @@ def client(_test_client, db_session):
 
 
 @pytest.fixture()
-def auth_headers(client):
+def auth_headers(client, db_session):
     def _register(email: str, persona: str = "individual_driver") -> dict:
         response = client.post("/auth/register", json={
             "name": "Test User",
@@ -85,6 +86,12 @@ def auth_headers(client):
         })
         assert response.status_code == 201, response.text
         token = response.json()["access_token"]
+        # Registration now requires OTP email confirmation before most
+        # endpoints work (see app/routers/auth.py) - tests care about
+        # exercising the feature under test, not re-deriving the OTP from
+        # server logs each time, so verify directly at the DB level.
+        db_session.query(User).filter(User.email == email).update({"email_verified": True})
+        db_session.commit()
         return {"Authorization": f"Bearer {token}"}
 
     return _register

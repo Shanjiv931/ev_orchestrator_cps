@@ -35,6 +35,12 @@ class User(Base):
     # "password" | "google"
     auth_provider: Mapped[str] = mapped_column(String, default="password", nullable=False)
     oauth_subject: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
+    # Google accounts start verified (Google already confirmed the email);
+    # password accounts start False and must confirm via the OTP emailed on
+    # registration - see app/routers/auth.py's /verify-otp.
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    otp_code_hash: Mapped[str | None] = mapped_column(String, nullable=True)
+    otp_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     location_state: Mapped[str | None] = mapped_column(String, nullable=True)
     location_city: Mapped[str | None] = mapped_column(String, nullable=True)
     lat: Mapped[float | None] = mapped_column(Float, nullable=True)

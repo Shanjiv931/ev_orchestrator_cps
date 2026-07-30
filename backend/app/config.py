@@ -29,5 +29,17 @@ class Settings(BaseSettings):
     # type "Web application").
     google_oauth_client_id: str | None = None
 
+    # Resend (https://resend.com) for the OTP account-confirmation email
+    # sent on password registration. Leave unset to keep working in dev: the
+    # OTP is still generated and required, just logged server-side instead
+    # of emailed - see app/email_service.py. onboarding@resend.dev is
+    # Resend's own sandbox sender, usable with no domain verification but
+    # restricted by Resend to only deliver to the address that owns the API
+    # key - point RESEND_FROM_EMAIL at a verified domain of your own once
+    # you have one, to email real users.
+    resend_api_key: str | None = None
+    resend_from_email: str = "onboarding@resend.dev"
+    otp_expire_minutes: int = 10
+
 
 settings = Settings()

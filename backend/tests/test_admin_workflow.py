@@ -24,6 +24,7 @@ def _make_admin_headers(client, db_session, email: str) -> dict:
     token = reg.json()["access_token"]
     user = db_session.query(User).filter(User.email == email).first()
     user.persona = "city_admin"
+    user.email_verified = True
     db_session.commit()
     return {"Authorization": f"Bearer {token}"}
 

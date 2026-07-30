@@ -1,5 +1,6 @@
 """Password hashing and JWT issuing/verification for the auth extension to
 Section 8's USERS entity (see models/entities.py for why it exists)."""
+import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -25,13 +26,29 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
+def generate_otp_code() -> str:
+    return f"{secrets.randbelow(1_000_000):06d}"
+
+
+def hash_otp_code(code: str) -> str:
+    return pwd_context.hash(code)
+
+
+def verify_otp_code(plain_code: str, hashed_code: str) -> bool:
+    return pwd_context.verify(plain_code, hashed_code)
+
+
+def otp_expiry() -> datetime:
+    return datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
+
+
 def create_access_token(user_id: uuid.UUID, persona: str) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
     payload = {"sub": str(user_id), "persona": persona, "exp": expire}
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def _decode_current_user(token: str | None, db: Session) -> User:
     unauthorized = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid or missing credentials")
     if token is None:
         raise unauthorized
@@ -43,6 +60,24 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.get(User, user_id)
     if user is None:
         raise unauthorized
+    return user
+
+
+def get_current_user_allow_unverified(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    """Identity only, no email-verification check. Only for the handful of
+    endpoints an unverified account must still reach: /auth/me (so the
+    frontend can even learn it's unverified) and the OTP verify/resend
+    endpoints themselves. Everything else uses get_current_user below."""
+    return _decode_current_user(token, db)
+
+
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    user = _decode_current_user(token, db)
+    if not user.email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="email not verified - check your inbox for the confirmation code",
+        )
     return user
 
 

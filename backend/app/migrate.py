@@ -19,6 +19,12 @@ _STATEMENTS = [
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS location_city VARCHAR",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS lat DOUBLE PRECISION",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS lon DOUBLE PRECISION",
+    # Existing password accounts predate OTP verification - grandfather them
+    # in as verified rather than locking real users out retroactively; only
+    # newly-registered accounts start unverified (see models/entities.py).
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT true",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_code_hash VARCHAR",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_expires_at TIMESTAMPTZ",
     "DO $$ BEGIN "
     "  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_oauth_subject_key') THEN "
     "    ALTER TABLE users ADD CONSTRAINT users_oauth_subject_key UNIQUE (oauth_subject); "

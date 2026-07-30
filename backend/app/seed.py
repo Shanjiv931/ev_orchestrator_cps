@@ -24,6 +24,7 @@ def seed_admin_if_missing(db: Session) -> None:
         persona="city_admin",
         dpdp_consent_flag=True,
         auth_provider="password",
+        email_verified=True,  # bootstrapped by the operator, not self-registered
     )
     db.add(admin)
     db.commit()
