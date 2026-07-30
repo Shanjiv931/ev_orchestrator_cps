@@ -2,7 +2,6 @@ import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { Layout } from "./components/Layout";
-import { FloatingPathsBackground } from "./components/ui/FloatingPathsBackground";
 
 // Route-level code splitting - every page (plus the three.js scenes, Leaflet
 // map, Recharts, and now Firebase Auth some of them pull in) was previously
@@ -84,23 +83,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      {/* fixed, behind everything (z-0, no pointer events) - the intro
-          splash renders its own opaque fixed z-50 overlay from inside
-          LoginPage/RegisterPage, so it naturally covers this rather than
-          needing route-based exclusion logic.
-          The outer div owns the fixed/inset-0 positioning: the component's
-          own root already hardcodes "relative", so passing "fixed inset-0"
-          as its className collided on the same element - position is a
-          single CSS property, and "relative" was winning the cascade,
-          collapsing the whole thing to height:0 (no explicit height, and
-          absolutely-positioned children don't contribute to parent height)
-          - invisible, but still "mounted" as far as the DOM was concerned. */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <FloatingPathsBackground position={-1} className="h-full" />
-      </div>
-      <div className="relative z-10">
-        <AppRoutes />
-      </div>
+      <AppRoutes />
     </AuthProvider>
   );
 }

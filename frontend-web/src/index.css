@@ -5,6 +5,7 @@
   --font-display: "Space Grotesk", system-ui, sans-serif;
 
   --color-bg: #05070d;
+  --color-bg-navy: #0a1229;
   --color-bg-elevated: #0b0f1a;
   --color-surface: #0f1420;
   --color-surface-hover: #141a29;
@@ -32,9 +33,12 @@ html, body, #root {
 
 body {
   font-family: var(--font-sans);
-  background: radial-gradient(circle at 20% -10%, rgba(16, 185, 129, 0.12), transparent 45%),
-              radial-gradient(circle at 100% 0%, rgba(34, 211, 238, 0.08), transparent 40%),
-              var(--color-bg);
+  /* Static gradient, not a component - no DOM node, no animation loop,
+     nothing for the browser to do here beyond the one-time paint every
+     page already needs regardless. Applies everywhere by default; the
+     intro splash still paints its own opaque full-screen background on
+     top of this while it's showing. */
+  background: linear-gradient(160deg, #000000 0%, var(--color-bg) 45%, var(--color-bg-navy) 100%);
   color: #e2e8f0;
   min-height: 100dvh;
 }
@@ -83,34 +87,4 @@ h1, h2, h3, .font-display {
 .leaflet-popup-content-wrapper {
   border: 1px solid var(--color-border-subtle);
   border-radius: 12px;
-}
-
-/* FloatingPathsBackground: pure CSS transform/opacity keyframes, not a JS
-   animation loop - only these two properties can run entirely on the
-   compositor thread, independent of React's render cycle and whatever the
-   main thread is doing to get a page's actual content on screen. A
-   per-frame JS-driven animation (the previous Framer Motion version,
-   animating stroke-dasharray/stroke-dashoffset - a paint-triggering
-   property on every single frame, across 36 elements) can never be
-   "independent" of page rendering, because it's competing with page
-   rendering for the same main thread. */
-@keyframes floating-paths-drift {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-2%, 1.5%, 0) scale(1.03); }
-}
-
-@keyframes floating-paths-breathe {
-  0%, 100% { opacity: var(--fp-opacity-min); }
-  50% { opacity: var(--fp-opacity-max); }
-}
-
-.floating-paths-group {
-  animation: floating-paths-drift 40s ease-in-out infinite;
-  will-change: transform;
-}
-
-.floating-paths-line {
-  animation: floating-paths-breathe var(--fp-duration) ease-in-out infinite;
-  animation-delay: var(--fp-delay);
-  will-change: opacity;
 }
