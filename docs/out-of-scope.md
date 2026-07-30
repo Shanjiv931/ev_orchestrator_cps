@@ -161,5 +161,27 @@ container kept serving the pre-edit version until `server.watch.usePolling`
 was added to `vite.config.ts`). Anyone developing on Windows should expect
 this and know the fix already exists in the committed config.
 
+## Phase 8 (DevOps polish)
+
+"GitHub Actions CI green on a clean clone" is verified as thoroughly as
+possible without a pushed remote: this repository has no `git remote`
+configured, so there is no actual GitHub Actions run to point to. Every
+job's exact commands were run locally instead (`pytest` for backend/
+simulation/twin-engine against fresh databases, `npm ci && npm run test
+&& npm run build` for frontend, `docker compose config` for the compose
+validation) and all pass. Pushing to a new GitHub remote wasn't done
+without being asked, per the standing rule about not taking
+externally-visible actions unprompted - if a real green checkmark is
+wanted, push this repo to GitHub and the existing workflow file runs
+as-is.
+
+Only the backend exposes Prometheus metrics; `twin-engine` and the
+simulation services don't. The backend is the one service under
+sustained, varied external load (every frontend interaction), and is
+where Phase 3's real backlog bug happened - it's the highest-value place
+to have latency/error visibility, and it exists to be extended to the
+other services later if that becomes valuable, not because they're
+unimportant.
+
 _Entries for later phases are appended here as they occur, not written in
 advance._

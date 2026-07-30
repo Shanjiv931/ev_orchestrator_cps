@@ -231,6 +231,17 @@ A real bug surfaced during this verification and was fixed: the backend
 had no CORS middleware, so the browser's preflight `OPTIONS` request to
 `/auth/register` failed with 405 before a single form ever worked.
 
+## Observability
+
+The backend exposes Prometheus metrics at `/metrics` via
+`prometheus-fastapi-instrumentator` (request rate, latency histograms,
+status codes, all labeled by handler). Prometheus scrapes it every 15s;
+Grafana auto-provisions a Prometheus datasource and a "Backend API"
+dashboard (`infra/grafana/provisioning/`) with request-rate, error-rate,
+p95-latency, and total-requests panels - verified against a live stack by
+generating traffic and confirming the dashboard's underlying PromQL
+queries return real, non-zero data, not just that the panels render.
+
 ## Data flow guarantee
 
 Twin state must reflect the underlying MQTT message within 1 second in all

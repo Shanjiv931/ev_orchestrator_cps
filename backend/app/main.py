@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.config import settings
 from app.database import Base, engine
@@ -49,6 +50,8 @@ app.include_router(carbon_ledger.router)
 app.include_router(payments.router)
 app.include_router(advanced_features.router)
 app.include_router(twin.router)
+
+Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
 
 @app.get("/health")
