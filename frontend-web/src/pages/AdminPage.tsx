@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
-import { SquaresFourIcon } from "@phosphor-icons/react";
+import { SquaresFourIcon, ArrowsClockwiseIcon } from "@phosphor-icons/react";
 import { api } from "../api/client";
 import type { TwinFeederState } from "../api/types";
 import { GlassCard } from "../components/ui/GlassCard";
@@ -11,6 +11,12 @@ import { Select } from "../components/ui/Input";
 interface ForecastPoint {
   hour: number;
   predicted_sessions: number;
+}
+
+interface DemandModelInfo {
+  mae: number;
+  realDataRows: number;
+  syntheticRows: number;
 }
 
 interface StressTestResult {
@@ -32,6 +38,8 @@ export function AdminPage() {
   const [feeders, setFeeders] = useState<TwinFeederState[]>([]);
   const [stressResult, setStressResult] = useState<StressTestResult | null>(null);
   const [stressBusy, setStressBusy] = useState(false);
+  const [modelInfo, setModelInfo] = useState<DemandModelInfo | null>(null);
+  const [retraining, setRetraining] = useState(false);
 
   useEffect(() => {
     api.get<string[]>("/demand-forecast/zones").then((zs) => {
@@ -45,17 +53,32 @@ export function AdminPage() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
+  async function loadForecast() {
     if (!selectedZone) return;
     const today = new Date().getDay();
-    Promise.all(
+    const results = await Promise.all(
       Array.from({ length: 24 }, (_, hour) =>
-        api.get<{ predicted_sessions: number }>(
+        api.get<{ predicted_sessions: number; model_mae: number; real_data_rows: number; synthetic_rows: number }>(
           `/demand-forecast/predict?zone=${selectedZone}&hour=${hour}&day_of_week=${today}`
-        ).then((r) => ({ hour, predicted_sessions: r.predicted_sessions }))
+        ).then((r) => ({ hour, predicted_sessions: r.predicted_sessions, meta: r }))
       )
-    ).then(setForecast);
-  }, [selectedZone]);
+    );
+    setForecast(results.map(({ hour, predicted_sessions }) => ({ hour, predicted_sessions })));
+    const meta = results[0]?.meta;
+    if (meta) setModelInfo({ mae: meta.model_mae, realDataRows: meta.real_data_rows, syntheticRows: meta.synthetic_rows });
+  }
+
+  useEffect(() => { loadForecast(); }, [selectedZone]);
+
+  async function retrainModel() {
+    setRetraining(true);
+    try {
+      await api.post("/admin/retrain-demand-model");
+      await loadForecast();
+    } finally {
+      setRetraining(false);
+    }
+  }
 
   async function runStressTest(feeder: TwinFeederState) {
     setStressBusy(true);
@@ -82,7 +105,19 @@ export function AdminPage() {
       </div>
 
       <GlassCard className="mb-6">
-        <h2 className="font-medium mb-3">{t("admin.demandForecast")}</h2>
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 className="font-medium">{t("admin.demandForecast")}</h2>
+          <Button variant="ghost" onClick={retrainModel} disabled={retraining} className="!py-1 !px-2.5 text-xs">
+            <ArrowsClockwiseIcon size={13} className={retraining ? "animate-spin" : ""} />
+            {retraining ? "Retraining..." : "Retrain now"}
+          </Button>
+        </div>
+        {modelInfo && (
+          <p className="text-xs text-slate-500 mb-3">
+            Trained on {modelInfo.realDataRows} real charging session{modelInfo.realDataRows === 1 ? "" : "s"}
+            {" "}+ {modelInfo.syntheticRows} synthetic backfill rows &middot; MAE {modelInfo.mae.toFixed(2)}
+          </p>
+        )}
         <Select value={selectedZone} onChange={(e) => setSelectedZone(e.target.value)} className="w-auto mb-3">
           {zones.map((z) => <option key={z} value={z} className="bg-slate-900">{z}</option>)}
         </Select>
