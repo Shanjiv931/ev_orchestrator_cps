@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, Polyline, useMap } from "react-leaflet";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MagnifyingGlassIcon, NavigationArrowIcon, LightningIcon, XIcon,
   ClockIcon, RulerIcon, CarIcon,
 } from "@phosphor-icons/react";
-import { api, wsUrl } from "../api/client";
+import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import type { Station, TwinEvState, Vehicle } from "../api/types";
+import type { Station, Vehicle } from "../api/types";
 import { searchPlace, type GeocodeResult } from "../lib/geocoding";
 import { fetchRoute, type RouteResult } from "../lib/routing";
 import { safetyColor } from "../lib/format";
@@ -31,10 +31,12 @@ function RecenterOnUser({ lat, lon }: { lat: number; lon: number }) {
 
 export function MapPage() {
   const { user } = useAuth();
-  const center: [number, number] = [user?.lat ?? 12.9716, user?.lon ?? 77.5946];
+  // Vellore, Tamil Nadu - the project's primary implementation city (see
+  // lib/indianLocations.ts and backend/app/seed_stations.py). Other cities
+  // (Bengaluru, etc.) still exist for users who pick them at onboarding.
+  const center: [number, number] = [user?.lat ?? 12.9165, user?.lon ?? 79.1325];
 
   const [stations, setStations] = useState<Station[]>([]);
-  const [otherVehicles, setOtherVehicles] = useState<Record<string, TwinEvState>>({});
   const [myVehicles, setMyVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
 
@@ -55,21 +57,6 @@ export function MapPage() {
       setMyVehicles(vs);
       if (vs.length > 0) setSelectedVehicleId(vs[0].id);
     }).catch(() => setMyVehicles([]));
-  }, []);
-
-  useEffect(() => {
-    const socket = new WebSocket(wsUrl("/ws/live"));
-    socket.onmessage = (event) => {
-      try {
-        const envelope = JSON.parse(event.data);
-        if (envelope.entity_type === "ev") {
-          setOtherVehicles((prev) => ({ ...prev, [envelope.entity_id]: envelope.data }));
-        }
-      } catch {
-        // ignore malformed frames
-      }
-    };
-    return () => socket.close();
   }, []);
 
   function handleDestinationInput(value: string) {
@@ -161,8 +148,6 @@ export function MapPage() {
     setActiveRoute(route);
   }
 
-  const otherVehicleList = useMemo(() => Object.values(otherVehicles), [otherVehicles]);
-
   return (
     <div className="relative h-[calc(100dvh-9.5rem)] rounded-2xl overflow-hidden glass-panel">
       <MapContainer center={center} zoom={13} className="w-full h-full" zoomControl={false}>
@@ -185,13 +170,6 @@ export function MapPage() {
               Safety: {(station.safety_score * 100).toFixed(0)}%<br />
               Chargers: {station.chargers.length} &middot; Swap slots: {station.swap_slots.length}
             </Popup>
-          </CircleMarker>
-        ))}
-
-        {otherVehicleList.map((v) => (
-          <CircleMarker key={v.vehicle_id} center={[v.lat, v.lon]} radius={3}
-                        pathOptions={{ color: "#2563eb", fillOpacity: 0.9 }}>
-            <Popup>{v.vehicle_class} - {v.battery_pct.toFixed(0)}% - {v.speed_kmh.toFixed(0)} km/h</Popup>
           </CircleMarker>
         ))}
 

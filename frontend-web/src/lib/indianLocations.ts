@@ -5,6 +5,15 @@ export interface CityOption {
 }
 
 export const INDIAN_STATES: Record<string, CityOption[]> = {
+  // Vellore is this project's primary implementation city - full station
+  // coverage, admin scoping, the works (see backend/app/seed_stations.py
+  // and app/routers/admin.py). Listed first so it's the default at
+  // onboarding; every other city remains available and functional.
+  "Tamil Nadu": [
+    { city: "Vellore", lat: 12.9165, lon: 79.1325 },
+    { city: "Chennai", lat: 13.0827, lon: 80.2707 },
+    { city: "Coimbatore", lat: 11.0168, lon: 76.9558 },
+  ],
   Karnataka: [
     { city: "Bengaluru", lat: 12.9716, lon: 77.5946 },
     { city: "Mysuru", lat: 12.2958, lon: 76.6394 },
@@ -15,10 +24,6 @@ export const INDIAN_STATES: Record<string, CityOption[]> = {
     { city: "Nagpur", lat: 21.1458, lon: 79.0882 },
   ],
   Delhi: [{ city: "New Delhi", lat: 28.6139, lon: 77.209 }],
-  "Tamil Nadu": [
-    { city: "Chennai", lat: 13.0827, lon: 80.2707 },
-    { city: "Coimbatore", lat: 11.0168, lon: 76.9558 },
-  ],
   Telangana: [{ city: "Hyderabad", lat: 17.385, lon: 78.4867 }],
   "West Bengal": [{ city: "Kolkata", lat: 22.5726, lon: 88.3639 }],
   Gujarat: [

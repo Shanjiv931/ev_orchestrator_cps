@@ -36,6 +36,31 @@ class StationSeed:
 
 
 STATION_SEEDS: list[StationSeed] = [
+    # --- Vellore (primary implementation city - see docs/out-of-scope.md) ---
+    StationSeed("Vellore", "VIT University", "public_dc_hub", 12.9698, 79.1559, False, 0.88,
+                [ChargerSpec(60.0, 4), ChargerSpec(120.0, 2)], swap_slots=6),
+    StationSeed("Vellore", "Katpadi", "public_dc_hub", 12.9686, 79.1352, False, 0.8,
+                [ChargerSpec(60.0, 3)]),
+    StationSeed("Vellore", "CMC Hospital - Ida Scudder Road", "public_dc_hub", 12.9186, 79.1354, False, 0.85,
+                [ChargerSpec(60.0, 3), ChargerSpec(120.0, 1)]),
+    StationSeed("Vellore", "Vellore Fort", "housing_society_ac", 12.9202, 79.1329, True, 0.9,
+                [ChargerSpec(7.4, 3)]),
+    StationSeed("Vellore", "Bagayam", "housing_society_ac", 12.9401, 79.1204, True, 0.86,
+                [ChargerSpec(7.4, 4)]),
+    StationSeed("Vellore", "Sathuvachari", "housing_society_ac", 12.9004, 79.1284, False, 0.74,
+                [ChargerSpec(7.4, 3)]),
+    StationSeed("Vellore", "Gandhi Nagar", "public_dc_hub", 12.9235, 79.1450, False, 0.79,
+                [ChargerSpec(60.0, 3)]),
+    StationSeed("Vellore", "Thorapadi", "highway_corridor", 12.9550, 79.1180, False, 0.7,
+                [ChargerSpec(120.0, 5)]),
+    StationSeed("Vellore", "Officers Line", "housing_society_ac", 12.9150, 79.1370, True, 0.92,
+                [ChargerSpec(7.4, 3)]),
+    StationSeed("Vellore", "Chittoor Road", "highway_corridor", 12.9450, 79.1480, False, 0.68,
+                [ChargerSpec(120.0, 4)], swap_slots=6),
+    StationSeed("Vellore", "Green Circle", "public_dc_hub", 12.9280, 79.1395, False, 0.82,
+                [ChargerSpec(60.0, 3)]),
+    StationSeed("Vellore", "Arni Road", "highway_corridor", 12.9080, 79.1500, False, 0.72,
+                [ChargerSpec(120.0, 4)]),
     # --- Bengaluru ---
     StationSeed("Bengaluru", "Koramangala", "public_dc_hub", 12.9352, 77.6146, False, 0.82,
                 [ChargerSpec(60.0, 4), ChargerSpec(120.0, 2)], swap_slots=6),
