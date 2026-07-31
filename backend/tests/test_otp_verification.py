@@ -8,11 +8,21 @@ from app.redis_client import redis_client
 from app.routers.oauth import _find_or_create_oauth_user
 
 
+_VALID_REGISTRATION_EXTRAS = {
+    "date_of_birth": "1995-06-15",
+    "phone_number": "+919876543210",
+    "license_number": "TN01820230012345",
+    "license_expiry": "2030-06-15",
+    "profession": "Software Engineer",
+}
+
+
 def _register(client, email: str, monkeypatch) -> tuple[str, list]:
     codes: list[str] = []
     monkeypatch.setattr("app.routers.auth.send_otp_email", lambda to, code: codes.append(code))
     response = client.post("/auth/register", json={
         "name": "Otp Test", "email": email, "password": "correct-horse-battery-staple", "persona": "individual_driver",
+        **_VALID_REGISTRATION_EXTRAS,
     })
     assert response.status_code == 201, response.text
     return response.json()["pending_registration_id"], codes

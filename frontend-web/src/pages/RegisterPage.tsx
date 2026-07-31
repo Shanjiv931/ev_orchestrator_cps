@@ -14,6 +14,10 @@ import { GoogleSignInButton } from "../components/GoogleSignInButton";
 // see backend app/routers/admin.py's approval workflow.
 const PERSONAS: Persona[] = ["individual_driver", "fleet_operator", "housing_society_resident"];
 
+// Sixteen years ago-ish max, so the date picker doesn't default somewhere
+// that instantly fails the backend's real "at least 18" check.
+const MAX_DOB = new Date(Date.now() - 18 * 365.25 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
 export function RegisterPage() {
   const { t } = useTranslation();
   const { register } = useAuth();
@@ -22,6 +26,11 @@ export function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [persona, setPersona] = useState<Persona>("individual_driver");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [licenseExpiry, setLicenseExpiry] = useState("");
+  const [profession, setProfession] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -30,7 +39,10 @@ export function RegisterPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const pending = await register(name, email, password, persona);
+      const pending = await register({
+        name, email, password, persona,
+        dateOfBirth, phoneNumber, licenseNumber, licenseExpiry, profession,
+      });
       navigate("/verify-otp", { state: pending });
     } catch (err) {
       console.error("Registration failed:", err);
@@ -72,6 +84,23 @@ export function RegisterPage() {
                    onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
             <Input type="password" required placeholder={t("auth.password")} value={password}
                    onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+            <Input type="tel" required placeholder="Phone number" value={phoneNumber}
+                   onChange={(e) => setPhoneNumber(e.target.value)} autoComplete="tel" />
+            <div>
+              <FieldLabel>Date of birth</FieldLabel>
+              <Input type="date" required max={MAX_DOB} value={dateOfBirth}
+                     onChange={(e) => setDateOfBirth(e.target.value)} />
+              <p className="text-xs text-slate-500 mt-1">Must be 18 or older.</p>
+            </div>
+            <Input required placeholder="Driving license number" value={licenseNumber}
+                   onChange={(e) => setLicenseNumber(e.target.value)} />
+            <div>
+              <FieldLabel>License expiry date</FieldLabel>
+              <Input type="date" required value={licenseExpiry}
+                     onChange={(e) => setLicenseExpiry(e.target.value)} />
+            </div>
+            <Input required placeholder="Profession" value={profession}
+                   onChange={(e) => setProfession(e.target.value)} />
             <div>
               <FieldLabel>{t("auth.persona")}</FieldLabel>
               <Select value={persona} onChange={(e) => setPersona(e.target.value as Persona)}>

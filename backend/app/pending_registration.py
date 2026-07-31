@@ -6,7 +6,7 @@ with no scheduled job needed.
 """
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from app.config import settings
 from app.redis_client import redis_client
@@ -21,6 +21,7 @@ _KEY_TTL_SECONDS = settings.otp_expire_minutes * 60 + 600
 
 def create_pending_registration(
     *, name: str, email: str, hashed_password: str, persona: str, dpdp_consent_flag: bool,
+    date_of_birth: date, phone_number: str, license_number: str, license_expiry: date, profession: str,
     otp_code_hash: str, otp_expires_at: datetime,
 ) -> str:
     pending_id = str(uuid.uuid4())
@@ -30,6 +31,11 @@ def create_pending_registration(
         "hashed_password": hashed_password,
         "persona": persona,
         "dpdp_consent_flag": dpdp_consent_flag,
+        "date_of_birth": date_of_birth.isoformat(),
+        "phone_number": phone_number,
+        "license_number": license_number,
+        "license_expiry": license_expiry.isoformat(),
+        "profession": profession,
         "otp_code_hash": otp_code_hash,
         "otp_expires_at": otp_expires_at.isoformat(),
         "last_sent_at": datetime.now(timezone.utc).isoformat(),

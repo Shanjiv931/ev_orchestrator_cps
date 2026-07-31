@@ -7,11 +7,25 @@ interface PendingRegistration {
   email: string;
 }
 
+// Nine positional params would be unreadable at the call site - a single
+// object mirrors the backend's UserCreate schema field-for-field.
+export interface RegisterInput {
+  name: string;
+  email: string;
+  password: string;
+  persona: Persona;
+  dateOfBirth: string;
+  phoneNumber: string;
+  licenseNumber: string;
+  licenseExpiry: string;
+  profession: string;
+}
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, persona: Persona) => Promise<PendingRegistration>;
+  register: (input: RegisterInput) => Promise<PendingRegistration>;
   loginWithGoogle: (idToken: string) => Promise<void>;
   verifyOtp: (pendingRegistrationId: string, otpCode: string) => Promise<void>;
   resendOtp: (pendingRegistrationId: string) => Promise<void>;
@@ -46,11 +60,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loadCurrentUser();
   }, [loadCurrentUser]);
 
-  const register = useCallback(async (name: string, email: string, password: string, persona: Persona) => {
+  const register = useCallback(async (input: RegisterInput) => {
     // No token yet - registration isn't persisted (no User row exists) until
     // the OTP is verified, see backend/app/routers/auth.py.
     const response = await api.post<{ pending_registration_id: string; email: string }>("/auth/register", {
-      name, email, password, persona, dpdp_consent_flag: true,
+      name: input.name,
+      email: input.email,
+      password: input.password,
+      persona: input.persona,
+      dpdp_consent_flag: true,
+      date_of_birth: input.dateOfBirth,
+      phone_number: input.phoneNumber,
+      license_number: input.licenseNumber,
+      license_expiry: input.licenseExpiry,
+      profession: input.profession,
     });
     return { pendingRegistrationId: response.pending_registration_id, email: response.email };
   }, []);

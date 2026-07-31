@@ -15,6 +15,11 @@ export interface User {
   location_city: string | null;
   lat: number | null;
   lon: number | null;
+  date_of_birth: string | null;
+  phone_number: string | null;
+  license_number: string | null;
+  license_expiry: string | null;
+  profession: string | null;
 }
 
 export interface Vehicle {

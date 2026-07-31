@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
@@ -63,6 +63,11 @@ def register(payload: UserCreate, db: Session = Depends(get_db)) -> PendingRegis
         hashed_password=hash_password(payload.password),
         persona=payload.persona,
         dpdp_consent_flag=payload.dpdp_consent_flag,
+        date_of_birth=payload.date_of_birth,
+        phone_number=payload.phone_number,
+        license_number=payload.license_number,
+        license_expiry=payload.license_expiry,
+        profession=payload.profession,
         otp_code_hash=hash_otp_code(otp_code),
         otp_expires_at=otp_expiry(),
     )
@@ -86,6 +91,11 @@ def verify_otp(payload: OtpVerifyRequest, db: Session = Depends(get_db)) -> Toke
         hashed_password=pending["hashed_password"],
         persona=pending["persona"],
         dpdp_consent_flag=pending["dpdp_consent_flag"],
+        date_of_birth=date.fromisoformat(pending["date_of_birth"]),
+        phone_number=pending["phone_number"],
+        license_number=pending["license_number"],
+        license_expiry=date.fromisoformat(pending["license_expiry"]),
+        profession=pending["profession"],
         email_verified=True,  # the OTP just confirmed this
     )
     db.add(user)

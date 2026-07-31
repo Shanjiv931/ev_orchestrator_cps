@@ -36,6 +36,8 @@ def _make_admin_headers(db_session, email: str) -> dict:
 def test_cannot_register_as_city_admin_directly(client):
     response = client.post("/auth/register", json={
         "name": "X", "email": "wannabe-admin@example.com", "password": "pass1234", "persona": "city_admin",
+        "date_of_birth": "1995-06-15", "phone_number": "+919876543210",
+        "license_number": "TN01820230012345", "license_expiry": "2030-06-15", "profession": "Software Engineer",
     })
     assert response.status_code == 403
 

@@ -1,9 +1,9 @@
 """Pydantic request/response schemas, one Create/Read pair per Section 8
 entity plus the auth extension (see models/entities.py)."""
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timezone
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 
 class UserCreate(BaseModel):
@@ -12,6 +12,23 @@ class UserCreate(BaseModel):
     password: str
     persona: str
     dpdp_consent_flag: bool = False
+    # Required for password registration (see app/routers/auth.py) - not
+    # collected at all for Google/Firebase sign-in, which skips UserCreate
+    # entirely (Google already gives us name/email, nothing else).
+    date_of_birth: date
+    phone_number: str
+    license_number: str
+    license_expiry: date
+    profession: str
+
+    @field_validator("date_of_birth")
+    @classmethod
+    def _must_be_at_least_18(cls, value: date) -> date:
+        today = datetime.now(timezone.utc).date()
+        age_years = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
+        if age_years < 18:
+            raise ValueError("must be at least 18 years old to register")
+        return value
 
 
 class UserRead(BaseModel):
@@ -28,6 +45,11 @@ class UserRead(BaseModel):
     location_city: str | None
     lat: float | None
     lon: float | None
+    date_of_birth: date | None
+    phone_number: str | None
+    license_number: str | None
+    license_expiry: date | None
+    profession: str | None
 
 
 class UserUpdate(BaseModel):

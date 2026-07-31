@@ -25,6 +25,11 @@ _STATEMENTS = [
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT true",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_code_hash VARCHAR",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_expires_at TIMESTAMPTZ",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS date_of_birth DATE",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS phone_number VARCHAR",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS license_number VARCHAR",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS license_expiry DATE",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS profession VARCHAR",
     "DO $$ BEGIN "
     "  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'users_oauth_subject_key') THEN "
     "    ALTER TABLE users ADD CONSTRAINT users_oauth_subject_key UNIQUE (oauth_subject); "

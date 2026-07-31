@@ -5,9 +5,9 @@ has no login credential fields at all, so this is the "strictly necessary"
 extension the build contract allows for.
 """
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -45,6 +45,16 @@ class User(Base):
     location_city: Mapped[str | None] = mapped_column(String, nullable=True)
     lat: Mapped[float | None] = mapped_column(Float, nullable=True)
     lon: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+    # Required at password registration (see app/schemas.py's UserCreate);
+    # nullable at the DB level because Google/Firebase sign-in doesn't
+    # collect any of this - those accounts have it null until a future
+    # "complete your profile" flow exists.
+    date_of_birth: Mapped[date | None] = mapped_column(Date, nullable=True)
+    phone_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    license_number: Mapped[str | None] = mapped_column(String, nullable=True)
+    license_expiry: Mapped[date | None] = mapped_column(Date, nullable=True)
+    profession: Mapped[str | None] = mapped_column(String, nullable=True)
 
     vehicles: Mapped[list["Vehicle"]] = relationship(back_populates="user")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="user")

@@ -1,6 +1,16 @@
+_VALID_REGISTRATION_EXTRAS = {
+    "date_of_birth": "1995-06-15",
+    "phone_number": "+919876543210",
+    "license_number": "TN01820230012345",
+    "license_expiry": "2030-06-15",
+    "profession": "Software Engineer",
+}
+
+
 def test_register_returns_pending_registration(client):
     response = client.post("/auth/register", json={
         "name": "Asha", "email": "asha@example.com", "password": "hunter2pass", "persona": "individual_driver",
+        **_VALID_REGISTRATION_EXTRAS,
     })
     assert response.status_code == 201
     body = response.json()
@@ -8,11 +18,22 @@ def test_register_returns_pending_registration(client):
     assert body["email"] == "asha@example.com"
 
 
+def test_register_rejects_under_18(client):
+    response = client.post("/auth/register", json={
+        "name": "Too Young", "email": "tooyoung@example.com", "password": "hunter2pass", "persona": "individual_driver",
+        **{**_VALID_REGISTRATION_EXTRAS, "date_of_birth": "2015-01-01"},
+    })
+    assert response.status_code == 422
+
+
 def test_registering_same_unverified_email_twice_is_allowed(client):
     # No row is persisted until OTP verification (see app/routers/auth.py),
     # so there's no real account yet for a second attempt to conflict with -
     # each gets its own independent pending registration.
-    payload = {"name": "Asha", "email": "dup@example.com", "password": "hunter2pass", "persona": "individual_driver"}
+    payload = {
+        "name": "Asha", "email": "dup@example.com", "password": "hunter2pass", "persona": "individual_driver",
+        **_VALID_REGISTRATION_EXTRAS,
+    }
     first = client.post("/auth/register", json=payload)
     second = client.post("/auth/register", json=payload)
     assert first.status_code == 201
@@ -24,6 +45,7 @@ def test_registering_an_already_verified_email_conflicts(client, auth_headers):
     auth_headers("already-verified@example.com")
     response = client.post("/auth/register", json={
         "name": "X", "email": "already-verified@example.com", "password": "hunter2pass", "persona": "individual_driver",
+        **_VALID_REGISTRATION_EXTRAS,
     })
     assert response.status_code == 409
 
