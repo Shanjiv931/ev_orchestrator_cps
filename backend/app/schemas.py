@@ -97,6 +97,42 @@ class ResendOtpRequest(BaseModel):
     pending_registration_id: str
 
 
+class VelloreFleetVehicleRead(BaseModel):
+    """One row of the Vellore admin's fleet view (app/routers/admin.py) -
+    everything about a Vellore-registered vehicle and its owner the admin
+    needs to act on a request or an incident, in one place rather than
+    cross-referencing users/vehicles/telemetry by hand."""
+    vehicle_id: uuid.UUID
+    number_plate: str | None
+    vehicle_class: str
+    brand: str | None
+    vehicle_model: str | None
+    connector_type: str
+    owner_name: str
+    owner_profession: str | None
+    owner_license_number: str | None
+    owner_license_expiry: date | None
+    owner_phone_number: str | None
+    is_paired: bool
+    battery_pct: float | None
+    is_charging: bool | None
+
+
+class CrossDistrictChargingRead(BaseModel):
+    """A non-Vellore-plated vehicle currently mid-session at a Vellore
+    station - see app/routers/admin.py. Always empty today since vehicle
+    registration is Vellore-plate-only (app/vellore.py), but the query is
+    real: if this deployment ever onboards another district, any of its
+    vehicles charging on Vellore infrastructure shows up here automatically."""
+    vehicle_id: uuid.UUID
+    number_plate: str | None
+    owner_name: str
+    station_id: uuid.UUID
+    station_name: str
+    session_id: uuid.UUID
+    session_start_time: datetime
+
+
 class AdminRequestRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
@@ -197,6 +233,7 @@ class StationCreate(BaseModel):
     lon: float
     safety_score: float = 0.0
     has_solar: bool = False
+    city: str | None = None
 
 
 class StationUpdate(BaseModel):
@@ -232,6 +269,7 @@ class StationRead(BaseModel):
     lon: float
     safety_score: float
     has_solar: bool
+    city: str | None
     chargers: list[ChargerRead] = []
     swap_slots: list[SwapSlotRead] = []
 

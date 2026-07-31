@@ -114,7 +114,7 @@ def seed_stations_if_empty(db: Session) -> None:
     for seed in STATION_SEEDS:
         station = Station(
             station_type=seed.station_type, lat=seed.lat, lon=seed.lon,
-            safety_score=seed.safety_score, has_solar=seed.has_solar,
+            safety_score=seed.safety_score, has_solar=seed.has_solar, city=seed.city,
         )
         db.add(station)
         db.flush()  # get station.id before adding children

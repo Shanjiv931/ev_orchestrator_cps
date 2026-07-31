@@ -6,8 +6,17 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_admin, get_current_user
 from app.database import get_db
-from app.models import AdminRequest, MeridianGridProvisioning, User, Vehicle, VehicleRequest
-from app.schemas import AdminRequestRead, UserRead, VehicleRequestRead, VehicleRequestReview
+from app.models import AdminRequest, Charger, ChargingSession, MeridianGridProvisioning, Station, User, Vehicle, VehicleRequest
+from app.routers.vehicle_link import _simulated_telemetry
+from app.schemas import (
+    AdminRequestRead,
+    CrossDistrictChargingRead,
+    UserRead,
+    VelloreFleetVehicleRead,
+    VehicleRequestRead,
+    VehicleRequestReview,
+)
+from app.vellore import is_vellore_plate
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -152,3 +161,69 @@ def reject_vehicle_request(request_id: uuid.UUID, payload: VehicleRequestReview 
     db.commit()
     db.refresh(req)
     return req
+
+
+@router.get("/vellore-fleet", response_model=list[VelloreFleetVehicleRead])
+def list_vellore_fleet(current_admin: User = Depends(get_current_admin), db: Session = Depends(get_db)) -> list[VelloreFleetVehicleRead]:
+    """Every vehicle registered under the Vellore admin's district - plate,
+    owner identity/profession/license, and live battery status, so the
+    admin never has to cross-reference users and vehicles by hand. Vehicles
+    with no plate on file (rows that predate app/vellore.py's Vellore-only
+    validation) aren't verifiably Vellore-registered, so they're excluded
+    rather than guessed at."""
+    rows = db.query(Vehicle, User).join(User, Vehicle.user_id == User.id).all()
+    fleet: list[VelloreFleetVehicleRead] = []
+    for vehicle, owner in rows:
+        if not vehicle.number_plate or not is_vellore_plate(vehicle.number_plate):
+            continue
+        telemetry = _simulated_telemetry(vehicle) if vehicle.is_paired else None
+        fleet.append(VelloreFleetVehicleRead(
+            vehicle_id=vehicle.id,
+            number_plate=vehicle.number_plate,
+            vehicle_class=vehicle.vehicle_class,
+            brand=vehicle.brand,
+            vehicle_model=vehicle.vehicle_model,
+            connector_type=vehicle.connector_type,
+            owner_name=owner.name,
+            owner_profession=owner.profession,
+            owner_license_number=owner.license_number,
+            owner_license_expiry=owner.license_expiry,
+            owner_phone_number=owner.phone_number,
+            is_paired=vehicle.is_paired,
+            battery_pct=telemetry.battery_pct if telemetry else None,
+            is_charging=telemetry.is_charging if telemetry else None,
+        ))
+    return fleet
+
+
+@router.get("/cross-district-charging", response_model=list[CrossDistrictChargingRead])
+def list_cross_district_charging(current_admin: User = Depends(get_current_admin), db: Session = Depends(get_db)) -> list[CrossDistrictChargingRead]:
+    """Vehicles plated outside Vellore that are mid-session on Vellore
+    infrastructure right now - the Vellore admin's window into vehicles
+    from other districts using local chargers. Always empty today:
+    registration only accepts Vellore plates (app/vellore.py), so no
+    non-Vellore vehicle can exist yet. The query itself is real and will
+    start returning rows the moment that restriction is ever relaxed for
+    another district."""
+    rows = (
+        db.query(ChargingSession, Vehicle, User, Station)
+        .join(Vehicle, ChargingSession.vehicle_id == Vehicle.id)
+        .join(User, ChargingSession.user_id == User.id)
+        .join(Charger, ChargingSession.charger_id == Charger.id)
+        .join(Station, Charger.station_id == Station.id)
+        .filter(ChargingSession.end_time.is_(None), Station.city == "Vellore")
+        .all()
+    )
+    return [
+        CrossDistrictChargingRead(
+            vehicle_id=vehicle.id,
+            number_plate=vehicle.number_plate,
+            owner_name=owner.name,
+            station_id=station.id,
+            station_name=station.station_type,
+            session_id=session.id,
+            session_start_time=session.start_time,
+        )
+        for session, vehicle, owner, station in rows
+        if not (vehicle.number_plate and is_vellore_plate(vehicle.number_plate))
+    ]

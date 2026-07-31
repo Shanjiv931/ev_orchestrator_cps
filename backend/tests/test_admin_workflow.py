@@ -98,3 +98,40 @@ def test_admin_users_list_requires_admin(client, auth_headers, db_session):
     allowed = client.get("/admin/users", headers=admin_headers)
     assert allowed.status_code == 200
     assert any(u["email"] == "list-test-user@example.com" for u in allowed.json())
+
+
+def test_vellore_fleet_lists_vellore_plated_vehicles_with_owner_info(client, auth_headers, create_test_vehicle, db_session):
+    email = "fleet-owner@example.com"
+    auth_headers(email)  # creates the user row
+    create_test_vehicle(email, number_plate="TN23FL1234")
+    admin_headers = _make_admin_headers(db_session, "admin-fleet1@example.com")
+
+    fleet = client.get("/admin/vellore-fleet", headers=admin_headers)
+    assert fleet.status_code == 200
+    row = next(r for r in fleet.json() if r["number_plate"] == "TN23FL1234")
+    assert row["owner_name"] == "Test User"
+    assert row["is_paired"] is False
+    assert row["battery_pct"] is None  # unpaired - no live telemetry
+
+
+def test_vellore_fleet_excludes_non_vellore_plates(client, auth_headers, create_test_vehicle, db_session):
+    email = "fleet-owner2@example.com"
+    auth_headers(email)
+    create_test_vehicle(email, number_plate="KA01ZZ9999")
+    admin_headers = _make_admin_headers(db_session, "admin-fleet2@example.com")
+
+    fleet = client.get("/admin/vellore-fleet", headers=admin_headers)
+    assert not any(r["number_plate"] == "KA01ZZ9999" for r in fleet.json())
+
+
+def test_vellore_fleet_requires_admin(client, auth_headers):
+    headers = auth_headers("not-admin@example.com")
+    response = client.get("/admin/vellore-fleet", headers=headers)
+    assert response.status_code == 403
+
+
+def test_cross_district_charging_is_empty_by_default(client, db_session):
+    admin_headers = _make_admin_headers(db_session, "admin-fleet3@example.com")
+    response = client.get("/admin/cross-district-charging", headers=admin_headers)
+    assert response.status_code == 200
+    assert response.json() == []

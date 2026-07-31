@@ -45,6 +45,19 @@ _STATEMENTS = [
     "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS payment_status VARCHAR NOT NULL DEFAULT 'unpaid'",
     "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS payment_method VARCHAR",
     "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS paid_at TIMESTAMPTZ",
+    "ALTER TABLE stations ADD COLUMN IF NOT EXISTS city VARCHAR",
+    # Backfill only rows seeded before `city` existed - a non-overlapping
+    # lat/lon bounding box per city, matching the coordinates each city's
+    # block in app/seed_stations.py actually uses. New stations get `city`
+    # set directly at seed/creation time instead.
+    "UPDATE stations SET city = 'Vellore' WHERE city IS NULL AND lat BETWEEN 12.85 AND 13.00 AND lon BETWEEN 79.05 AND 79.20",
+    "UPDATE stations SET city = 'Bengaluru' WHERE city IS NULL AND lat BETWEEN 12.90 AND 13.00 AND lon BETWEEN 77.55 AND 77.80",
+    "UPDATE stations SET city = 'Mumbai' WHERE city IS NULL AND lat BETWEEN 19.00 AND 19.15 AND lon BETWEEN 72.80 AND 72.95",
+    "UPDATE stations SET city = 'Delhi' WHERE city IS NULL AND lat BETWEEN 28.50 AND 28.65 AND lon BETWEEN 77.00 AND 77.25",
+    "UPDATE stations SET city = 'Chennai' WHERE city IS NULL AND lat BETWEEN 12.85 AND 13.10 AND lon BETWEEN 80.15 AND 80.25",
+    "UPDATE stations SET city = 'Hyderabad' WHERE city IS NULL AND lat BETWEEN 17.40 AND 17.50 AND lon BETWEEN 78.35 AND 78.45",
+    "UPDATE stations SET city = 'Pune' WHERE city IS NULL AND lat BETWEEN 18.50 AND 18.65 AND lon BETWEEN 73.70 AND 73.95",
+    "UPDATE stations SET city = 'Kolkata' WHERE city IS NULL AND lat BETWEEN 22.50 AND 22.60 AND lon BETWEEN 88.30 AND 88.45",
     "ALTER TABLE chargers ADD COLUMN IF NOT EXISTS port_number INTEGER",
     # Backfill only rows seeded before port_number existed - a stable
     # 1-indexed sequence per station, ordered by id so it's deterministic

@@ -98,6 +98,11 @@ class Station(Base):
     lon: Mapped[float] = mapped_column(Float, nullable=False)
     safety_score: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     has_solar: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # Which district/city this station belongs to (see app/seed_stations.py) -
+    # what lets the Vellore admin dashboard (app/routers/admin.py) tell "a
+    # Vellore station" apart from every other city's, e.g. for the
+    # out-of-Vellore-vehicle-charging-here view.
+    city: Mapped[str | None] = mapped_column(String, nullable=True)
 
     chargers: Mapped[list["Charger"]] = relationship(back_populates="station")
     swap_slots: Mapped[list["SwapSlot"]] = relationship(back_populates="station")
