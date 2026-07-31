@@ -309,6 +309,9 @@ class SessionRead(BaseModel):
     energy_kwh: float
     cost: float
     is_emergency_priority: bool
+    payment_status: str
+    payment_method: str | None
+    paid_at: datetime | None
 
 
 class StartSessionAtStationRequest(BaseModel):
@@ -318,6 +321,20 @@ class StartSessionAtStationRequest(BaseModel):
 
 class SessionWithPortRead(SessionRead):
     port_number: int | None
+
+
+class SessionPaymentRead(BaseModel):
+    session_id: uuid.UUID
+    station_id: uuid.UUID | None
+    station_name: str | None
+    cost: float
+    payment_status: str
+    payment_method: str | None
+    paid_at: datetime | None
+
+
+class PaySessionRequest(BaseModel):
+    method: str  # "upi" | "card" | "cash"
 
 
 class TelemetryCreate(BaseModel):

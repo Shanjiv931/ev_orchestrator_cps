@@ -167,6 +167,12 @@ class ChargingSession(Base):
     energy_kwh: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     cost: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     is_emergency_priority: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # Paid at the station itself (see app/routers/payments.py) - "unpaid" |
+    # "paid". No simulated UPI/QR flow exists anymore; payment_method only
+    # records which in-person method the user picked.
+    payment_status: Mapped[str] = mapped_column(String, default="unpaid", nullable=False)
+    payment_method: Mapped[str | None] = mapped_column(String, nullable=True)  # "upi" | "card" | "cash"
+    paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="sessions")
     vehicle: Mapped["Vehicle"] = relationship(back_populates="sessions")

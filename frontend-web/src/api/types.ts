@@ -141,6 +141,19 @@ export interface ChargingSession {
   energy_kwh: number;
   cost: number;
   is_emergency_priority: boolean;
+  payment_status: "unpaid" | "paid";
+  payment_method: "upi" | "card" | "cash" | null;
+  paid_at: string | null;
+}
+
+export interface SessionPayment {
+  session_id: string;
+  station_id: string | null;
+  station_name: string | null;
+  cost: number;
+  payment_status: "unpaid" | "paid";
+  payment_method: "upi" | "card" | "cash" | null;
+  paid_at: string | null;
 }
 
 export interface BatteryHealth {

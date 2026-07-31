@@ -74,6 +74,8 @@ export function MapPage() {
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<{ id: string; port_number: number | null } | null>(null);
   const [chargeEnergyKwh, setChargeEnergyKwh] = useState(0);
+  const [paidMethod, setPaidMethod] = useState<"upi" | "card" | "cash" | null>(null);
+  const [payBusy, setPayBusy] = useState(false);
 
   const lastRoutedFrom = useRef<[number, number] | null>(null);
   const watchId = useRef<number | null>(null);
@@ -291,10 +293,13 @@ export function MapPage() {
   }
 
   async function stopCharging() {
-    if (!session) return;
+    if (!session || !activeStop) return;
     setBusy(true);
     try {
-      await api.patch(`/sessions/${session.id}`, { energy_kwh: Number(chargeEnergyKwh.toFixed(2)) });
+      const cost = chargeEnergyKwh * RATE_PER_KWH[activeStop.chargerType];
+      await api.patch(`/sessions/${session.id}`, {
+        energy_kwh: Number(chargeEnergyKwh.toFixed(2)), cost: Number(cost.toFixed(2)),
+      });
       await api.post(`/sessions/${session.id}/complete`);
       setPhase("complete");
     } finally {
@@ -312,9 +317,21 @@ export function MapPage() {
     setLiveDistanceKm(null);
     setSession(null);
     setChargeEnergyKwh(0);
+    setPaidMethod(null);
     setError(null);
     lastRoutedFrom.current = null;
     arrivalInFlight.current = false;
+  }
+
+  async function payAtStation(method: "upi" | "card" | "cash") {
+    if (!session) return;
+    setPayBusy(true);
+    try {
+      await api.post(`/payments/sessions/${session.id}/pay`, { method });
+      setPaidMethod(method);
+    } finally {
+      setPayBusy(false);
+    }
   }
 
   const mapCenter = activeStop && phase !== "idle" && phase !== "choosing-power" ? originPos : home;
@@ -512,7 +529,7 @@ export function MapPage() {
 
       {/* --- session complete --- */}
       <AnimatePresence>
-        {phase === "complete" && (
+        {phase === "complete" && activeStop && (
           <motion.div
             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 32 }}
@@ -520,7 +537,28 @@ export function MapPage() {
           >
             <CheckCircleIcon size={28} weight="fill" className="text-emerald-400 mx-auto mb-2" />
             <p className="text-sm font-medium">Charging complete - {chargeEnergyKwh.toFixed(1)} kWh delivered</p>
-            <p className="text-xs text-slate-500 mt-1 mb-3">Pay at the station when you leave.</p>
+
+            {paidMethod ? (
+              <p className="text-xs text-emerald-300 mt-2 mb-3 flex items-center justify-center gap-1">
+                <CheckCircleIcon size={14} weight="fill" /> Paid via {paidMethod}
+              </p>
+            ) : (
+              <>
+                <p className="text-xs text-slate-400 mt-1 mb-3">
+                  Pay at {activeStop.station.station_type}
+                  {activeStop.station.id && <span className="font-mono text-slate-500"> (ID: {activeStop.station.id.slice(0, 8)})</span>}?
+                </p>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {(["upi", "card", "cash"] as const).map((method) => (
+                    <button key={method} disabled={payBusy} onClick={() => payAtStation(method)}
+                            className="py-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] cursor-pointer transition-colors disabled:opacity-50 text-xs capitalize">
+                      {method}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
             <Button fullWidth variant="secondary" onClick={reset}>Done</Button>
           </motion.div>
         )}

@@ -63,8 +63,7 @@ export const resources = {
         emergency: "Emergency priority",
         energy: "Energy delivered (kWh)",
         cost: "Cost (INR)",
-        pay: "Pay (simulated UPI)",
-        payNote: "SIMULATED PAYMENT - no real money moves",
+        pay: "Pay at station",
         carbonSummary: "CO2 avoided",
       },
       admin: {
@@ -145,8 +144,7 @@ export const resources = {
         emergency: "आपातकालीन प्राथमिकता",
         energy: "ऊर्जा (kWh)",
         cost: "लागत (₹)",
-        pay: "भुगतान करें (सिम्युलेटेड UPI)",
-        payNote: "सिम्युलेटेड भुगतान - कोई असली पैसा नहीं चलता",
+        pay: "स्टेशन पर भुगतान करें",
         carbonSummary: "बचाई गई CO2",
       },
       admin: {
