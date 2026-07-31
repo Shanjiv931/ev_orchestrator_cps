@@ -12,6 +12,7 @@ import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { Input, Select, FieldLabel } from "../components/ui/Input";
 import { CarScene } from "../components/3d/CarScene";
+import { HomeChargingSection } from "../components/HomeChargingSection";
 import { DELETE_REASON_OPTIONS } from "../lib/vehicleDeleteReasons";
 
 const STATUS_STYLES: Record<VehicleRequest["status"], string> = {
@@ -105,6 +106,8 @@ export function VehiclesPage() {
           enter it above to register.
         </p>
       )}
+
+      {vehicles.length > 0 && <HomeChargingSection vehicles={vehicles} />}
     </div>
   );
 }

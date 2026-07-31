@@ -4,11 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   NavigationArrowIcon, LightningIcon, XIcon, ClockIcon, RulerIcon, CarIcon,
   BatteryChargingIcon, BatteryWarningIcon, MapPinIcon, CheckCircleIcon,
-  CurrencyInrIcon, PlugsIcon,
+  CurrencyInrIcon, PlugsIcon, StorefrontIcon, FirstAidKitIcon, ParkIcon, HourglassIcon,
 } from "@phosphor-icons/react";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
-import type { Station, Vehicle, VehicleLiveTelemetry } from "../api/types";
+import type { Poi, Station, Vehicle, VehicleLiveTelemetry } from "../api/types";
 import { fetchRoute, haversineKm, type RouteResult } from "../lib/routing";
 import { safetyColor } from "../lib/format";
 import { GlassCard } from "../components/ui/GlassCard";
@@ -28,6 +28,16 @@ const DEFAULT_BATTERY_CAPACITY_KWH = 40;
 const LOW_BATTERY_THRESHOLD_PCT = 10;
 const ARRIVAL_RADIUS_KM = 0.1; // 100m
 const ROUTE_REFRESH_KM = 0.3; // re-fetch the polyline only after moving this far, to stay within OSRM's fair-use limits
+const POI_GEOFENCE_RADIUS_KM = 0.15; // 150m - close enough to say "you're at this mall/hospital"
+const POI_LEAVE_RADIUS_KM = 0.3; // must move this far away before the same POI can prompt again
+
+const POI_ICONS = { mall: StorefrontIcon, hospital: FirstAidKitIcon, idle_parking: ParkIcon } as const;
+const PARK_DURATION_OPTIONS = [
+  { label: "30 min", minutes: 30 },
+  { label: "1 hour", minutes: 60 },
+  { label: "2 hours", minutes: 120 },
+  { label: "4+ hours", minutes: 240 },
+];
 
 interface RankedStop {
   station: Station;
@@ -76,9 +86,21 @@ export function MapPage() {
   const [chargeEnergyKwh, setChargeEnergyKwh] = useState(0);
   const [paidMethod, setPaidMethod] = useState<"upi" | "card" | "cash" | null>(null);
   const [payBusy, setPayBusy] = useState(false);
+  const [batteryFull, setBatteryFull] = useState(false);
+
+  const [pois, setPois] = useState<Poi[]>([]);
+  const [idlePos, setIdlePos] = useState<[number, number] | null>(null);
+  const [poiPrompt, setPoiPrompt] = useState<{ poi: Poi; step: "duration" | "offer" } | null>(null);
+  const [parkMinutes, setParkMinutes] = useState<number | null>(null);
 
   const lastRoutedFrom = useRef<[number, number] | null>(null);
   const watchId = useRef<number | null>(null);
+  const idleWatchId = useRef<number | null>(null);
+  // POIs the user is currently "at" (within POI_GEOFENCE_RADIUS_KM) or has
+  // already been prompted about since arriving - cleared once they move
+  // POI_LEAVE_RADIUS_KM away, so parking somewhere for hours doesn't
+  // re-trigger the popup every position tick, but a genuinely new visit does
+  const activePoiNames = useRef<Set<string>>(new Set());
   // guards against rapid watchPosition callbacks firing arriveAtStation
   // twice before the "arrived" phase transition re-renders and the effect's
   // phase guard catches up - without it, two start-at-station calls could
@@ -96,7 +118,62 @@ export function MapPage() {
       setMyVehicles(vs);
       if (vs.length > 0) setSelectedVehicleId(vs[0].id);
     }).catch(() => setMyVehicles([]));
+    api.get<Poi[]>("/poi").then(setPois).catch(() => setPois([]));
   }, []);
+
+  // point 10: geofenced mall/hospital/idle-parking prompts - only watches
+  // while the user isn't already in the middle of a charging flow, and only
+  // one prompt is shown at a time (the first POI it enters that visit)
+  useEffect(() => {
+    if (phase !== "idle" || pois.length === 0 || !("geolocation" in navigator)) return;
+    idleWatchId.current = navigator.geolocation.watchPosition(
+      (pos) => setIdlePos([pos.coords.latitude, pos.coords.longitude]),
+      () => { /* denied/unavailable - no geofencing without live location */ },
+      { enableHighAccuracy: false, maximumAge: 15000 },
+    );
+    return () => {
+      if (idleWatchId.current !== null) navigator.geolocation.clearWatch(idleWatchId.current);
+      idleWatchId.current = null;
+    };
+  }, [phase, pois.length]);
+
+  useEffect(() => {
+    if (phase !== "idle" || !idlePos || poiPrompt) return;
+    for (const poi of pois) {
+      const distKm = haversineKm(idlePos[0], idlePos[1], poi.lat, poi.lon);
+      if (distKm <= POI_GEOFENCE_RADIUS_KM) {
+        if (!activePoiNames.current.has(poi.name)) {
+          activePoiNames.current.add(poi.name);
+          setPoiPrompt({ poi, step: "duration" });
+        }
+        return;
+      }
+      if (distKm > POI_LEAVE_RADIUS_KM) activePoiNames.current.delete(poi.name);
+    }
+  }, [idlePos, phase, pois, poiPrompt]);
+
+  async function chargeAtPoi(poi: Poi) {
+    if (!vehicle || !poi.nearby_station_id) { setPoiPrompt(null); return; }
+    setBusy(true);
+    try {
+      const started = await api.post<{ id: string; port_number: number | null }>("/sessions/start-at-station", {
+        vehicle_id: vehicle.id, station_id: poi.nearby_station_id,
+      });
+      setSession(started);
+      setChargeEnergyKwh(0);
+      setActiveStop({
+        station: stations.find((s) => s.id === poi.nearby_station_id)!,
+        score: 0, distanceKm: 0, staleHours: 0, chargerType: "AC",
+      });
+      setPhase("charging");
+      setPoiPrompt(null);
+    } catch {
+      setError("No available charger at this spot right now.");
+      setPoiPrompt(null);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   // live battery telemetry for the selected (paired) vehicle - also what
   // drives the auto-trigger-under-10% behaviour below
@@ -168,7 +245,11 @@ export function MapPage() {
     if (phase !== "charging" || !session) return;
     const capacity = vehicle?.battery_capacity_kwh ?? DEFAULT_BATTERY_CAPACITY_KWH;
     const interval = setInterval(() => {
-      setChargeEnergyKwh((kwh) => Math.min(kwh + capacity * 0.02, capacity));
+      setChargeEnergyKwh((kwh) => {
+        const next = Math.min(kwh + capacity * 0.02, capacity);
+        if (next >= capacity && kwh < capacity) setBatteryFull(true);
+        return next;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, [phase, session, vehicle?.battery_capacity_kwh]);
@@ -318,6 +399,9 @@ export function MapPage() {
     setSession(null);
     setChargeEnergyKwh(0);
     setPaidMethod(null);
+    setBatteryFull(false);
+    setPoiPrompt(null);
+    setParkMinutes(null);
     setError(null);
     lastRoutedFrom.current = null;
     arrivalInFlight.current = false;
@@ -408,6 +492,67 @@ export function MapPage() {
           </GlassCard>
         )}
       </div>
+
+      {/* --- point 10: geofenced POI arrival prompt --- */}
+      <AnimatePresence>
+        {poiPrompt && (
+          <motion.div
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 32 }}
+            className="absolute bottom-0 inset-x-0 z-[400] glass-panel rounded-t-2xl p-4"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-medium flex items-center gap-1.5">
+                {(() => { const Icon = POI_ICONS[poiPrompt.poi.poi_type]; return <Icon size={16} className="text-cyan-300" />; })()}
+                Looks like you're at {poiPrompt.poi.name}
+              </p>
+              <button onClick={() => setPoiPrompt(null)} className="cursor-pointer text-slate-400 hover:text-slate-200">
+                <XIcon size={18} />
+              </button>
+            </div>
+
+            {poiPrompt.step === "duration" ? (
+              <>
+                <p className="text-xs text-slate-400 mb-3 flex items-center gap-1">
+                  <HourglassIcon size={12} /> How long will you be parked here?
+                </p>
+                <div className="grid grid-cols-4 gap-2">
+                  {PARK_DURATION_OPTIONS.map((opt) => (
+                    <button key={opt.minutes}
+                            onClick={() => { setParkMinutes(opt.minutes); setPoiPrompt({ poi: poiPrompt.poi, step: "offer" }); }}
+                            className="text-xs py-2 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] cursor-pointer transition-colors">
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                {poiPrompt.poi.nearby_available_chargers > 0 ? (
+                  <>
+                    <p className="text-xs text-slate-400 mb-3">
+                      There {poiPrompt.poi.nearby_available_chargers === 1 ? "is" : "are"}{" "}
+                      <strong className="text-emerald-300">{poiPrompt.poi.nearby_available_chargers}</strong> charger
+                      {poiPrompt.poi.nearby_available_chargers === 1 ? "" : "s"} available here
+                      {parkMinutes ? ` for your ~${parkMinutes >= 60 ? `${parkMinutes / 60}h` : `${parkMinutes}min`} stay` : ""}.
+                      Charge now?
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button variant="secondary" disabled={busy} onClick={() => setPoiPrompt(null)}>Not now</Button>
+                      <Button disabled={busy} onClick={() => chargeAtPoi(poiPrompt.poi)}>Yes, charge</Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-xs text-slate-400 mb-3">No chargers available here right now. Enjoy your visit!</p>
+                    <Button variant="secondary" fullWidth onClick={() => setPoiPrompt(null)}>Got it</Button>
+                  </>
+                )}
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* --- AC/DC choice sheet --- */}
       <AnimatePresence>
@@ -509,6 +654,11 @@ export function MapPage() {
                 </span>
               )}
             </div>
+            {batteryFull && (
+              <p className="text-xs bg-emerald-500/15 text-emerald-300 rounded-lg px-2.5 py-1.5 mb-2 flex items-center gap-1.5">
+                <CheckCircleIcon size={14} weight="fill" /> Battery full - you can stop charging anytime.
+              </p>
+            )}
             <p className="text-xs text-slate-500 mb-3">{activeStop.station.station_type}</p>
             <div className="grid grid-cols-2 gap-2 mb-3 text-center text-xs">
               <div className="bg-white/5 rounded-lg py-2">

@@ -149,6 +149,25 @@ export interface VelloreFleetVehicle {
   is_charging: boolean | null;
 }
 
+export interface Poi {
+  name: string;
+  poi_type: "mall" | "hospital" | "idle_parking";
+  lat: number;
+  lon: number;
+  nearby_station_id: string | null;
+  nearby_available_chargers: number;
+}
+
+export interface HomeCharger {
+  id: string;
+  user_id: string;
+  label: string;
+  lat: number;
+  lon: number;
+  power_kw: number;
+  installed_at: string;
+}
+
 export interface CrossDistrictCharging {
   vehicle_id: string;
   number_plate: string | null;
