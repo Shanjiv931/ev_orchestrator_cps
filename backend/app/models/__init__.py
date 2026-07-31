@@ -5,11 +5,13 @@ from app.models.entities import (
     Charger,
     ChargingSession,
     GridFeeder,
+    MeridianGridProvisioning,
     Station,
     SwapSlot,
     Telemetry,
     User,
     Vehicle,
+    VehicleRequest,
 )
 
 __all__ = [
@@ -19,9 +21,11 @@ __all__ = [
     "Charger",
     "ChargingSession",
     "GridFeeder",
+    "MeridianGridProvisioning",
     "Station",
     "SwapSlot",
     "Telemetry",
     "User",
     "Vehicle",
+    "VehicleRequest",
 ]

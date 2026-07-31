@@ -107,27 +107,8 @@ class AdminRequestRead(BaseModel):
     reviewed_at: datetime | None
 
 
-class VehicleCreate(BaseModel):
-    vehicle_class: str
-    connector_type: str
-    battery_chemistry: str
-    is_pluggable: bool = True
-    fleet_depot_id: str | None = None
-    brand: str | None = None
-    vehicle_model: str | None = None
-    battery_capacity_kwh: float | None = None
-    color_hex: str | None = None
-
-
 class VehicleUpdate(BaseModel):
-    connector_type: str | None = None
-    battery_chemistry: str | None = None
-    is_pluggable: bool | None = None
     fleet_depot_id: str | None = None
-    brand: str | None = None
-    vehicle_model: str | None = None
-    battery_capacity_kwh: float | None = None
-    color_hex: str | None = None
 
 
 class VehicleRead(BaseModel):
@@ -144,6 +125,55 @@ class VehicleRead(BaseModel):
     battery_capacity_kwh: float | None
     color_hex: str | None
     is_paired: bool
+    number_plate: str | None
+
+
+class MeridianGridLookupResponse(BaseModel):
+    """What "reading the ID off the car" resolves to - shown to the user as
+    a preview before they submit an add request, and what the add-request
+    approval step (app/routers/admin.py) copies onto the real Vehicle row."""
+    meridiangrid_id: str
+    vehicle_class: str
+    connector_type: str
+    battery_chemistry: str
+    is_pluggable: bool
+    brand: str
+    vehicle_model: str
+    battery_capacity_kwh: float
+    color_hex: str
+
+
+class VehicleAddRequestCreate(BaseModel):
+    meridiangrid_id: str
+    number_plate: str
+
+
+class VehicleDeleteRequestCreate(BaseModel):
+    vehicle_id: uuid.UUID
+    reason_code: str
+    reason_detail: str | None = None
+
+
+class VehicleRequestReview(BaseModel):
+    admin_notes: str | None = None
+
+
+class VehicleRequestRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    ticket_code: str
+    user_id: uuid.UUID
+    request_type: str
+    status: str
+    meridiangrid_id: str | None
+    number_plate: str | None
+    vehicle_id: uuid.UUID | None
+    reason_code: str | None
+    reason_detail: str | None
+    admin_notes: str | None
+    created_at: datetime
+    reviewed_by: uuid.UUID | None
+    reviewed_at: datetime | None
 
 
 class VehiclePairingResponse(BaseModel):

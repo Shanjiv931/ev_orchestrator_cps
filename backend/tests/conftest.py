@@ -32,7 +32,7 @@ from sqlalchemy.orm import sessionmaker
 from app.auth import create_access_token, hash_password
 from app.database import Base, get_db
 from app.main import app
-from app.models import User
+from app.models import User, Vehicle
 
 engine = create_engine(os.environ["POSTGRES_DSN"])
 TestingSessionLocal = sessionmaker(bind=engine)
@@ -98,3 +98,27 @@ def auth_headers(db_session):
         return {"Authorization": f"Bearer {token}"}
 
     return _register
+
+
+@pytest.fixture()
+def create_test_vehicle(db_session):
+    """Vehicles now only come into existence via the admin-approved
+    request flow (see app/routers/vehicles.py / admin.py) - tests that are
+    exercising something else (sessions, payments, battery health, pairing)
+    just need *a* vehicle to exist for a user, the same way auth_headers
+    above bypasses the OTP dance to get a working authenticated user."""
+    def _create(owner_email: str, vehicle_class: str = "4W", connector_type: str = "CCS2",
+                battery_chemistry: str = "NMC", is_pluggable: bool = True,
+                battery_capacity_kwh: float = 40.0, number_plate: str = "TN23AB1234") -> Vehicle:
+        owner = db_session.query(User).filter(User.email == owner_email).first()
+        vehicle = Vehicle(
+            user_id=owner.id, vehicle_class=vehicle_class, connector_type=connector_type,
+            battery_chemistry=battery_chemistry, is_pluggable=is_pluggable,
+            battery_capacity_kwh=battery_capacity_kwh, number_plate=number_plate,
+        )
+        db_session.add(vehicle)
+        db_session.commit()
+        db_session.refresh(vehicle)
+        return vehicle
+
+    return _create

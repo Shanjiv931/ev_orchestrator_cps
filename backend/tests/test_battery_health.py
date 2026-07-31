@@ -1,10 +1,3 @@
-def _create_vehicle(client, headers) -> str:
-    created = client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "4W", "connector_type": "CCS2", "battery_chemistry": "NMC", "is_pluggable": True,
-    })
-    return created.json()["id"]
-
-
 def test_soh_is_reported_separately_from_soc():
     """Section 4.5.4: SoH must never be merged with SoC anywhere in the API.
     BatteryHealthRead only has soh_pct - there is no soc field to conflate it
@@ -17,9 +10,10 @@ def test_soh_is_reported_separately_from_soc():
     assert "battery_pct" not in fields
 
 
-def test_record_and_fetch_latest_battery_health(client, auth_headers):
-    headers = auth_headers("bh1@example.com")
-    vehicle_id = _create_vehicle(client, headers)
+def test_record_and_fetch_latest_battery_health(client, auth_headers, create_test_vehicle):
+    email = "bh1@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
 
     first = client.post(f"/vehicles/{vehicle_id}/battery-health", headers=headers, json={
         "soh_pct": 92.0, "projected_months_to_80pct": 30.0, "trend_flag": "stable",
@@ -40,9 +34,10 @@ def test_record_and_fetch_latest_battery_health(client, auth_headers):
     assert len(history.json()) == 2
 
 
-def test_latest_battery_health_404s_with_no_records(client, auth_headers):
-    headers = auth_headers("bh2@example.com")
-    vehicle_id = _create_vehicle(client, headers)
+def test_latest_battery_health_404s_with_no_records(client, auth_headers, create_test_vehicle):
+    email = "bh2@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
 
     response = client.get(f"/vehicles/{vehicle_id}/battery-health/latest", headers=headers)
     assert response.status_code == 404

@@ -1,13 +1,7 @@
-def _create_vehicle(client, headers) -> str:
-    return client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "4W", "connector_type": "CCS2", "battery_chemistry": "NMC", "is_pluggable": True,
-        "battery_capacity_kwh": 40.5,
-    }).json()["id"]
-
-
-def test_pairing_flow_rejects_wrong_code_then_accepts_correct_one(client, auth_headers):
-    headers = auth_headers("pair-test@example.com")
-    vehicle_id = _create_vehicle(client, headers)
+def test_pairing_flow_rejects_wrong_code_then_accepts_correct_one(client, auth_headers, create_test_vehicle):
+    email = "pair-test@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
 
     started = client.post(f"/vehicles/{vehicle_id}/pair", headers=headers)
     assert started.status_code == 200
@@ -20,16 +14,18 @@ def test_pairing_flow_rejects_wrong_code_then_accepts_correct_one(client, auth_h
     assert confirmed.status_code == 200
 
 
-def test_live_telemetry_requires_pairing_first(client, auth_headers):
-    headers = auth_headers("telemetry-test@example.com")
-    vehicle_id = _create_vehicle(client, headers)
+def test_live_telemetry_requires_pairing_first(client, auth_headers, create_test_vehicle):
+    email = "telemetry-test@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
     response = client.get(f"/vehicles/{vehicle_id}/live-telemetry", headers=headers)
     assert response.status_code == 400
 
 
-def test_live_telemetry_after_pairing_is_flagged_simulated(client, auth_headers):
-    headers = auth_headers("telemetry-test2@example.com")
-    vehicle_id = _create_vehicle(client, headers)
+def test_live_telemetry_after_pairing_is_flagged_simulated(client, auth_headers, create_test_vehicle):
+    email = "telemetry-test2@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
     code = client.post(f"/vehicles/{vehicle_id}/pair", headers=headers).json()["pairing_code"]
     client.post(f"/vehicles/{vehicle_id}/pair/confirm", headers=headers, params={"code": code})
 
@@ -41,10 +37,11 @@ def test_live_telemetry_after_pairing_is_flagged_simulated(client, auth_headers)
     assert body["range_km"] > 0
 
 
-def test_cannot_pair_another_users_vehicle(client, auth_headers):
-    owner_headers = auth_headers("vehicle-owner@example.com")
+def test_cannot_pair_another_users_vehicle(client, auth_headers, create_test_vehicle):
+    owner_email = "vehicle-owner@example.com"
+    owner_headers = auth_headers(owner_email)
     other_headers = auth_headers("not-owner@example.com")
-    vehicle_id = _create_vehicle(client, owner_headers)
+    vehicle_id = str(create_test_vehicle(owner_email).id)
 
     response = client.post(f"/vehicles/{vehicle_id}/pair", headers=other_headers)
     assert response.status_code == 404

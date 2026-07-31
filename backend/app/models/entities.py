@@ -78,6 +78,11 @@ class Vehicle(Base):
     # real manufacturer telematics API exists here, see app/routers/vehicle_link.py.
     is_paired: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     pairing_code: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Vellore-area registration plate (validated at request time - see
+    # app/vellore.py) - nullable only because rows created before this field
+    # existed have none; every vehicle created via the request/approval flow
+    # (app/routers/vehicles.py) always has one.
+    number_plate: Mapped[str | None] = mapped_column(String, nullable=True)
 
     user: Mapped["User"] = relationship(back_populates="vehicles")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="vehicle")
@@ -222,3 +227,60 @@ class AdminRequest(Base):
 
     user: Mapped["User"] = relationship(foreign_keys=[user_id])
     reviewer: Mapped["User | None"] = relationship(foreign_keys=[reviewed_by])
+
+
+class MeridianGridProvisioning(Base):
+    """Simulates a manufacturer-issued "MeridianGrid ID" - in a real
+    deployment this row would be written by the manufacturer's factory
+    system at the moment a vehicle is handed over; here it's pre-seeded
+    (see app/seed_provisioning.py) from the same curated catalog the old
+    manual-entry form used, so a user "reading" the ID off their car is
+    what fills in every spec, not a form they fill in by hand."""
+    __tablename__ = "meridiangrid_provisioning"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    meridiangrid_id: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    vehicle_class: Mapped[str] = mapped_column(String, nullable=False)
+    connector_type: Mapped[str] = mapped_column(String, nullable=False)
+    battery_chemistry: Mapped[str] = mapped_column(String, nullable=False)
+    is_pluggable: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    brand: Mapped[str] = mapped_column(String, nullable=False)
+    vehicle_model: Mapped[str] = mapped_column(String, nullable=False)
+    battery_capacity_kwh: Mapped[float] = mapped_column(Float, nullable=False)
+    color_hex: Mapped[str] = mapped_column(String, nullable=False)
+    # Set once a VehicleRequest claiming this ID is approved - a claimed ID
+    # can never be reused for a second vehicle, matching how a real chassis
+    # serial/VIN could only ever belong to one car.
+    is_claimed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+
+class VehicleRequest(Base):
+    """Every vehicle add or delete goes through a Vellore-admin-reviewed
+    request rather than taking effect immediately - see app/routers/vehicles.py
+    and app/routers/admin.py. `ticket_code` is the human-facing tracking
+    number; `id` stays the normal UUID primary key used everywhere else."""
+    __tablename__ = "vehicle_requests"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    ticket_code: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    request_type: Mapped[str] = mapped_column(String, nullable=False)  # "add" | "delete"
+    status: Mapped[str] = mapped_column(String, default="pending", nullable=False)  # pending | approved | rejected
+
+    # --- "add" fields ---
+    meridiangrid_id: Mapped[str | None] = mapped_column(String, nullable=True)
+    number_plate: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    # --- "delete" fields ---
+    vehicle_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("vehicles.id"), nullable=True)
+    reason_code: Mapped[str | None] = mapped_column(String, nullable=True)
+    reason_detail: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    admin_notes: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+    reviewed_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    user: Mapped["User"] = relationship(foreign_keys=[user_id])
+    reviewer: Mapped["User | None"] = relationship(foreign_keys=[reviewed_by])
+    vehicle: Mapped["Vehicle | None"] = relationship(foreign_keys=[vehicle_id])

@@ -64,7 +64,18 @@ def update_station(station_id: uuid.UUID, payload: StationUpdate, db: Session = 
 @router.post("/{station_id}/chargers", response_model=ChargerRead, status_code=status.HTTP_201_CREATED)
 def create_charger(station_id: uuid.UUID, payload: ChargerCreate, db: Session = Depends(get_db)) -> Charger:
     _get_station(station_id, db)  # 404s if the station doesn't exist
-    charger = Charger(station_id=station_id, **payload.model_dump())
+    # Next port number for this station - chargers added one-off through this
+    # endpoint (as opposed to app/seed_stations.py's bulk seeding) still need
+    # one, or "go to port <n>" (app/routers/sessions.py's start-at-station)
+    # would hand the user a None.
+    highest = (
+        db.query(Charger.port_number)
+        .filter(Charger.station_id == station_id)
+        .order_by(Charger.port_number.desc().nullslast())
+        .first()
+    )
+    next_port = (highest[0] + 1) if highest and highest[0] is not None else 1
+    charger = Charger(station_id=station_id, port_number=next_port, **payload.model_dump())
     db.add(charger)
     db.commit()
     db.refresh(charger)

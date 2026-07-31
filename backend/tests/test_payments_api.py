@@ -1,14 +1,13 @@
-def _create_vehicle_and_session(client, headers) -> str:
-    vehicle_id = client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "4W", "connector_type": "CCS2", "battery_chemistry": "NMC", "is_pluggable": True,
-    }).json()["id"]
+def _create_vehicle_and_session(client, create_test_vehicle, email, headers) -> str:
+    vehicle_id = str(create_test_vehicle(email).id)
     session = client.post("/sessions", headers=headers, json={"vehicle_id": vehicle_id})
     return session.json()["id"]
 
 
-def test_initiate_and_confirm_payment_for_own_session(client, auth_headers):
-    headers = auth_headers("payer1@example.com")
-    session_id = _create_vehicle_and_session(client, headers)
+def test_initiate_and_confirm_payment_for_own_session(client, auth_headers, create_test_vehicle):
+    email = "payer1@example.com"
+    headers = auth_headers(email)
+    session_id = _create_vehicle_and_session(client, create_test_vehicle, email, headers)
 
     initiated = client.post(f"/payments/sessions/{session_id}/initiate", headers=headers)
     assert initiated.status_code == 200
@@ -21,10 +20,11 @@ def test_initiate_and_confirm_payment_for_own_session(client, auth_headers):
     assert confirmed.json()["status"] == "confirmed"
 
 
-def test_cannot_initiate_payment_for_another_users_session(client, auth_headers):
-    owner_headers = auth_headers("payer2@example.com")
+def test_cannot_initiate_payment_for_another_users_session(client, auth_headers, create_test_vehicle):
+    owner_email = "payer2@example.com"
+    owner_headers = auth_headers(owner_email)
     other_headers = auth_headers("payer3@example.com")
-    session_id = _create_vehicle_and_session(client, owner_headers)
+    session_id = _create_vehicle_and_session(client, create_test_vehicle, owner_email, owner_headers)
 
     response = client.post(f"/payments/sessions/{session_id}/initiate", headers=other_headers)
     assert response.status_code == 404

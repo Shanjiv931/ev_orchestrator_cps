@@ -25,6 +25,7 @@ from app.routers import (
 )
 from app.migrate import run_lightweight_migrations
 from app.seed import seed_admin_if_missing
+from app.seed_provisioning import seed_provisioning_if_empty
 from app.seed_stations import seed_stations_if_empty
 from app.services import twin_client
 
@@ -36,6 +37,7 @@ async def lifespan(app: FastAPI):
     with SessionLocal() as db:
         seed_admin_if_missing(db)
         seed_stations_if_empty(db)
+        seed_provisioning_if_empty(db)
     relay_task = asyncio.create_task(twin_client.relay_forever(settings.twin_engine_ws_url))
     yield
     relay_task.cancel()

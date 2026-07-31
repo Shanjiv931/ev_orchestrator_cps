@@ -1,8 +1,7 @@
-def test_completing_a_session_with_energy_creates_a_carbon_ledger_entry(client, auth_headers):
-    headers = auth_headers("carbon1@example.com")
-    vehicle_id = client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "4W", "connector_type": "CCS2", "battery_chemistry": "NMC", "is_pluggable": True,
-    }).json()["id"]
+def test_completing_a_session_with_energy_creates_a_carbon_ledger_entry(client, auth_headers, create_test_vehicle):
+    email = "carbon1@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
     session_id = client.post("/sessions", headers=headers, json={"vehicle_id": vehicle_id}).json()["id"]
     client.patch(f"/sessions/{session_id}", headers=headers, json={"energy_kwh": 20.0})
 
@@ -15,11 +14,10 @@ def test_completing_a_session_with_energy_creates_a_carbon_ledger_entry(client, 
     assert entries.json()[0]["co2_avoided_kg"] > 0
 
 
-def test_completing_a_session_with_zero_energy_creates_no_carbon_entry(client, auth_headers):
-    headers = auth_headers("carbon2@example.com")
-    vehicle_id = client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "2W", "connector_type": "swap-cassette", "battery_chemistry": "LFP", "is_pluggable": True,
-    }).json()["id"]
+def test_completing_a_session_with_zero_energy_creates_no_carbon_entry(client, auth_headers, create_test_vehicle):
+    email = "carbon2@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email, vehicle_class="2W", connector_type="swap-cassette", battery_chemistry="LFP").id)
     session_id = client.post("/sessions", headers=headers, json={"vehicle_id": vehicle_id}).json()["id"]
 
     client.post(f"/sessions/{session_id}/complete", headers=headers)
@@ -28,11 +26,10 @@ def test_completing_a_session_with_zero_energy_creates_no_carbon_entry(client, a
     assert entries.json() == []
 
 
-def test_carbon_summary_aggregates_across_a_users_sessions(client, auth_headers):
-    headers = auth_headers("carbon3@example.com")
-    vehicle_id = client.post("/vehicles", headers=headers, json={
-        "vehicle_class": "4W", "connector_type": "CCS2", "battery_chemistry": "NMC", "is_pluggable": True,
-    }).json()["id"]
+def test_carbon_summary_aggregates_across_a_users_sessions(client, auth_headers, create_test_vehicle):
+    email = "carbon3@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
 
     for energy in (10.0, 15.0):
         session_id = client.post("/sessions", headers=headers, json={"vehicle_id": vehicle_id}).json()["id"]
