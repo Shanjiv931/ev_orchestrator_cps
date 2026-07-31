@@ -11,11 +11,13 @@ from app.routers.vehicle_link import _simulated_telemetry
 from app.schemas import (
     AdminRequestRead,
     CrossDistrictChargingRead,
+    DemandRetrainRead,
     UserRead,
     VelloreFleetVehicleRead,
     VehicleRequestRead,
     VehicleRequestReview,
 )
+from app.services.demand_retrain_job import force_retrain
 from app.vellore import is_vellore_plate
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -227,3 +229,17 @@ def list_cross_district_charging(current_admin: User = Depends(get_current_admin
         for session, vehicle, owner, station in rows
         if not (vehicle.number_plate and is_vellore_plate(vehicle.number_plate))
     ]
+
+
+@router.post("/retrain-demand-model", response_model=DemandRetrainRead)
+def retrain_demand_model(current_admin: User = Depends(get_current_admin), db: Session = Depends(get_db)) -> DemandRetrainRead:
+    """Point 13: forces an immediate retrain against real accumulated
+    ChargingBehaviorLog rows blended behind the synthetic baseline (see
+    app/services/demand_retrain_job.py) - what a daily cron would trigger
+    in production; exposed here so the Vellore admin can also trigger it
+    on demand and see exactly how much real data went into it."""
+    result = force_retrain(db)
+    return DemandRetrainRead(
+        mae=result["mae"], rmse=result["rmse"],
+        real_data_rows=result["real_data_rows"], synthetic_rows=result["synthetic_rows"],
+    )

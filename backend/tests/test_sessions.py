@@ -112,3 +112,54 @@ def test_completing_session_releases_the_charger(client, auth_headers, create_te
     retried = client.post("/sessions/start-at-station", headers=headers,
                            json={"vehicle_id": vehicle_id, "station_id": station_id})
     assert retried.status_code == 201
+
+
+def test_completing_a_public_station_session_logs_charging_behavior(client, auth_headers, create_test_vehicle, db_session):
+    from app.models import ChargingBehaviorLog
+
+    email = "driver9@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
+    station_id = _create_station_with_chargers(client, count=1)
+
+    started = client.post("/sessions/start-at-station", headers=headers,
+                           json={"vehicle_id": vehicle_id, "station_id": station_id}).json()
+    client.patch(f"/sessions/{started['id']}", headers=headers, json={"energy_kwh": 5.0})
+    client.post(f"/sessions/{started['id']}/complete", headers=headers)
+
+    log = db_session.query(ChargingBehaviorLog).filter(ChargingBehaviorLog.session_id == started["id"]).first()
+    assert log is not None
+    assert log.zone == "vit_university_dc_hub"  # public_dc_hub station type
+    assert log.energy_kwh == 5.0
+
+
+def test_completing_a_home_session_logs_residential_zone(client, auth_headers, create_test_vehicle, db_session):
+    from app.models import ChargingBehaviorLog
+
+    email = "driver10@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
+    home_charger = client.post("/home-chargers", headers=headers,
+                                json={"label": "Garage", "power_kw": 7.4, "lat": 12.9, "lon": 79.1}).json()
+
+    started = client.post("/home-chargers/start-session", headers=headers,
+                           json={"vehicle_id": vehicle_id, "home_charger_id": home_charger["id"]}).json()
+    client.post(f"/sessions/{started['id']}/complete", headers=headers)
+
+    log = db_session.query(ChargingBehaviorLog).filter(ChargingBehaviorLog.session_id == started["id"]).first()
+    assert log is not None
+    assert log.zone == "sathuvachari_residential"
+
+
+def test_completing_a_session_with_no_charger_logs_nothing(client, auth_headers, create_test_vehicle, db_session):
+    from app.models import ChargingBehaviorLog
+
+    email = "driver11@example.com"
+    headers = auth_headers(email)
+    vehicle_id = str(create_test_vehicle(email).id)
+
+    started = client.post("/sessions", headers=headers, json={"vehicle_id": vehicle_id}).json()
+    client.post(f"/sessions/{started['id']}/complete", headers=headers)
+
+    log = db_session.query(ChargingBehaviorLog).filter(ChargingBehaviorLog.session_id == started["id"]).first()
+    assert log is None

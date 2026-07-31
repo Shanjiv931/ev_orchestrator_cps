@@ -208,6 +208,43 @@ class ChargingSession(Base):
     carbon_ledger_entries: Mapped[list["CarbonLedgerEntry"]] = relationship(back_populates="session")
 
 
+class ChargingBehaviorLog(Base):
+    """One row per completed session (point 13) - real ground truth for the
+    demand-forecast model (ml/demand_forecast.py), logged at completion time
+    in app/routers/sessions.py rather than derived after the fact, so it
+    reflects exactly what actually happened. `zone` reuses the same
+    categories ml/demand_forecast.ZONES already models: a station's
+    station_type for public charging, or the "residential" zone for home
+    charging - see app/services/demand_retrain_job.py for how this feeds
+    training."""
+    __tablename__ = "charging_behavior_log"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    session_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    zone: Mapped[str] = mapped_column(String, nullable=False)
+    hour: Mapped[int] = mapped_column(Integer, nullable=False)
+    day_of_week: Mapped[int] = mapped_column(Integer, nullable=False)
+    energy_kwh: Mapped[float] = mapped_column(Float, nullable=False)
+    is_emergency_priority: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    logged_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+
+class DemandModelTrainingRun(Base):
+    """One row per retrain (see app/services/demand_retrain_job.py) - lets
+    the Vellore admin dashboard show when the model was last refreshed and
+    how much real (vs. synthetic-backfill) data it actually learned from,
+    rather than presenting predictions as if they were always current."""
+    __tablename__ = "demand_model_training_runs"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    trained_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+    real_data_rows: Mapped[int] = mapped_column(Integer, nullable=False)
+    synthetic_rows: Mapped[int] = mapped_column(Integer, nullable=False)
+    mae: Mapped[float] = mapped_column(Float, nullable=False)
+    rmse: Mapped[float] = mapped_column(Float, nullable=False)
+
+
 class Telemetry(Base):
     __tablename__ = "telemetry"
 

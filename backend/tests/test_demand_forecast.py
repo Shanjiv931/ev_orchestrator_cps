@@ -22,22 +22,22 @@ def test_train_and_evaluate_reports_low_error_on_held_out_slice():
 def test_forecast_reflects_morning_and_evening_commute_peaks():
     result = train_and_evaluate()
     model = result["model"]
-    midday = predict_sessions(model, "koramangala_dc_hub", hour=13, day_of_week=2, weather=0)
-    evening_peak = predict_sessions(model, "koramangala_dc_hub", hour=18, day_of_week=2, weather=0)
+    midday = predict_sessions(model, "vit_university_dc_hub", hour=13, day_of_week=2, weather=0)
+    evening_peak = predict_sessions(model, "vit_university_dc_hub", hour=18, day_of_week=2, weather=0)
     assert evening_peak > midday
 
 
 def test_forecast_reflects_weekday_vs_weekend_difference():
     result = train_and_evaluate()
     model = result["model"]
-    weekday = predict_sessions(model, "indiranagar_housing", hour=9, day_of_week=1, weather=0)
-    weekend = predict_sessions(model, "indiranagar_housing", hour=9, day_of_week=6, weather=0)
+    weekday = predict_sessions(model, "bagayam_housing", hour=9, day_of_week=1, weather=0)
+    weekend = predict_sessions(model, "bagayam_housing", hour=9, day_of_week=6, weather=0)
     assert weekday > weekend
 
 
-def test_rural_zone_has_far_lower_demand_than_dc_hub():
+def test_residential_zone_has_far_lower_demand_than_dc_hub():
     result = train_and_evaluate()
     model = result["model"]
-    rural = predict_sessions(model, "holenarsipura_rural", hour=18, day_of_week=2, weather=0)
-    dc_hub = predict_sessions(model, "koramangala_dc_hub", hour=18, day_of_week=2, weather=0)
-    assert rural < dc_hub
+    residential = predict_sessions(model, "sathuvachari_residential", hour=18, day_of_week=2, weather=0)
+    dc_hub = predict_sessions(model, "vit_university_dc_hub", hour=18, day_of_week=2, weather=0)
+    assert residential < dc_hub

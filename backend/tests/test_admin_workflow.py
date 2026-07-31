@@ -135,3 +135,18 @@ def test_cross_district_charging_is_empty_by_default(client, db_session):
     response = client.get("/admin/cross-district-charging", headers=admin_headers)
     assert response.status_code == 200
     assert response.json() == []
+
+
+def test_admin_can_force_retrain_demand_model(client, db_session):
+    admin_headers = _make_admin_headers(db_session, "admin-retrain1@example.com")
+    response = client.post("/admin/retrain-demand-model", headers=admin_headers)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["real_data_rows"] == 0
+    assert body["mae"] >= 0
+
+
+def test_non_admin_cannot_retrain_demand_model(client, auth_headers):
+    headers = auth_headers("not-admin2@example.com")
+    response = client.post("/admin/retrain-demand-model", headers=headers)
+    assert response.status_code == 403

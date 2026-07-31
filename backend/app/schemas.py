@@ -133,6 +133,13 @@ class CrossDistrictChargingRead(BaseModel):
     session_start_time: datetime
 
 
+class DemandRetrainRead(BaseModel):
+    mae: float
+    rmse: float
+    real_data_rows: int
+    synthetic_rows: int
+
+
 class AdminRequestRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID

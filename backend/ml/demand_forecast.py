@@ -1,13 +1,18 @@
 """Demand forecasting: predicted charging sessions per zone per hour.
 
 Trained on the platform's own simulated historical sessions (Section 4.5.1).
-No real session-log dataset exists yet this early in the build, so
-`generate_synthetic_history` produces one with the same shape real session
-logs would have - zone/hour/day-of-week/weather features driving a latent
+`generate_synthetic_history` produces a history with the same shape real
+session logs have - zone/hour/day-of-week/weather features driving a latent
 demand curve (morning + evening commute peaks, quieter weekends, rain
 suppressing demand) plus Poisson sampling noise. The held-out evaluation
 slice is the most recent contiguous block of days, not a random split -
 this is a genuine forecasting problem, not compatible with random shuffling.
+
+Real accumulated history (app/models/entities.py's ChargingBehaviorLog,
+populated as sessions complete) gets blended in behind this synthetic
+baseline once it exists - see app/services/demand_retrain_job.py, which is
+what actually builds the DataFrame passed to `train_and_evaluate` in
+production rather than calling it with `history=None`.
 """
 from __future__ import annotations
 
@@ -15,13 +20,13 @@ import numpy as np
 import pandas as pd
 from xgboost import XGBRegressor
 
-ZONES = ["koramangala_dc_hub", "indiranagar_housing", "nh48_corridor", "holenarsipura_rural"]
+ZONES = ["vit_university_dc_hub", "bagayam_housing", "thorapadi_highway_corridor", "sathuvachari_residential"]
 
 _ZONE_BASE_DEMAND = {
-    "koramangala_dc_hub": 14.0,
-    "indiranagar_housing": 5.0,
-    "nh48_corridor": 8.0,
-    "holenarsipura_rural": 1.5,
+    "vit_university_dc_hub": 14.0,
+    "bagayam_housing": 5.0,
+    "thorapadi_highway_corridor": 8.0,
+    "sathuvachari_residential": 1.5,
 }
 
 

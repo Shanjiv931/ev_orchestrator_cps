@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import CarbonLedgerEntry, Charger, ChargingSession, Telemetry, User, Vehicle
+from app.models import CarbonLedgerEntry, Charger, ChargingBehaviorLog, ChargingSession, Station, Telemetry, User, Vehicle
 from app.schemas import (
     SessionCreate,
     SessionRead,
@@ -17,8 +17,32 @@ from app.schemas import (
     TelemetryRead,
 )
 from ml.carbon_ledger import compute_carbon_impact
+from ml.demand_forecast import ZONES
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+# Real ground truth for the demand-forecast model (point 13) reuses the same
+# zone categories ml/demand_forecast.py already models - a station's own
+# station_type doubles as its zone, and home charging (no public station at
+# all) is inherently the residential zone.
+_STATION_TYPE_TO_ZONE = {
+    "public_dc_hub": ZONES[0],
+    "housing_society_ac": ZONES[1],
+    "highway_corridor": ZONES[2],
+}
+_HOME_CHARGING_ZONE = ZONES[3]
+
+
+def _zone_for_session(session: ChargingSession, db: Session) -> str | None:
+    if session.home_charger_id is not None:
+        return _HOME_CHARGING_ZONE
+    if session.charger_id is not None:
+        charger = db.get(Charger, session.charger_id)
+        if charger is not None:
+            station = db.get(Station, charger.station_id)
+            if station is not None:
+                return _STATION_TYPE_TO_ZONE.get(station.station_type)
+    return None
 
 
 def _get_owned_session(session_id: uuid.UUID, current_user: User, db: Session) -> ChargingSession:
@@ -111,6 +135,14 @@ def complete_session(session_id: uuid.UUID, current_user: User = Depends(get_cur
             session_id=session.id,
             co2_avoided_kg=impact.co2_avoided_kg,
             equivalent_fuel_baseline=impact.equivalent_fuel_baseline,
+        ))
+
+    zone = _zone_for_session(session, db)
+    if zone is not None:
+        db.add(ChargingBehaviorLog(
+            session_id=session.id, user_id=session.user_id, zone=zone,
+            hour=session.start_time.hour, day_of_week=session.start_time.weekday(),
+            energy_kwh=session.energy_kwh, is_emergency_priority=session.is_emergency_priority,
         ))
 
     db.commit()
