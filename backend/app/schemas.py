@@ -183,6 +183,7 @@ class ChargerRead(BaseModel):
     power_kw: float
     maintenance_risk_score: float
     port_number: int | None
+    charger_type: str
 
 
 class SwapSlotRead(BaseModel):

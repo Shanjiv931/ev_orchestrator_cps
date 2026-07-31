@@ -79,6 +79,8 @@ export interface Charger {
   last_verified_at: string | null;
   power_kw: number;
   maintenance_risk_score: number;
+  port_number: number | null;
+  charger_type: "AC" | "DC";
 }
 
 export interface SwapSlot {

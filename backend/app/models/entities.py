@@ -116,6 +116,15 @@ class Charger(Base):
     station: Mapped["Station"] = relationship(back_populates="chargers")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="charger")
 
+    @property
+    def charger_type(self) -> str:
+        """Derived rather than stored - the industry-standard split is by
+        power tier (AC top-up vs. DC fast charging), which power_kw already
+        encodes; a separate column would just be a second source of truth
+        for the same fact. 22kW is the common AC/DC cutoff (three-phase AC
+        tops out around there; anything above is DC fast charging)."""
+        return "DC" if self.power_kw > 22 else "AC"
+
 
 class SwapSlot(Base):
     __tablename__ = "swap_slots"
