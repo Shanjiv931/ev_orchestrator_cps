@@ -26,6 +26,8 @@ const AdminApprovalsPage = lazy(() =>
   import("./pages/admin/AdminApprovalsPage").then((m) => ({ default: m.AdminApprovalsPage })));
 const StationHealthPage = lazy(() =>
   import("./pages/admin/StationHealthPage").then((m) => ({ default: m.StationHealthPage })));
+const AdminVehicleRequestsPage = lazy(() =>
+  import("./pages/admin/AdminVehicleRequestsPage").then((m) => ({ default: m.AdminVehicleRequestsPage })));
 const Station3DPage = lazy(() =>
   import("./pages/admin/Station3DPage").then((m) => ({ default: m.Station3DPage })));
 
@@ -71,6 +73,7 @@ function AppRoutes() {
           <Route path="admin" element={<AdminPage />} />
           <Route path="admin/users" element={<AdminUsersPage />} />
           <Route path="admin/approvals" element={<AdminApprovalsPage />} />
+          <Route path="admin/vehicle-requests" element={<AdminVehicleRequestsPage />} />
           <Route path="admin/station-health" element={<StationHealthPage />} />
           <Route path="admin/stations/:stationId/3d" element={<Station3DPage />} />
         </Route>

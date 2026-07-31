@@ -35,6 +35,7 @@ export interface Vehicle {
   battery_capacity_kwh: number | null;
   color_hex: string | null;
   is_paired: boolean;
+  number_plate: string | null;
 }
 
 export interface CatalogEntry {
@@ -46,6 +47,35 @@ export interface CatalogEntry {
   battery_capacity_kwh: number;
   is_pluggable: boolean;
   color_hex: string;
+}
+
+export interface MeridianGridLookupResponse {
+  meridiangrid_id: string;
+  vehicle_class: "2W" | "3W" | "4W";
+  connector_type: string;
+  battery_chemistry: string;
+  is_pluggable: boolean;
+  brand: string;
+  vehicle_model: string;
+  battery_capacity_kwh: number;
+  color_hex: string;
+}
+
+export interface VehicleRequest {
+  id: string;
+  ticket_code: string;
+  user_id: string;
+  request_type: "add" | "delete";
+  status: "pending" | "approved" | "rejected";
+  meridiangrid_id: string | null;
+  number_plate: string | null;
+  vehicle_id: string | null;
+  reason_code: string | null;
+  reason_detail: string | null;
+  admin_notes: string | null;
+  created_at: string;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
 }
 
 export interface VehiclePairingResponse {

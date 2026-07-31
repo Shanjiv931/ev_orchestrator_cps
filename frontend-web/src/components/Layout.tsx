@@ -26,6 +26,7 @@ const DRIVER_NAV: NavItem[] = [
 const ADMIN_NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: <SquaresFourIcon size={22} weight="duotone" /> },
   { to: "/admin/station-health", label: "Stations", icon: <HeartbeatIcon size={22} weight="duotone" /> },
+  { to: "/admin/vehicle-requests", label: "Vehicles", icon: <CarIcon size={22} weight="duotone" /> },
   { to: "/admin/approvals", label: "Approvals", icon: <ShieldCheckIcon size={22} weight="duotone" /> },
   { to: "/admin/users", label: "Users", icon: <UsersIcon size={22} weight="duotone" /> },
 ];
