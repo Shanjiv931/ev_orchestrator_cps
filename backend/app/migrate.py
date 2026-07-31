@@ -58,6 +58,7 @@ _STATEMENTS = [
     "UPDATE stations SET city = 'Hyderabad' WHERE city IS NULL AND lat BETWEEN 17.40 AND 17.50 AND lon BETWEEN 78.35 AND 78.45",
     "UPDATE stations SET city = 'Pune' WHERE city IS NULL AND lat BETWEEN 18.50 AND 18.65 AND lon BETWEEN 73.70 AND 73.95",
     "UPDATE stations SET city = 'Kolkata' WHERE city IS NULL AND lat BETWEEN 22.50 AND 22.60 AND lon BETWEEN 88.30 AND 88.45",
+    "ALTER TABLE sessions ADD COLUMN IF NOT EXISTS home_charger_id UUID REFERENCES home_chargers(id)",
     "ALTER TABLE chargers ADD COLUMN IF NOT EXISTS port_number INTEGER",
     # Backfill only rows seeded before port_number existed - a stable
     # 1-indexed sequence per station, ordered by id so it's deterministic

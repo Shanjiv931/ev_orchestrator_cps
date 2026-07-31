@@ -342,6 +342,7 @@ class SessionRead(BaseModel):
     user_id: uuid.UUID
     vehicle_id: uuid.UUID
     charger_id: uuid.UUID | None
+    home_charger_id: uuid.UUID | None
     start_time: datetime
     end_time: datetime | None
     energy_kwh: float
@@ -359,6 +360,41 @@ class StartSessionAtStationRequest(BaseModel):
 
 class SessionWithPortRead(SessionRead):
     port_number: int | None
+
+
+class HomeChargerCreate(BaseModel):
+    label: str
+    power_kw: float
+    # Defaults to the user's own registered home location (User.lat/lon) if
+    # omitted - most users have exactly one home and shouldn't have to
+    # re-enter coordinates for it.
+    lat: float | None = None
+    lon: float | None = None
+
+
+class HomeChargerRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    user_id: uuid.UUID
+    label: str
+    lat: float
+    lon: float
+    power_kw: float
+    installed_at: datetime
+
+
+class StartHomeSessionRequest(BaseModel):
+    vehicle_id: uuid.UUID
+    home_charger_id: uuid.UUID
+
+
+class PoiRead(BaseModel):
+    name: str
+    poi_type: str
+    lat: float
+    lon: float
+    nearby_station_id: uuid.UUID | None
+    nearby_available_chargers: int
 
 
 class SessionPaymentRead(BaseModel):

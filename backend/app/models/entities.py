@@ -160,6 +160,24 @@ class GridFeeder(Base):
     station: Mapped["Station | None"] = relationship(back_populates="grid_feeders")
 
 
+class HomeCharger(Base):
+    """A user-registered home charger (point 11) - separate from the public
+    Charger/Station model since it isn't shared infrastructure: only its
+    owner can ever start a session on it, so there's no port-assignment or
+    availability contention to model, just a location and a rating."""
+    __tablename__ = "home_chargers"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    label: Mapped[str] = mapped_column(String, nullable=False)
+    lat: Mapped[float] = mapped_column(Float, nullable=False)
+    lon: Mapped[float] = mapped_column(Float, nullable=False)
+    power_kw: Mapped[float] = mapped_column(Float, nullable=False)
+    installed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    user: Mapped["User"] = relationship()
+
+
 class ChargingSession(Base):
     __tablename__ = "sessions"
 
@@ -167,6 +185,9 @@ class ChargingSession(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     vehicle_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("vehicles.id"), nullable=False)
     charger_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("chargers.id"), nullable=True)
+    # Mutually exclusive with charger_id - a session is either at a public
+    # station or at a registered home charger, never both.
+    home_charger_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("home_chargers.id"), nullable=True)
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
     end_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     energy_kwh: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
@@ -182,6 +203,7 @@ class ChargingSession(Base):
     user: Mapped["User"] = relationship(back_populates="sessions")
     vehicle: Mapped["Vehicle"] = relationship(back_populates="sessions")
     charger: Mapped["Charger | None"] = relationship(back_populates="sessions")
+    home_charger: Mapped["HomeCharger | None"] = relationship()
     telemetry: Mapped[list["Telemetry"]] = relationship(back_populates="session")
     carbon_ledger_entries: Mapped[list["CarbonLedgerEntry"]] = relationship(back_populates="session")
 

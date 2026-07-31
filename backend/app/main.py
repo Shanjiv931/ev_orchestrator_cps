@@ -15,8 +15,10 @@ from app.routers import (
     carbon_ledger,
     catalog,
     feeders,
+    home_charging,
     oauth,
     payments,
+    poi,
     sessions,
     stations,
     twin,
@@ -61,10 +63,12 @@ app.include_router(vehicles.router)
 app.include_router(vehicle_link.router)
 app.include_router(stations.router)
 app.include_router(feeders.router)
+app.include_router(home_charging.router)
 app.include_router(sessions.router)
 app.include_router(battery_health.router)
 app.include_router(carbon_ledger.router)
 app.include_router(payments.router)
+app.include_router(poi.router)
 app.include_router(advanced_features.router)
 app.include_router(twin.router)
 
