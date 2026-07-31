@@ -108,6 +108,10 @@ class Charger(Base):
     last_verified_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     power_kw: Mapped[float] = mapped_column(Float, nullable=False)
     maintenance_risk_score: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    # 1-indexed within its station ("go to port 3") - assigned at seed time
+    # (app/seed_stations.py) or backfilled additively (app/migrate.py) for
+    # chargers created before this field existed.
+    port_number: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     station: Mapped["Station"] = relationship(back_populates="chargers")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="charger")

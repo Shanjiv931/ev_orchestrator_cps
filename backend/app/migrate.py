@@ -41,6 +41,13 @@ _STATEMENTS = [
     "ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS color_hex VARCHAR",
     "ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS is_paired BOOLEAN NOT NULL DEFAULT false",
     "ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS pairing_code VARCHAR",
+    "ALTER TABLE chargers ADD COLUMN IF NOT EXISTS port_number INTEGER",
+    # Backfill only rows seeded before port_number existed - a stable
+    # 1-indexed sequence per station, ordered by id so it's deterministic
+    # rather than shuffling on every migration run.
+    "UPDATE chargers SET port_number = numbered.rn FROM ("
+    "  SELECT id, ROW_NUMBER() OVER (PARTITION BY station_id ORDER BY id) AS rn FROM chargers"
+    ") AS numbered WHERE chargers.id = numbered.id AND chargers.port_number IS NULL",
 ]
 
 

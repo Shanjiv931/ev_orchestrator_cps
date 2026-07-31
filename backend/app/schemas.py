@@ -182,6 +182,7 @@ class ChargerRead(BaseModel):
     last_verified_at: datetime | None
     power_kw: float
     maintenance_risk_score: float
+    port_number: int | None
 
 
 class SwapSlotRead(BaseModel):
@@ -277,6 +278,15 @@ class SessionRead(BaseModel):
     energy_kwh: float
     cost: float
     is_emergency_priority: bool
+
+
+class StartSessionAtStationRequest(BaseModel):
+    vehicle_id: uuid.UUID
+    station_id: uuid.UUID
+
+
+class SessionWithPortRead(SessionRead):
+    port_number: int | None
 
 
 class TelemetryCreate(BaseModel):

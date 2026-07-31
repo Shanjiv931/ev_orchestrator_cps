@@ -119,9 +119,14 @@ def seed_stations_if_empty(db: Session) -> None:
         db.add(station)
         db.flush()  # get station.id before adding children
 
+        port_number = 1
         for charger_spec in seed.chargers:
             for _ in range(charger_spec.count):
-                db.add(Charger(station_id=station.id, status="available", power_kw=charger_spec.power_kw))
+                db.add(Charger(
+                    station_id=station.id, status="available", power_kw=charger_spec.power_kw,
+                    port_number=port_number,
+                ))
+                port_number += 1
 
         if seed.swap_slots > 0:
             db.add(SwapSlot(station_id=station.id, status="available", batteries_available=seed.swap_slots))
