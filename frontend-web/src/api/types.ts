@@ -127,8 +127,36 @@ export interface Station {
   lon: number;
   safety_score: number;
   has_solar: boolean;
+  city: string | null;
   chargers: Charger[];
   swap_slots: SwapSlot[];
+}
+
+export interface VelloreFleetVehicle {
+  vehicle_id: string;
+  number_plate: string | null;
+  vehicle_class: "2W" | "3W" | "4W";
+  brand: string | null;
+  vehicle_model: string | null;
+  connector_type: string;
+  owner_name: string;
+  owner_profession: string | null;
+  owner_license_number: string | null;
+  owner_license_expiry: string | null;
+  owner_phone_number: string | null;
+  is_paired: boolean;
+  battery_pct: number | null;
+  is_charging: boolean | null;
+}
+
+export interface CrossDistrictCharging {
+  vehicle_id: string;
+  number_plate: string | null;
+  owner_name: string;
+  station_id: string;
+  station_name: string;
+  session_id: string;
+  session_start_time: string;
 }
 
 export interface ChargingSession {

@@ -30,7 +30,7 @@ export const resources = {
         individual_driver: "Individual driver",
         fleet_operator: "Fleet / depot operator",
         housing_society_resident: "Housing society resident",
-        city_admin: "City admin / DISCOM viewer",
+        city_admin: "Vellore admin / DISCOM viewer",
       },
       stations: {
         title: "Charging & swap stations",
@@ -67,7 +67,7 @@ export const resources = {
         carbonSummary: "CO2 avoided",
       },
       admin: {
-        title: "City / DISCOM dashboard",
+        title: "Vellore admin dashboard",
         demandForecast: "Demand forecast",
         gridStress: "Feeder load",
         stressTest: "Mass-gathering stress test",
@@ -111,7 +111,7 @@ export const resources = {
         individual_driver: "व्यक्तिगत चालक",
         fleet_operator: "फ्लीट / डिपो संचालक",
         housing_society_resident: "हाउसिंग सोसाइटी निवासी",
-        city_admin: "शहर प्रशासन / डिस्कॉम व्यूअर",
+        city_admin: "वेल्लोर प्रशासन / डिस्कॉम व्यूअर",
       },
       stations: {
         title: "चार्जिंग और स्वैप स्टेशन",
@@ -148,7 +148,7 @@ export const resources = {
         carbonSummary: "बचाई गई CO2",
       },
       admin: {
-        title: "शहर / डिस्कॉम डैशबोर्ड",
+        title: "वेल्लोर प्रशासन डैशबोर्ड",
         demandForecast: "मांग पूर्वानुमान",
         gridStress: "फीडर लोड",
         stressTest: "भीड़ तनाव परीक्षण",
