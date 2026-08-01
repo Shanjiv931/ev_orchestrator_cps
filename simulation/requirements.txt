@@ -6,4 +6,5 @@ numba==0.60.0
 pandas==2.2.3
 traci==1.20.0
 sumolib==1.20.0
+pyproj==3.6.1
 pytest==8.3.3
