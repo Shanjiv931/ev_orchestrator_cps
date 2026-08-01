@@ -11,19 +11,13 @@ import { useAuth } from "../auth/AuthContext";
 import type { Poi, Station, Vehicle, VehicleLiveTelemetry } from "../api/types";
 import { fetchRoute, haversineKm, type RouteResult } from "../lib/routing";
 import { safetyColor } from "../lib/format";
+import { REPRESENTATIVE_POWER_KW, RATE_PER_KWH, type ChargerType } from "../lib/chargingRates";
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
+import { StationDetailsPanel } from "../components/StationDetailsPanel";
 
-type ChargerType = "AC" | "DC";
 type Phase = "idle" | "choosing-power" | "navigating" | "arrived" | "charging" | "complete";
 
-// Representative power used only for the pre-selection time/cost estimate
-// shown while choosing AC vs DC - the actual charger assigned on arrival may
-// differ slightly, but this is what lets the user compare before committing.
-const REPRESENTATIVE_POWER_KW: Record<ChargerType, number> = { AC: 7.4, DC: 60 };
-// INR/kWh - DC fast charging commands a premium over slow AC top-ups, same
-// spread used across most Indian public charging networks.
-const RATE_PER_KWH: Record<ChargerType, number> = { AC: 8, DC: 18 };
 const DEFAULT_BATTERY_CAPACITY_KWH = 40;
 const LOW_BATTERY_THRESHOLD_PCT = 10;
 const ARRIVAL_RADIUS_KM = 0.1; // 100m
@@ -87,6 +81,8 @@ export function MapPage() {
   const [paidMethod, setPaidMethod] = useState<"upi" | "card" | "cash" | null>(null);
   const [payBusy, setPayBusy] = useState(false);
   const [batteryFull, setBatteryFull] = useState(false);
+  const [selectedStation, setSelectedStation] = useState<Station | null>(null);
+  const [stationStartBusy, setStationStartBusy] = useState(false);
 
   const [pois, setPois] = useState<Poi[]>([]);
   const [idlePos, setIdlePos] = useState<[number, number] | null>(null);
@@ -172,6 +168,25 @@ export function MapPage() {
       setPoiPrompt(null);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function startAtSelectedStation() {
+    if (!vehicle || !selectedStation) return;
+    setStationStartBusy(true);
+    try {
+      const started = await api.post<{ id: string; port_number: number | null }>("/sessions/start-at-station", {
+        vehicle_id: vehicle.id, station_id: selectedStation.id,
+      });
+      setSession(started);
+      setChargeEnergyKwh(0);
+      setActiveStop({ station: selectedStation, score: 0, distanceKm: 0, staleHours: 0, chargerType: "AC" });
+      setPhase("charging");
+      setSelectedStation(null);
+    } catch {
+      setError("No available charger at this station right now.");
+    } finally {
+      setStationStartBusy(false);
     }
   }
 
@@ -436,14 +451,8 @@ export function MapPage() {
 
         {stations.map((station) => (
           <CircleMarker key={station.id} center={[station.lat, station.lon]} radius={9}
-                        pathOptions={{ color: safetyColor(station.safety_score), fillOpacity: 0.7 }}>
-            <Popup>
-              <strong>{station.station_type}</strong><br />
-              Safety: {(station.safety_score * 100).toFixed(0)}%<br />
-              Chargers: {station.chargers.length} ({station.chargers.filter((c) => c.charger_type === "DC").length} DC / {station.chargers.filter((c) => c.charger_type === "AC").length} AC)
-              &middot; Swap slots: {station.swap_slots.length}
-            </Popup>
-          </CircleMarker>
+                        pathOptions={{ color: safetyColor(station.safety_score), fillOpacity: 0.7 }}
+                        eventHandlers={{ click: () => { if (phase === "idle") setSelectedStation(station); } }} />
         ))}
 
         {activeRoute && (
@@ -492,6 +501,26 @@ export function MapPage() {
           </GlassCard>
         )}
       </div>
+
+      {/* --- station details, opened by clicking a marker --- */}
+      <AnimatePresence>
+        {selectedStation && phase === "idle" && (
+          <motion.div
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 32 }}
+            className="absolute bottom-0 inset-x-0 z-[400] rounded-t-2xl overflow-hidden"
+          >
+            <StationDetailsPanel
+              station={selectedStation}
+              distanceKm={haversineKm(originPos[0], originPos[1], selectedStation.lat, selectedStation.lon)}
+              onClose={() => setSelectedStation(null)}
+              onStartCharging={vehicle ? startAtSelectedStation : undefined}
+              busy={stationStartBusy}
+              className="rounded-b-none"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* --- point 10: geofenced POI arrival prompt --- */}
       <AnimatePresence>

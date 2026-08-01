@@ -1,5 +1,15 @@
 export const STALE_VERIFICATION_THRESHOLD_HOURS = 6;
 
+/** "public_dc_hub" -> "Public DC Hub" - stations only ever store the raw
+ * snake_case type from the seed data; every place that displays it to a
+ * user wants the readable form. */
+export function formatStationType(stationType: string): string {
+  return stationType
+    .split("_")
+    .map((word) => (word.toUpperCase() === "AC" || word.toUpperCase() === "DC" ? word.toUpperCase() : word[0].toUpperCase() + word.slice(1)))
+    .join(" ");
+}
+
 export function safetyColor(score: number): string {
   if (score >= 0.7) return "#16a34a";
   if (score >= 0.4) return "#f59e0b";
