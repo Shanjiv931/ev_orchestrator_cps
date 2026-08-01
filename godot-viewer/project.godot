@@ -1,0 +1,15 @@
+; Engine configuration file.
+; Open this folder as a project in Godot 4.x (Project Manager -> Import).
+
+config_version=5
+
+[application]
+
+config/name="MeridianGrid Vellore Viewer"
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+environment/defaults/default_clear_color=Color(0.01, 0.01, 0.02, 1)

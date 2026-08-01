@@ -28,3 +28,6 @@ simulation/sumo/**/*.out.xml
 # IDE
 .vscode/
 .idea/
+
+# Godot
+godot-viewer/.godot/
