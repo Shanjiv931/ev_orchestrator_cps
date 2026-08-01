@@ -73,3 +73,64 @@ def test_me_requires_a_valid_token(client, auth_headers):
 def test_me_rejects_missing_token(client):
     response = client.get("/auth/me")
     assert response.status_code == 401
+
+
+def test_update_profile_changes_editable_fields(client, auth_headers):
+    headers = auth_headers("profile1@example.com")
+    response = client.patch("/auth/me", headers=headers, json={"name": "New Name", "phone_number": "+911111111111"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["name"] == "New Name"
+    assert body["phone_number"] == "+911111111111"
+
+
+def test_update_profile_cannot_change_persona(client, auth_headers):
+    headers = auth_headers("profile2@example.com")
+    # persona isn't even a field on UserProfileUpdate - extra fields are
+    # silently ignored by pydantic, not an error, so this just proves it
+    # has no effect rather than expecting a 422.
+    response = client.patch("/auth/me", headers=headers, json={"name": "Still Driver", "persona": "city_admin"})
+    assert response.status_code == 200
+    assert response.json()["persona"] == "individual_driver"
+
+
+def test_change_password_with_correct_current_password(client, auth_headers):
+    email = "pwchange1@example.com"
+    headers = auth_headers(email)  # fixture's fixed password: correct-horse-battery-staple
+    response = client.post("/auth/change-password", headers=headers, json={
+        "current_password": "correct-horse-battery-staple", "new_password": "new-secure-pass-123",
+    })
+    assert response.status_code == 204
+
+    old_login = client.post("/auth/login", json={"email": email, "password": "correct-horse-battery-staple"})
+    assert old_login.status_code == 401
+    new_login = client.post("/auth/login", json={"email": email, "password": "new-secure-pass-123"})
+    assert new_login.status_code == 200
+
+
+def test_change_password_rejects_wrong_current_password(client, auth_headers):
+    headers = auth_headers("pwchange2@example.com")
+    response = client.post("/auth/change-password", headers=headers, json={
+        "current_password": "totally-wrong", "new_password": "new-secure-pass-123",
+    })
+    assert response.status_code == 401
+
+
+def test_change_password_blocked_for_google_accounts(client, db_session):
+    from app.auth import create_access_token, hash_password
+    from app.models import User
+    import secrets
+
+    user = User(
+        name="Google User", email="googleuser@example.com", hashed_password=hash_password(secrets.token_urlsafe(32)),
+        persona="individual_driver", dpdp_consent_flag=True, email_verified=True, auth_provider="google",
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    headers = {"Authorization": f"Bearer {create_access_token(user.id, user.persona)}"}
+
+    response = client.post("/auth/change-password", headers=headers, json={
+        "current_password": "irrelevant", "new_password": "new-secure-pass-123",
+    })
+    assert response.status_code == 400

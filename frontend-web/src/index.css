@@ -33,12 +33,9 @@ html, body, #root {
 
 body {
   font-family: var(--font-sans);
-  /* Static gradient, not a component - no DOM node, no animation loop,
-     nothing for the browser to do here beyond the one-time paint every
-     page already needs regardless. Applies everywhere by default; the
-     intro splash still paints its own opaque full-screen background on
-     top of this while it's showing. */
-  background: linear-gradient(160deg, #000000 0%, var(--color-bg) 45%, var(--color-bg-navy) 100%);
+  /* Solid black everywhere by default - the intro splash still paints its
+     own opaque full-screen background on top of this while it's showing. */
+  background: #000000;
   color: #e2e8f0;
   min-height: 100dvh;
 }

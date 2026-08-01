@@ -66,6 +66,20 @@ class LocationUpdate(BaseModel):
     lon: float
 
 
+class UserProfileUpdate(BaseModel):
+    """Self-service profile edit - deliberately excludes persona (privilege
+    escalation risk, only the admin-approval flow may change it) and email
+    (the account's login identity, not something to silently swap out)."""
+    name: str | None = None
+    phone_number: str | None = None
+    profession: str | None = None
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str

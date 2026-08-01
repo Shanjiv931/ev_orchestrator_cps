@@ -25,6 +25,7 @@ from app.pending_registration import (
     update_pending_registration_otp,
 )
 from app.schemas import (
+    ChangePasswordRequest,
     LocationUpdate,
     LoginRequest,
     OtpVerifyRequest,
@@ -32,6 +33,7 @@ from app.schemas import (
     ResendOtpRequest,
     TokenResponse,
     UserCreate,
+    UserProfileUpdate,
     UserRead,
 )
 
@@ -155,3 +157,27 @@ def update_my_location(payload: LocationUpdate, current_user: User = Depends(get
     db.commit()
     db.refresh(current_user)
     return current_user
+
+
+@router.patch("/me", response_model=UserRead)
+def update_my_profile(payload: UserProfileUpdate, current_user: User = Depends(get_current_user),
+                       db: Session = Depends(get_db)) -> User:
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(current_user, field, value)
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
+@router.post("/change-password", status_code=status.HTTP_204_NO_CONTENT)
+def change_password(payload: ChangePasswordRequest, current_user: User = Depends(get_current_user),
+                     db: Session = Depends(get_db)) -> None:
+    if current_user.auth_provider != "password":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"this account signs in via {current_user.auth_provider} - there's no password to change",
+        )
+    if not verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="current password is incorrect")
+    current_user.hashed_password = hash_password(payload.new_password)
+    db.commit()
