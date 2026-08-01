@@ -3,8 +3,8 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {
-  MapTrifoldIcon, BatteryChargingIcon, CarIcon, ListChecksIcon,
-  SquaresFourIcon, UsersIcon, ShieldCheckIcon, HeartbeatIcon, GlobeIcon, SignOutIcon,
+  HouseIcon, MapTrifoldIcon, BatteryChargingIcon, CarIcon, ListChecksIcon,
+  SquaresFourIcon, UsersIcon, ShieldCheckIcon, HeartbeatIcon, GlobeIcon, SignOutIcon, UserCircleIcon,
 } from "@phosphor-icons/react";
 import { useAuth } from "../auth/AuthContext";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
@@ -17,6 +17,7 @@ interface NavItem {
 }
 
 const DRIVER_NAV: NavItem[] = [
+  { to: "/home", label: "Home", icon: <HouseIcon size={22} weight="duotone" /> },
   { to: "/map", label: "Map", icon: <MapTrifoldIcon size={22} weight="duotone" /> },
   { to: "/stations", label: "Stations", icon: <BatteryChargingIcon size={22} weight="duotone" /> },
   { to: "/vehicles", label: "Vehicles", icon: <CarIcon size={22} weight="duotone" /> },
@@ -77,6 +78,12 @@ export function Layout() {
           >
             <GlobeIcon size={14} /> {i18n.language.startsWith("hi") ? "EN" : "हिं"}
           </button>
+          {user && (
+            <NavLink to="/profile" aria-label="My profile"
+                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer">
+              <UserCircleIcon size={16} />
+            </NavLink>
+          )}
           {user && (
             <button onClick={logout} aria-label="Log out"
                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer">

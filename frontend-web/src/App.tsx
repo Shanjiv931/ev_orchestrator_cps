@@ -15,10 +15,13 @@ const RegisterPage = lazy(() => import("./pages/RegisterPage").then((m) => ({ de
 const VerifyOtpPage = lazy(() => import("./pages/VerifyOtpPage").then((m) => ({ default: m.VerifyOtpPage })));
 const OnboardingLocationPage = lazy(() =>
   import("./pages/OnboardingLocationPage").then((m) => ({ default: m.OnboardingLocationPage })));
+const HomePage = lazy(() => import("./pages/HomePage").then((m) => ({ default: m.HomePage })));
 const MapPage = lazy(() => import("./pages/MapPage").then((m) => ({ default: m.MapPage })));
 const StationsPage = lazy(() => import("./pages/StationsPage").then((m) => ({ default: m.StationsPage })));
 const VehiclesPage = lazy(() => import("./pages/VehiclesPage").then((m) => ({ default: m.VehiclesPage })));
 const SessionsPage = lazy(() => import("./pages/SessionsPage").then((m) => ({ default: m.SessionsPage })));
+const TripPlannerPage = lazy(() => import("./pages/TripPlannerPage").then((m) => ({ default: m.TripPlannerPage })));
+const ProfilePage = lazy(() => import("./pages/ProfilePage").then((m) => ({ default: m.ProfilePage })));
 const AdminPage = lazy(() => import("./pages/AdminPage").then((m) => ({ default: m.AdminPage })));
 const AdminUsersPage = lazy(() =>
   import("./pages/admin/AdminUsersPage").then((m) => ({ default: m.AdminUsersPage })));
@@ -53,7 +56,7 @@ function DefaultRoute() {
   // not just a different theme on the same screen.
   if (user?.persona === "city_admin") return <Navigate to="/admin" replace />;
   if (user?.persona === "fleet_operator") return <Navigate to="/vehicles" replace />;
-  return <Navigate to="/map" replace />;
+  return <Navigate to="/home" replace />;
 }
 
 function AppRoutes() {
@@ -66,10 +69,13 @@ function AppRoutes() {
         <Route path="/onboarding/location" element={<OnboardingLocationPage />} />
         <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<DefaultRoute />} />
+          <Route path="home" element={<HomePage />} />
           <Route path="map" element={<MapPage />} />
           <Route path="stations" element={<StationsPage />} />
           <Route path="vehicles" element={<VehiclesPage />} />
           <Route path="sessions" element={<SessionsPage />} />
+          <Route path="trip-planner" element={<TripPlannerPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route path="admin/users" element={<AdminUsersPage />} />
           <Route path="admin/approvals" element={<AdminApprovalsPage />} />
