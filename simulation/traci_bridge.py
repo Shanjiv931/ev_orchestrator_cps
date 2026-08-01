@@ -1,5 +1,6 @@
-"""TraCI bridge: drives a SUMO scenario (city or highway corridor) and
-publishes each vehicle's live state as ev/telemetry/{id} MQTT messages.
+"""TraCI bridge: drives a SUMO scenario (city, highway corridor, or the
+Vellore town network) and publishes each vehicle's live state as
+ev/telemetry/{id} MQTT messages.
 
 Each SUMO vehicle is deterministically mapped onto an EV profile (vehicle
 class, connector type, battery chemistry, pluggable flag - Section 4.1) so
@@ -145,7 +146,7 @@ def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float =
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--scenario", required=True, choices=["city", "corridor"])
+    parser.add_argument("--scenario", required=True, choices=["city", "corridor", "vellore"])
     parser.add_argument("--sumocfg", required=True)
     parser.add_argument("--step-length", type=float, default=1.0)
     parser.add_argument("--realtime-factor", type=float, default=1.0)

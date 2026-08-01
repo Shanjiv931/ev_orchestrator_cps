@@ -55,6 +55,17 @@ services:
     volumes:
       - ./simulation:/app
 
+  sim-vellore:
+    build: ./simulation
+    command: ["python", "traci_bridge.py", "--scenario", "vellore", "--sumocfg", "sumo/vellore/vellore.sumocfg"]
+    depends_on:
+      - mosquitto
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    volumes:
+      - ./simulation:/app
+
   sim-station:
     build: ./simulation
     command: ["python", "station_sim.py"]

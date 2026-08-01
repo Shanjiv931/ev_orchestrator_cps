@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-08-01 17:06:56.086017 by Eclipse SUMO randomTrips.py v1_27_1+0000-7717f2379d9
+<configuration>
+    <net-file value="C:\Users\shanj\Music\CPS\ev-orchestrator\simulation\sumo\vellore\vellore.net.xml"/>
+    <output-trip-file value="C:\Users\shanj\Music\CPS\ev-orchestrator\simulation\sumo\vellore\vellore.trips.xml"/>
+    <fringe-factor value="5"/>
+    <min-distance value="800.0"/>
+    <end value="200.0"/>
+    <period value="25.0"/>
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <trip id="0" depart="0.00" from="1159219894#24" to="-1043420749"/>
+    <trip id="1" depart="25.00" from="-206221304#2" to="-208376735#6"/>
+    <trip id="2" depart="50.00" from="206221281#2" to="1219929757#1"/>
+    <trip id="3" depart="75.00" from="-89667733#2" to="-1043439700"/>
+    <trip id="4" depart="100.00" from="-1219929767" to="1043440361"/>
+    <trip id="5" depart="125.00" from="-1043416559" to="-206221298#2"/>
+    <trip id="6" depart="150.00" from="1194667750#1" to="1085254569"/>
+    <trip id="7" depart="175.00" from="208810085#0" to="132937941#1"/>
+</routes>
