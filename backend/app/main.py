@@ -9,6 +9,7 @@ from app.config import settings
 from app.database import Base, SessionLocal, engine
 from app.routers import (
     admin,
+    admin_database,
     advanced_features,
     auth,
     battery_health,
@@ -58,6 +59,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(oauth.router)
 app.include_router(admin.router)
+app.include_router(admin_database.router)
 app.include_router(catalog.router)
 app.include_router(vehicles.router)
 app.include_router(vehicle_link.router)

@@ -149,6 +149,29 @@ export interface VelloreFleetVehicle {
   is_charging: boolean | null;
 }
 
+export interface DbColumn {
+  name: string;
+  type: string;
+  nullable: boolean;
+  primary_key: boolean;
+  foreign_key: string | null;
+}
+
+export interface DbTable {
+  name: string;
+  row_count: number;
+  columns: DbColumn[];
+}
+
+export type DbRow = Record<string, string | number | boolean | null>;
+
+export interface DbRowsResponse {
+  rows: DbRow[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export interface Poi {
   name: string;
   poi_type: "mall" | "hospital" | "idle_parking";

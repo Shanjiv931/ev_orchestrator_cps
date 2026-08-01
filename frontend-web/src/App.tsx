@@ -23,8 +23,8 @@ const SessionsPage = lazy(() => import("./pages/SessionsPage").then((m) => ({ de
 const TripPlannerPage = lazy(() => import("./pages/TripPlannerPage").then((m) => ({ default: m.TripPlannerPage })));
 const ProfilePage = lazy(() => import("./pages/ProfilePage").then((m) => ({ default: m.ProfilePage })));
 const AdminPage = lazy(() => import("./pages/AdminPage").then((m) => ({ default: m.AdminPage })));
-const AdminUsersPage = lazy(() =>
-  import("./pages/admin/AdminUsersPage").then((m) => ({ default: m.AdminUsersPage })));
+const AdminUsersDatabasePage = lazy(() =>
+  import("./pages/admin/AdminUsersDatabasePage").then((m) => ({ default: m.AdminUsersDatabasePage })));
 const AdminApprovalsPage = lazy(() =>
   import("./pages/admin/AdminApprovalsPage").then((m) => ({ default: m.AdminApprovalsPage })));
 const StationHealthPage = lazy(() =>
@@ -77,7 +77,7 @@ function AppRoutes() {
           <Route path="trip-planner" element={<TripPlannerPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="admin" element={<AdminPage />} />
-          <Route path="admin/users" element={<AdminUsersPage />} />
+          <Route path="admin/users" element={<AdminUsersDatabasePage />} />
           <Route path="admin/approvals" element={<AdminApprovalsPage />} />
           <Route path="admin/vehicle-requests" element={<AdminVehiclesPage />} />
           <Route path="admin/station-health" element={<StationHealthPage />} />
