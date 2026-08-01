@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useAuth } from "../auth/AuthContext";
 import { ApiError } from "../api/client";
@@ -14,12 +13,18 @@ import { GoogleSignInButton } from "../components/GoogleSignInButton";
 // see backend app/routers/admin.py's approval workflow.
 const PERSONAS: Persona[] = ["individual_driver", "fleet_operator", "housing_society_resident"];
 
+const PERSONA_LABELS: Record<Persona, string> = {
+  individual_driver: "Individual driver",
+  fleet_operator: "Fleet / depot operator",
+  housing_society_resident: "Housing society resident",
+  city_admin: "Vellore admin / DISCOM viewer",
+};
+
 // Sixteen years ago-ish max, so the date picker doesn't default somewhere
 // that instantly fails the backend's real "at least 18" check.
 const MAX_DOB = new Date(Date.now() - 18 * 365.25 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
 export function RegisterPage() {
-  const { t } = useTranslation();
   const { register } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -64,7 +69,7 @@ export function RegisterPage() {
           <h1 className="font-display text-2xl font-bold bg-gradient-to-br from-emerald-300 to-cyan-400 bg-clip-text text-transparent">
             MeridianGrid
           </h1>
-          <p className="text-sm text-slate-500 mt-1">{t("auth.register")}</p>
+          <p className="text-sm text-slate-500 mt-1">Create account</p>
         </div>
 
         <GlassCard className="p-6">
@@ -79,10 +84,10 @@ export function RegisterPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <Input required placeholder={t("auth.name")} value={name} onChange={(e) => setName(e.target.value)} />
-            <Input type="email" required placeholder={t("auth.email")} value={email}
+            <Input required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Input type="email" required placeholder="Email" value={email}
                    onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-            <Input type="password" required placeholder={t("auth.password")} value={password}
+            <Input type="password" required placeholder="Password" value={password}
                    onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
             <Input type="tel" required placeholder="Phone number" value={phoneNumber}
                    onChange={(e) => setPhoneNumber(e.target.value)} autoComplete="tel" />
@@ -102,10 +107,10 @@ export function RegisterPage() {
             <Input required placeholder="Profession" value={profession}
                    onChange={(e) => setProfession(e.target.value)} />
             <div>
-              <FieldLabel>{t("auth.persona")}</FieldLabel>
+              <FieldLabel>I am a</FieldLabel>
               <Select value={persona} onChange={(e) => setPersona(e.target.value as Persona)}>
                 {PERSONAS.map((p) => (
-                  <option key={p} value={p} className="bg-slate-900">{t(`persona.${p}`)}</option>
+                  <option key={p} value={p} className="bg-slate-900">{PERSONA_LABELS[p]}</option>
                 ))}
               </Select>
               <p className="text-xs text-slate-500 mt-1">
@@ -114,15 +119,15 @@ export function RegisterPage() {
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <Button type="submit" fullWidth disabled={submitting}>
-              {t("auth.submit")}
+              Continue
             </Button>
           </form>
         </GlassCard>
 
         <p className="mt-5 text-center text-sm text-slate-500">
-          {t("auth.haveAccount")}{" "}
+          Already have an account?{" "}
           <Link to="/login" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4">
-            {t("auth.login")}
+            Log in
           </Link>
         </p>
       </motion.div>

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import {
   HouseIcon, MapTrifoldIcon, BatteryChargingIcon, CarIcon, ListChecksIcon,
-  SquaresFourIcon, UsersIcon, ShieldCheckIcon, HeartbeatIcon, GlobeIcon, SignOutIcon, UserCircleIcon,
+  SquaresFourIcon, UsersIcon, ShieldCheckIcon, HeartbeatIcon, SignOutIcon, UserCircleIcon,
 } from "@phosphor-icons/react";
 import { useAuth } from "../auth/AuthContext";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
@@ -33,7 +32,6 @@ const ADMIN_NAV: NavItem[] = [
 ];
 
 export function Layout() {
-  const { i18n } = useTranslation();
   const { user, logout } = useAuth();
   const isOnline = useOnlineStatus();
   const location = useLocation();
@@ -71,13 +69,6 @@ export function Layout() {
               {adminRequestState === "sent" ? "Request sent" : adminRequestState === "error" ? "Already requested" : "Request admin"}
             </button>
           )}
-          <button
-            onClick={() => i18n.changeLanguage(i18n.language.startsWith("hi") ? "en" : "hi")}
-            className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer"
-            aria-label="Toggle language"
-          >
-            <GlobeIcon size={14} /> {i18n.language.startsWith("hi") ? "EN" : "हिं"}
-          </button>
           {user && (
             <NavLink to="/profile" aria-label="My profile"
                      className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer">

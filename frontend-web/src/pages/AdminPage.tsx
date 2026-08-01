@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import { SquaresFourIcon, ArrowsClockwiseIcon } from "@phosphor-icons/react";
 import { api } from "../api/client";
@@ -31,7 +30,6 @@ const CHART_TOOLTIP_STYLE = { background: "#0f1420", border: "1px solid rgba(148
 const AXIS_PROPS = { stroke: "#64748b", tick: { fill: "#94a3b8", fontSize: 11 } };
 
 export function AdminPage() {
-  const { t } = useTranslation();
   const [zones, setZones] = useState<string[]>([]);
   const [selectedZone, setSelectedZone] = useState("");
   const [forecast, setForecast] = useState<ForecastPoint[]>([]);
@@ -101,12 +99,12 @@ export function AdminPage() {
     <div>
       <div className="flex items-center gap-2 mb-6">
         <SquaresFourIcon size={24} weight="duotone" className="text-emerald-400" />
-        <h1 className="font-display text-2xl font-bold">{t("admin.title")}</h1>
+        <h1 className="font-display text-2xl font-bold">Vellore admin dashboard</h1>
       </div>
 
       <GlassCard className="mb-6">
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <h2 className="font-medium">{t("admin.demandForecast")}</h2>
+          <h2 className="font-medium">Demand forecast</h2>
           <Button variant="ghost" onClick={retrainModel} disabled={retraining} className="!py-1 !px-2.5 text-xs">
             <ArrowsClockwiseIcon size={13} className={retraining ? "animate-spin" : ""} />
             {retraining ? "Retraining..." : "Retrain now"}
@@ -135,7 +133,7 @@ export function AdminPage() {
       </GlassCard>
 
       <div className="mb-6">
-        <h2 className="font-medium mb-3">{t("admin.gridStress")}</h2>
+        <h2 className="font-medium mb-3">Feeder load</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {feeders.map((f) => (
             <GlassCard key={f.feeder_id} className={f.is_overloaded ? "border-red-500/50" : ""}>
@@ -147,7 +145,7 @@ export function AdminPage() {
               </div>
               {f.is_rural_minigrid && <p className="text-xs text-amber-400 mt-1">Rural mini-grid</p>}
               <Button variant="ghost" onClick={() => runStressTest(f)} disabled={stressBusy} className="mt-2 !py-1 !px-2 text-xs">
-                {t("admin.runStressTest")}
+                Run stress test
               </Button>
             </GlassCard>
           ))}
@@ -156,7 +154,7 @@ export function AdminPage() {
 
       {stressResult && (
         <GlassCard>
-          <h2 className="font-medium mb-2">{t("admin.stressTest")}: {stressResult.feeder_id}</h2>
+          <h2 className="font-medium mb-2">Mass-gathering stress test: {stressResult.feeder_id}</h2>
           <p className="text-sm text-slate-400">
             Breaking point: density x{stressResult.breaking_point_multiplier ?? "n/a"} &middot;
             {" "}Additional capacity needed: {stressResult.additional_capacity_needed_kw.toFixed(0)} kW &middot;

@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useAuth } from "../auth/AuthContext";
 import { ApiError } from "../api/client";
@@ -11,7 +10,6 @@ import { GoogleSignInButton } from "../components/GoogleSignInButton";
 import { IntroSplash } from "../components/IntroSplash";
 
 export function LoginPage() {
-  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showIntro, setShowIntro] = useState(true);
@@ -56,7 +54,7 @@ export function LoginPage() {
           <h1 className="font-display text-2xl font-bold bg-gradient-to-br from-emerald-300 to-cyan-400 bg-clip-text text-transparent">
             MeridianGrid
           </h1>
-          <p className="text-sm text-slate-500 mt-1">{t("auth.login")}</p>
+          <p className="text-sm text-slate-500 mt-1">Log in</p>
         </div>
 
         <GlassCard className="p-6">
@@ -71,21 +69,21 @@ export function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <Input type="email" required placeholder={t("auth.email")} value={email}
+            <Input type="email" required placeholder="Email" value={email}
                    onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-            <Input type="password" required placeholder={t("auth.password")} value={password}
+            <Input type="password" required placeholder="Password" value={password}
                    onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <Button type="submit" fullWidth disabled={submitting}>
-              {t("auth.submit")}
+              Continue
             </Button>
           </form>
         </GlassCard>
 
         <p className="mt-5 text-center text-sm text-slate-500">
-          {t("auth.needAccount")}{" "}
+          Need an account?{" "}
           <Link to="/register" className="text-emerald-400 hover:text-emerald-300 underline underline-offset-4">
-            {t("auth.register")}
+            Create account
           </Link>
         </p>
       </motion.div>

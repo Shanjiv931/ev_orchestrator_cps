@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   ListChecksIcon, LeafIcon, LightningIcon, MapPinIcon, CheckCircleIcon,
   DeviceMobileIcon, CreditCardIcon, MoneyIcon,
@@ -24,7 +23,6 @@ interface CarbonSummary {
 }
 
 export function SessionsPage() {
-  const { t } = useTranslation();
   const [sessions, setSessions] = useState<ChargingSession[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState("");
@@ -85,13 +83,13 @@ export function SessionsPage() {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <ListChecksIcon size={24} weight="duotone" className="text-emerald-400" />
-        <h1 className="font-display text-2xl font-bold">{t("sessions.title")}</h1>
+        <h1 className="font-display text-2xl font-bold">Charging sessions</h1>
       </div>
 
       {carbonSummary && (
         <div className="mb-4 text-sm bg-emerald-500/10 border border-emerald-400/20 rounded-lg px-3 py-2 inline-flex items-center gap-2">
           <LeafIcon size={16} weight="fill" className="text-emerald-400" />
-          {t("sessions.carbonSummary")}: <strong>{carbonSummary.total_co2_avoided_kg} kg CO2</strong>
+          CO2 avoided: <strong>{carbonSummary.total_co2_avoided_kg} kg CO2</strong>
         </div>
       )}
 
@@ -106,9 +104,9 @@ export function SessionsPage() {
           </Select>
           <label className="flex items-center gap-1.5 text-sm text-slate-300">
             <input type="checkbox" checked={isEmergency} onChange={(e) => setIsEmergency(e.target.checked)} />
-            {t("sessions.emergency")}
+            Emergency priority
           </label>
-          <Button onClick={startSession}>{t("sessions.start")}</Button>
+          <Button onClick={startSession}>Start session</Button>
         </GlassCard>
       )}
 
@@ -120,10 +118,10 @@ export function SessionsPage() {
                 <span className="font-mono text-xs text-slate-500">{s.id.slice(0, 8)}</span>
                 {s.is_emergency_priority && (
                   <span className="ml-2 text-xs bg-red-500/15 text-red-300 border border-red-400/30 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                    <LightningIcon size={10} weight="fill" /> {t("sessions.emergency")}
+                    <LightningIcon size={10} weight="fill" /> Emergency priority
                   </span>
                 )}
-                <p>{t("sessions.energy")}: {s.energy_kwh} &middot; {t("sessions.cost")}: ₹{s.cost}</p>
+                <p>Energy delivered (kWh): {s.energy_kwh} &middot; Cost (INR): ₹{s.cost}</p>
                 <p className="text-slate-500">{s.end_time ? "Completed" : "In progress"}</p>
               </div>
               <div className="flex gap-2 items-center">
@@ -133,8 +131,8 @@ export function SessionsPage() {
                   </span>
                 ) : (
                   <>
-                    {!s.end_time && <Button variant="ghost" onClick={() => completeSession(s.id)}>{t("sessions.complete")}</Button>}
-                    {s.end_time && <Button variant="ghost" onClick={() => togglePaymentPrompt(s.id)}>{t("sessions.pay")}</Button>}
+                    {!s.end_time && <Button variant="ghost" onClick={() => completeSession(s.id)}>Complete session</Button>}
+                    {s.end_time && <Button variant="ghost" onClick={() => togglePaymentPrompt(s.id)}>Pay at station</Button>}
                   </>
                 )}
               </div>
