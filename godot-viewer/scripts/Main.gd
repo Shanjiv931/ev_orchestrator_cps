@@ -51,7 +51,7 @@ func _setup_environment() -> void:
 	env.sky = sky
 
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 1.1
+	env.ambient_light_energy = 0.7
 
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.05, 0.06, 0.10)
@@ -59,10 +59,10 @@ func _setup_environment() -> void:
 	env.fog_sky_affect = 0.35
 
 	env.glow_enabled = true
-	env.glow_intensity = 0.9
-	env.glow_bloom = 0.2
+	env.glow_intensity = 0.7
+	env.glow_bloom = 0.15
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
-	env.glow_hdr_threshold = 1.0
+	env.glow_hdr_threshold = 1.6
 
 	env.ssao_enabled = true
 	env.ssao_intensity = 1.5
@@ -82,7 +82,7 @@ func _setup_sun() -> void:
 	# instead, same trick used for the camera.
 	sun.position = Vector3(1500, 2200, 1200)
 	sun.look_at(Vector3.ZERO, Vector3.UP)
-	sun.light_energy = 3.2
+	sun.light_energy = 1.6
 	sun.light_color = Color(1.0, 0.96, 0.88)
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 2000.0

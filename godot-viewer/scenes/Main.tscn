@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/RoadNetwork.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/CityProps.gd" id="3"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_1"]
 size = Vector2(11000, 9500)
@@ -20,6 +21,9 @@ surface_material_override/0 = SubResource("GroundMat")
 
 [node name="Roads" type="Node3D" parent="."]
 script = ExtResource("2")
+
+[node name="City" type="Node3D" parent="."]
+script = ExtResource("3")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 shadow_enabled = true

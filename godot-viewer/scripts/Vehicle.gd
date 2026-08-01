@@ -20,6 +20,18 @@ const PAINT_PALETTE := [
 	Color(0.55, 0.06, 0.10),  # dark red
 ]
 
+# Real 4W meshes (Kenney Car Kit, CC0 - see assets/KENNEY_LICENSE.txt),
+# picked deterministically per vehicle_id for variety. No motorbike/auto-
+# rickshaw equivalent exists in the kit, so 2W/3W stay procedural.
+const CAR_MODELS := [
+	preload("res://assets/vehicles/sedan.glb"),
+	preload("res://assets/vehicles/suv.glb"),
+	preload("res://assets/vehicles/hatchback-sports.glb"),
+	preload("res://assets/vehicles/taxi.glb"),
+	preload("res://assets/vehicles/van.glb"),
+	preload("res://assets/vehicles/delivery.glb"),
+]
+
 var vehicle_id: String = "":
 	set(value):
 		vehicle_id = value
@@ -164,6 +176,23 @@ func _wheel(position: Vector3, radius: float, thickness: float) -> void:
 	parts.add_child(rim)
 
 
+func _tint_body(node: Node, color: Color) -> void:
+	# Kenney's car meshes come out of glTF import with a mostly-white body
+	# texture (a KHR_texture_transform atlas quirk, not a broken reference -
+	# confirmed the texture itself binds fine). Rather than fight the
+	# importer, give each vehicle_id a deliberate paint color, matching the
+	# procedural 2W/3W look, without recoloring the wheels/tires.
+	if node is MeshInstance3D and node.name.begins_with("body"):
+		var mesh: Mesh = node.mesh
+		for i in mesh.get_surface_count():
+			var base_mat := mesh.surface_get_material(i)
+			var mat: StandardMaterial3D = base_mat.duplicate() if base_mat is StandardMaterial3D else StandardMaterial3D.new()
+			mat.albedo_color = color
+			node.set_surface_override_material(i, mat)
+	for child in node.get_children():
+		_tint_body(child, color)
+
+
 func _underglow(length: float, width: float) -> void:
 	_box(Vector3(length, 0.03, width), Vector3(0, 0.06, 0), _emissive_material(_accent_color(), 1.4))
 
@@ -203,16 +232,12 @@ func _build_geometry() -> void:
 			_underglow(1.7, 1.1)
 			info.position = Vector3(0, 1.7, 0)
 		_:
-			_box(Vector3(4.0, 0.5, 1.85), Vector3(0.0, 0.45, 0.0), paint)
-			_box(Vector3(2.0, 0.35, 1.6), Vector3(-0.15, 0.85, 0.0), glass)
-			_box(Vector3(1.5, 0.12, 1.4), Vector3(-0.15, 1.08, 0.0), paint)
-			_box(Vector3(0.10, 0.14, 0.28), Vector3(1.95, 0.55, 0.65), headlight)
-			_box(Vector3(0.10, 0.14, 0.28), Vector3(1.95, 0.55, -0.65), headlight)
-			_box(Vector3(0.10, 0.16, 0.30), Vector3(-1.95, 0.55, 0.65), taillight)
-			_box(Vector3(0.10, 0.16, 0.30), Vector3(-1.95, 0.55, -0.65), taillight)
-			_wheel(Vector3(1.35, 0.34, 0.62), 0.34, 0.24)
-			_wheel(Vector3(1.35, 0.34, -0.62), 0.34, 0.24)
-			_wheel(Vector3(-1.35, 0.34, 0.62), 0.34, 0.24)
-			_wheel(Vector3(-1.35, 0.34, -0.62), 0.34, 0.24)
-			_underglow(3.8, 1.7)
-			info.position = Vector3(0, 2.1, 0)
+			var model_idx: int = absi(hash(vehicle_id)) % CAR_MODELS.size()
+			var model: Node3D = CAR_MODELS[model_idx].instantiate()
+			# Kenney's glTF forward axis vs. this project's local +X-forward
+			# convention (see _process) - tuned empirically against screenshots.
+			model.rotation_degrees = Vector3(0, 90, 0)
+			_tint_body(model, _paint_color())
+			parts.add_child(model)
+			_underglow(2.6, 1.3)
+			info.position = Vector3(0, 2.3, 0)
