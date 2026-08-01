@@ -10,7 +10,6 @@ import type { Vehicle, VehicleLiveTelemetry } from "../api/types";
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { Select } from "../components/ui/Input";
-import { CarScene } from "../components/3d/CarScene";
 
 export function HomePage() {
   const { user } = useAuth();
@@ -77,13 +76,11 @@ export function HomePage() {
 
           {vehicle && (
             <GlassCard glow="brand" className="mb-4">
-              <div className="h-56 rounded-xl overflow-hidden bg-white/[0.06] mb-3">
-                <CarScene
-                  colorHex={vehicle.color_hex ?? "#1E293B"}
-                  vehicleClass={vehicle.vehicle_class}
-                  batteryPct={telemetry?.battery_pct ?? 60}
-                  isCharging={telemetry?.is_charging ?? false}
-                />
+              <div className="h-56 rounded-xl overflow-hidden bg-white/[0.06] mb-3 flex items-center justify-center relative">
+                {telemetry?.is_charging && (
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.25),transparent_70%)] animate-pulse" />
+                )}
+                <img src="/images/car.webp" alt="Your vehicle" className="relative w-full h-full object-contain p-4" />
               </div>
               <h2 className="font-display text-xl font-bold">
                 {vehicle.brand ? `${vehicle.brand} ${vehicle.vehicle_model}` : vehicle.vehicle_class}
