@@ -10,12 +10,12 @@ export function GlassCard({ className, hoverLift = false, glow = "none", childre
   return (
     <motion.div
       className={clsx(
-        "glass-panel rounded-2xl p-4",
-        glow === "brand" && "shadow-[0_0_32px_-8px_rgba(16,185,129,0.35)]",
-        glow === "electric" && "shadow-[0_0_32px_-8px_rgba(34,211,238,0.35)]",
+        "glass-panel rounded-2xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.4)]",
+        glow === "brand" && "shadow-[0_0_24px_-10px_rgba(34,197,94,0.35)]",
+        glow === "electric" && "shadow-[0_0_24px_-10px_rgba(0,229,255,0.35)]",
         className,
       )}
-      whileHover={hoverLift ? { y: -4, borderColor: "rgba(16,185,129,0.4)" } : undefined}
+      whileHover={hoverLift ? { y: -2, borderColor: "rgba(255,255,255,0.18)" } : undefined}
       transition={{ duration: 0.2, ease: "easeOut" }}
       {...props}
     >

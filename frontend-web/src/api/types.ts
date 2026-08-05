@@ -111,6 +111,7 @@ export interface Charger {
   maintenance_risk_score: number;
   port_number: number | null;
   charger_type: "AC" | "DC";
+  reserved_until: string | null;
 }
 
 export interface SwapSlot {
@@ -128,6 +129,7 @@ export interface Station {
   safety_score: number;
   has_solar: boolean;
   city: string | null;
+  queue_length: number;
   chargers: Charger[];
   swap_slots: SwapSlot[];
 }
@@ -161,6 +163,9 @@ export interface DbTable {
   name: string;
   row_count: number;
   columns: DbColumn[];
+  creatable: boolean;
+  editable_fields: string[];
+  deletable: boolean;
 }
 
 export type DbRow = Record<string, string | number | boolean | null>;
@@ -170,6 +175,17 @@ export interface DbRowsResponse {
   total: number;
   limit: number;
   offset: number;
+}
+
+export interface AdminAuditLogEntry {
+  id: string;
+  admin_user_id: string;
+  table_name: string;
+  row_id: string;
+  action: "create" | "update";
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  created_at: string;
 }
 
 export interface Poi {
@@ -266,4 +282,13 @@ export interface TwinFeederState {
   loading_percent: number;
   is_overloaded: boolean;
   is_rural_minigrid: boolean;
+}
+
+export interface ChargingAdvisory {
+  level: "good" | "fair" | "poor";
+  reasons: string[];
+  temperature_c: number;
+  is_peak_hours: boolean;
+  feeders_overloaded: number;
+  feeders_total: number;
 }

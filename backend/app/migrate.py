@@ -66,6 +66,9 @@ _STATEMENTS = [
     "UPDATE chargers SET port_number = numbered.rn FROM ("
     "  SELECT id, ROW_NUMBER() OVER (PARTITION BY station_id ORDER BY id) AS rn FROM chargers"
     ") AS numbered WHERE chargers.id = numbered.id AND chargers.port_number IS NULL",
+    "ALTER TABLE stations ADD COLUMN IF NOT EXISTS queue_length INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE chargers ADD COLUMN IF NOT EXISTS reserved_until TIMESTAMPTZ",
+    "ALTER TABLE chargers ADD COLUMN IF NOT EXISTS reserved_by_user_id UUID REFERENCES users(id)",
 ]
 
 

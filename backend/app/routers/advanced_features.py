@@ -15,10 +15,14 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from sqlalchemy import func, select
+
 from app.config import settings
 from app.database import get_db
+from app.models import Charger
 from app.services.demand_retrain_job import get_or_train_model
 from app.services.retention_job import run_retention_sweep
+from app.services.weather_service import get_current_weather
 from ml.blackout_resilience import CriticalLoad, plan_emergency_backup
 from ml.demand_forecast import ZONES, predict_sessions
 from ml.emergency_queue import PriorityJumpTracker, QueuedRequest, insert_with_priority
@@ -40,8 +44,14 @@ def list_forecast_zones() -> list[str]:
 
 
 @router.get("/demand-forecast/predict")
-def demand_forecast_predict(zone: str, hour: int, day_of_week: int, weather: int = 0,
-                             db: Session = Depends(get_db)) -> dict:
+async def demand_forecast_predict(zone: str, hour: int, day_of_week: int, weather: int | None = None,
+                                   db: Session = Depends(get_db)) -> dict:
+    # weather is an explicit override (e.g. "what if it rains" scenario
+    # testing) - when the caller doesn't pass one, use today's real
+    # Vellore weather instead of silently assuming clear skies.
+    if weather is None:
+        reading = await get_current_weather()
+        weather = 1 if reading.is_rain else 0
     result = get_or_train_model(db)
     predicted = predict_sessions(result["model"], zone, hour, day_of_week, weather)
     return {
@@ -166,19 +176,41 @@ class StressTestRequest(BaseModel):
     station_capacity_kw: float = 100.0
 
 
+def _fleet_availability_ratio(db: Session) -> float:
+    """Fraction of chargers *not* currently in fault-detection-driven
+    maintenance (app/services/fault_consumer.py) - real current fleet
+    health, used to derate capacity-planning recommendations below rather
+    than assuming every new station stays at 100% nameplate availability."""
+    total = db.execute(select(func.count()).select_from(Charger)).scalar_one()
+    if total == 0:
+        return 1.0
+    in_maintenance = db.execute(
+        select(func.count()).select_from(Charger).where(Charger.status == "maintenance")
+    ).scalar_one()
+    return max(0.01, (total - in_maintenance) / total)
+
+
 @router.post("/stress-test/sweep")
-def stress_test_sweep(payload: StressTestRequest) -> dict:
+def stress_test_sweep(payload: StressTestRequest, db: Session = Depends(get_db)) -> dict:
     report = sweep_density(
         payload.feeder_id, payload.feeder_capacity_kw, payload.baseline_vehicle_count,
         payload.avg_charger_power_kw, payload.simultaneous_charge_fraction, payload.density_multipliers,
     )
-    additional_stations = recommend_additional_stations(report.additional_capacity_needed_kw, payload.station_capacity_kw)
+    fleet_availability_ratio = _fleet_availability_ratio(db)
+    naive_additional_stations = recommend_additional_stations(
+        report.additional_capacity_needed_kw, payload.station_capacity_kw,
+    )
+    derated_additional_stations = recommend_additional_stations(
+        report.additional_capacity_needed_kw, payload.station_capacity_kw, fleet_availability_ratio,
+    )
     return {
         "feeder_id": report.feeder_id,
         "results": [r.__dict__ for r in report.results],
         "breaking_point_multiplier": report.breaking_point_multiplier,
         "additional_capacity_needed_kw": report.additional_capacity_needed_kw,
-        "recommended_additional_stations": additional_stations,
+        "recommended_additional_stations": naive_additional_stations,
+        "fleet_availability_ratio": round(fleet_availability_ratio, 4),
+        "recommended_additional_stations_reliability_adjusted": derated_additional_stations,
     }
 
 

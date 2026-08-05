@@ -91,6 +91,7 @@ def _start_mqtt_client() -> mqtt.Client:
     client.subscribe("swap/status/#")
     client.subscribe("feeder/load/#")
     client.subscribe("station/solar/#")
+    client.subscribe("charger/fault/#")
     client.loop_start()
     log.info("subscribed to all twin topic namespaces")
     return client

@@ -3,8 +3,8 @@ import { isStaleVerification, safetyBadgeClasses, safetyColor, STALE_VERIFICATIO
 
 describe("safetyColor", () => {
   it("returns green for high safety scores", () => {
-    expect(safetyColor(0.9)).toBe("#16a34a");
-    expect(safetyColor(0.7)).toBe("#16a34a");
+    expect(safetyColor(0.9)).toBe("#22c55e");
+    expect(safetyColor(0.7)).toBe("#22c55e");
   });
 
   it("returns amber for medium safety scores", () => {
@@ -12,7 +12,7 @@ describe("safetyColor", () => {
   });
 
   it("returns red for low safety scores", () => {
-    expect(safetyColor(0.1)).toBe("#dc2626");
+    expect(safetyColor(0.1)).toBe("#ef4444");
   });
 });
 

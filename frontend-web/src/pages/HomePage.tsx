@@ -78,7 +78,7 @@ export function HomePage() {
             <GlassCard glow="brand" className="mb-4">
               <div className="h-56 rounded-xl overflow-hidden bg-white/[0.06] mb-3 flex items-center justify-center relative">
                 {telemetry?.is_charging && (
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.25),transparent_70%)] animate-pulse" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(34,197,94,0.22),transparent_70%)] animate-pulse" />
                 )}
                 <img src="/images/car.webp" alt="Your vehicle" className="relative w-full h-full object-contain p-4" />
               </div>

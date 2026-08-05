@@ -28,7 +28,7 @@ def test_generation_rises_then_falls_across_the_day():
 def test_only_has_solar_sites_are_registered():
     sites = _solar_sites()
     site_ids = {s.site_id for s in sites}
-    assert "station-indiranagar-hsg-01" in site_ids  # has_solar=True
-    assert "station-koramangala-dc-01" not in site_ids  # has_solar=False
+    assert "station-officers-line-hsg-01" in site_ids  # has_solar=True
+    assert "station-vit-dc-01" not in site_ids  # has_solar=False
     for site in sites:
         assert site.peak_generation_kw > 0

@@ -11,9 +11,9 @@ export function formatStationType(stationType: string): string {
 }
 
 export function safetyColor(score: number): string {
-  if (score >= 0.7) return "#16a34a";
+  if (score >= 0.7) return "#22c55e";
   if (score >= 0.4) return "#f59e0b";
-  return "#dc2626";
+  return "#ef4444";
 }
 
 export function isStaleVerification(staleness_hours: number): boolean {

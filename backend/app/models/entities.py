@@ -7,7 +7,7 @@ extension the build contract allows for.
 import uuid
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -103,6 +103,10 @@ class Station(Base):
     # Vellore station" apart from every other city's, e.g. for the
     # out-of-Vellore-vehicle-charging-here view.
     city: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Simulated vehicles waiting for a free port beyond what chargers.status
+    # already captures (available/occupied/offline per charger) - driven by
+    # the scenario engine's "N cars waiting" preset (app/scenario_engine.py).
+    queue_length: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     chargers: Mapped[list["Charger"]] = relationship(back_populates="station")
     swap_slots: Mapped[list["SwapSlot"]] = relationship(back_populates="station")
@@ -122,6 +126,15 @@ class Charger(Base):
     # (app/seed_stations.py) or backfilled additively (app/migrate.py) for
     # chargers created before this field existed.
     port_number: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Short-hold reservation (status="reserved") - lazily expired on read
+    # (app/routers/stations.py) rather than needing a background sweep job,
+    # since nothing else depends on a reservation's expiry firing precisely
+    # on time. reserved_by_user_id is who it's held for - start-at-station
+    # (app/routers/sessions.py) lets that user claim it directly; without
+    # this, a reserved port would be unclaimable by anyone, including the
+    # person who reserved it.
+    reserved_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reserved_by_user_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
 
     station: Mapped["Station"] = relationship(back_populates="chargers")
     sessions: Mapped[list["ChargingSession"]] = relationship(back_populates="charger")
@@ -354,3 +367,25 @@ class VehicleRequest(Base):
     user: Mapped["User"] = relationship(foreign_keys=[user_id])
     reviewer: Mapped["User | None"] = relationship(foreign_keys=[reviewed_by])
     vehicle: Mapped["Vehicle | None"] = relationship(foreign_keys=[vehicle_id])
+
+
+class AdminAuditLog(Base):
+    """Every mutation made through the raw database console
+    (app/routers/admin_database.py) is recorded here - who, what table/row,
+    what changed, when. A hard-DELETE with no trace is itself a compliance
+    red flag for PII/financial data (SOC2/ISO 27001, India's DPDP Act) even
+    when delete is otherwise legitimate, which is why that console has no
+    working delete at all (see admin_database.py) - every mutation it can
+    make is a create or an update, and every one of those lands here."""
+    __tablename__ = "admin_audit_log"
+
+    id: Mapped[uuid.UUID] = _uuid_pk()
+    admin_user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    table_name: Mapped[str] = mapped_column(String, nullable=False)
+    row_id: Mapped[str] = mapped_column(String, nullable=False)
+    action: Mapped[str] = mapped_column(String, nullable=False)  # "create" | "update"
+    before: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    after: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    admin_user: Mapped["User"] = relationship()

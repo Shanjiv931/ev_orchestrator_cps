@@ -14,6 +14,7 @@ import { safetyColor } from "../lib/format";
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { StationDetailsPanel } from "../components/StationDetailsPanel";
+import { ChargingAdvisoryCard } from "../components/ChargingAdvisoryCard";
 
 // A station "counts" as being along the route if it comes within this
 // distance of any sampled point on the polyline - loose enough to catch
@@ -119,6 +120,8 @@ export function TripPlannerPage() {
         <h1 className="font-display text-2xl font-bold">Plan a long trip</h1>
       </div>
 
+      <ChargingAdvisoryCard className="mb-4" />
+
       <GlassCard className="mb-4">
         <div className="relative flex items-center gap-2">
           <MagnifyingGlassIcon size={18} className="text-slate-400 shrink-0" />
@@ -174,10 +177,10 @@ export function TripPlannerPage() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <FitToRoute coordinates={route.coordinates} />
-              <CircleMarker center={origin} radius={7} pathOptions={{ color: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.9 }} />
+              <CircleMarker center={origin} radius={7} pathOptions={{ color: "#00e5ff", fillColor: "#00e5ff", fillOpacity: 0.9 }} />
               <CircleMarker center={[destination.lat, destination.lon]} radius={7}
-                            pathOptions={{ color: "#a855f7", fillColor: "#a855f7", fillOpacity: 0.9 }} />
-              <Polyline positions={route.coordinates} pathOptions={{ color: "#22d3ee", weight: 4, opacity: 0.8 }} />
+                            pathOptions={{ color: "#3b82f6", fillColor: "#3b82f6", fillOpacity: 0.9 }} />
+              <Polyline positions={route.coordinates} pathOptions={{ color: "#00e5ff", weight: 4, opacity: 0.8 }} />
               {stops?.map(({ station }) => (
                 <CircleMarker key={station.id} center={[station.lat, station.lon]} radius={7}
                               pathOptions={{ color: safetyColor(station.safety_score), fillOpacity: 0.8 }}

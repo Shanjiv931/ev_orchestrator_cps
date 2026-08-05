@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import sys
+import threading
 import time
 from dataclasses import dataclass
 from typing import Dict, List
@@ -30,6 +31,49 @@ sys.path.append(os.path.join(SUMO_HOME, "tools"))
 
 MQTT_HOST = os.environ.get("MQTT_HOST", "mosquitto")
 MQTT_PORT = int(os.environ.get("MQTT_PORT", "1883"))
+
+# Multiplied together per newly-seen vehicle to set its TraCI speed factor
+# (fraction of the road's speed limit it actually targets) - lets an
+# activated scenario (backend/app/scenario_engine.py, broadcast over MQTT
+# as scenario/active) visibly slow traffic without restarting this
+# container. Vehicles already in the simulation keep whatever factor they
+# were assigned when they appeared, matching how real traffic conditions
+# affect trips starting after the condition begins, not ones already underway.
+TRAFFIC_SPEED_FACTOR = {"normal": 1.0, "peak_surge": 0.85, "heavy_congestion": 0.6}
+WEATHER_SPEED_FACTOR = {"clear": 1.0, "rain": 0.9, "extreme_heat": 1.0, "fog": 0.75}
+
+
+class ActiveScenario:
+    """Thread-safe holder for the live traffic/weather scenario state,
+    updated from the MQTT network thread and read from the simulation loop."""
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._traffic = "normal"
+        self._weather = "clear"
+
+    def update(self, traffic: str, weather: str) -> None:
+        with self._lock:
+            self._traffic = traffic
+            self._weather = weather
+
+    def speed_factor(self) -> float:
+        with self._lock:
+            traffic, weather = self._traffic, self._weather
+        return TRAFFIC_SPEED_FACTOR.get(traffic, 1.0) * WEATHER_SPEED_FACTOR.get(weather, 1.0)
+
+
+def _on_scenario_message(active_scenario: ActiveScenario):
+    def _handler(_client, _userdata, msg) -> None:
+        try:
+            payload = json.loads(msg.payload.decode("utf-8"))
+        except (ValueError, UnicodeDecodeError):
+            return
+        active_scenario.update(payload.get("traffic", "normal"), payload.get("weather", "clear"))
+        log.info("scenario update: traffic=%s weather=%s (speed factor %.2f)",
+                  payload.get("traffic", "normal"), payload.get("weather", "clear"), active_scenario.speed_factor())
+
+    return _handler
 
 VEHICLE_CLASSES = ["2W", "3W", "4W"]
 CONNECTOR_BY_CLASS = {
@@ -107,7 +151,7 @@ def build_telemetry(traci_module, scenario_name: str, vehicle_id: str, profile: 
 
 
 def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float = 1.0,
-        realtime_factor: float = 1.0) -> None:
+        realtime_factor: float = 1.0, active_scenario: "ActiveScenario | None" = None) -> None:
     """realtime_factor > 0 paces steps to wall-clock time (1.0 = one
     step_length of simulated time per step_length seconds of real time), so
     the "live" twin actually tracks real time and doesn't flood MQTT/the
@@ -115,7 +159,14 @@ def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float =
     Set to 0 to run uncapped (e.g. for scenario validation)."""
     import traci
 
-    traci.start(["sumo", "-c", sumocfg_path, "--step-length", str(step_length), "--no-warnings", "true"])
+    from sim_seed import get_seed
+    sumo_args = ["sumo", "-c", sumocfg_path, "--step-length", str(step_length), "--no-warnings", "true"]
+    random_seed = get_seed()
+    if random_seed is not None:
+        sumo_args += ["--seed", random_seed]
+    else:
+        sumo_args += ["--random"]  # explicit: a fresh, unseeded departure/route pattern every run
+    traci.start(sumo_args)
     profiles: Dict[str, VehicleProfile] = {}
 
     try:
@@ -126,6 +177,8 @@ def run(sumocfg_path: str, scenario_name: str, mqtt_client, step_length: float =
             for vehicle_id in traci.vehicle.getIDList():
                 if vehicle_id not in profiles:
                     profiles[vehicle_id] = build_profile(vehicle_id)
+                    if active_scenario is not None:
+                        traci.vehicle.setSpeedFactor(vehicle_id, active_scenario.speed_factor())
                 payload = build_telemetry(traci, scenario_name, vehicle_id, profiles[vehicle_id], step_length)
                 mqtt_client.publish(f"ev/telemetry/{payload['vehicle_id']}", json.dumps(payload), qos=0)
 
@@ -154,7 +207,9 @@ def main() -> None:
 
     import paho.mqtt.client as mqtt
 
+    active_scenario = ActiveScenario()
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    client.on_message = _on_scenario_message(active_scenario)
     while True:
         try:
             client.connect(MQTT_HOST, MQTT_PORT, keepalive=60)
@@ -162,12 +217,13 @@ def main() -> None:
         except OSError as exc:
             log.warning("MQTT broker not ready (%s), retrying in 2s", exc)
             time.sleep(2)
+    client.subscribe("scenario/active")
     client.loop_start()
 
     log.info("starting %s scenario from %s", args.scenario, args.sumocfg)
     while True:
         run(args.sumocfg, args.scenario, client, step_length=args.step_length,
-            realtime_factor=args.realtime_factor)
+            realtime_factor=args.realtime_factor, active_scenario=active_scenario)
         log.info("%s scenario finished, restarting for a continuous live demo", args.scenario)
 
 

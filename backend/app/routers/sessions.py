@@ -77,16 +77,30 @@ def start_session_at_station(
     if vehicle is None or vehicle.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="vehicle not found")
 
+    # A port this user reserved (POST /stations/chargers/{id}/reserve) takes
+    # priority over "just pick the first free one" - otherwise the specific
+    # port they were told to walk to could get handed to someone else's
+    # session instead, defeating the point of holding it.
     charger = (
         db.query(Charger)
-        .filter(Charger.station_id == payload.station_id, Charger.status == "available")
+        .filter(Charger.station_id == payload.station_id, Charger.status == "reserved",
+                Charger.reserved_by_user_id == current_user.id)
         .order_by(Charger.port_number)
         .first()
     )
     if charger is None:
+        charger = (
+            db.query(Charger)
+            .filter(Charger.station_id == payload.station_id, Charger.status == "available")
+            .order_by(Charger.port_number)
+            .first()
+        )
+    if charger is None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="no available charger at this station right now")
 
     charger.status = "occupied"
+    charger.reserved_until = None
+    charger.reserved_by_user_id = None
     session = ChargingSession(user_id=current_user.id, vehicle_id=payload.vehicle_id, charger_id=charger.id)
     db.add(session)
     db.commit()

@@ -15,6 +15,7 @@ import { REPRESENTATIVE_POWER_KW, RATE_PER_KWH, type ChargerType } from "../lib/
 import { GlassCard } from "../components/ui/GlassCard";
 import { Button } from "../components/ui/Button";
 import { StationDetailsPanel } from "../components/StationDetailsPanel";
+import { ChargingAdvisoryCard } from "../components/ChargingAdvisoryCard";
 
 type Phase = "idle" | "choosing-power" | "navigating" | "arrived" | "charging" | "complete";
 
@@ -83,6 +84,8 @@ export function MapPage() {
   const [batteryFull, setBatteryFull] = useState(false);
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [stationStartBusy, setStationStartBusy] = useState(false);
+  const [reserving, setReserving] = useState(false);
+  const [reservedPorts, setReservedPorts] = useState<Record<string, number>>({}); // station_id -> port_number
 
   const [pois, setPois] = useState<Poi[]>([]);
   const [idlePos, setIdlePos] = useState<[number, number] | null>(null);
@@ -187,6 +190,21 @@ export function MapPage() {
       setError("No available charger at this station right now.");
     } finally {
       setStationStartBusy(false);
+    }
+  }
+
+  async function reserveAtSelectedStation() {
+    if (!selectedStation) return;
+    setReserving(true);
+    try {
+      const charger = await api.post<{ port_number: number | null }>(`/stations/${selectedStation.id}/reserve-any`, {});
+      if (charger.port_number != null) {
+        setReservedPorts((prev) => ({ ...prev, [selectedStation.id]: charger.port_number! }));
+      }
+    } catch {
+      setError("No available charger at this station right now - it may have just filled up.");
+    } finally {
+      setReserving(false);
     }
   }
 
@@ -444,8 +462,8 @@ export function MapPage() {
         />
         <RecenterOnUser lat={mapCenter[0]} lon={mapCenter[1]} />
 
-        {/* the user themselves - always a red dot, per the product's own request */}
-        <CircleMarker center={originPos} radius={9} pathOptions={{ color: "#ef4444", fillColor: "#ef4444", fillOpacity: 0.9, weight: 2 }}>
+        {/* the user themselves - accent cyan marker, per the design system's own-position color */}
+        <CircleMarker center={originPos} radius={9} pathOptions={{ color: "#00e5ff", fillColor: "#00e5ff", fillOpacity: 0.9, weight: 2 }}>
           <Popup>You are here{livePos ? "" : " (home location - live GPS unavailable)"}</Popup>
         </CircleMarker>
 
@@ -456,7 +474,7 @@ export function MapPage() {
         ))}
 
         {activeRoute && (
-          <Polyline positions={activeRoute.coordinates} pathOptions={{ color: "#22d3ee", weight: 5, opacity: 0.85 }} />
+          <Polyline positions={activeRoute.coordinates} pathOptions={{ color: "#00e5ff", weight: 5, opacity: 0.85 }} />
         )}
       </MapContainer>
 
@@ -495,6 +513,8 @@ export function MapPage() {
           </GlassCard>
         )}
 
+        {phase === "idle" && <ChargingAdvisoryCard className="p-3" />}
+
         {error && (
           <GlassCard className="p-3 border-red-400/40 bg-red-500/10">
             <p className="text-xs text-red-300">{error}</p>
@@ -517,6 +537,9 @@ export function MapPage() {
               onStartCharging={vehicle ? startAtSelectedStation : undefined}
               busy={stationStartBusy}
               className="rounded-b-none"
+              onReserve={reservedPorts[selectedStation.id] == null ? reserveAtSelectedStation : undefined}
+              reserving={reserving}
+              reservedPortNumber={reservedPorts[selectedStation.id] ?? null}
             />
           </motion.div>
         )}

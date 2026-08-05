@@ -10,24 +10,24 @@ interface ButtonProps extends HTMLMotionProps<"button"> {
 
 const VARIANT_CLASSES: Record<Variant, string> = {
   primary:
-    "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-[0_0_24px_-6px_rgba(16,185,129,0.6)] hover:shadow-[0_0_32px_-4px_rgba(16,185,129,0.75)]",
+    "bg-black text-white border border-white/15 shadow-[0_1px_2px_rgba(0,0,0,0.5)] hover:bg-[#151515] hover:border-white/25 hover:shadow-[0_4px_12px_-4px_rgba(0,0,0,0.6)]",
   secondary:
-    "bg-cyan-500/10 text-cyan-300 border border-cyan-400/30 hover:bg-cyan-500/20",
-  ghost: "bg-white/5 text-slate-200 border border-white/10 hover:bg-white/10",
-  danger: "bg-red-500/10 text-red-300 border border-red-400/30 hover:bg-red-500/20",
+    "bg-[#151515] text-slate-200 border border-white/10 hover:bg-[#1a1a1a] hover:border-white/20",
+  ghost: "bg-transparent text-white border border-transparent hover:bg-white/5",
+  danger: "bg-red-900/30 text-red-300 border border-red-500/25 hover:bg-red-900/50 hover:border-red-500/40",
 };
 
 export function Button({ variant = "primary", fullWidth = false, className, children, disabled, ...props }: ButtonProps) {
   return (
     <motion.button
-      whileHover={disabled ? undefined : { scale: 1.02 }}
-      whileTap={disabled ? undefined : { scale: 0.97 }}
-      transition={{ duration: 0.15 }}
+      whileHover={disabled ? undefined : { y: -1 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
       disabled={disabled}
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium",
-        "transition-colors duration-200 min-h-11 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070D]",
+        "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold",
+        "transition-all duration-200 min-h-11 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black",
         fullWidth && "w-full",
         VARIANT_CLASSES[variant],
         className,

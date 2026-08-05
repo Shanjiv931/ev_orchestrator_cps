@@ -21,16 +21,19 @@ from app.routers import (
     payments,
     poi,
     sessions,
+    simulation,
     stations,
     twin,
     vehicle_link,
     vehicles,
+    weather,
 )
 from app.migrate import run_lightweight_migrations
 from app.seed import seed_admin_if_missing
 from app.seed_provisioning import seed_provisioning_if_empty
 from app.seed_stations import seed_stations_if_empty
 from app.services import twin_client
+from app.services.fault_consumer import start_fault_consumer
 
 
 @asynccontextmanager
@@ -42,8 +45,11 @@ async def lifespan(app: FastAPI):
         seed_stations_if_empty(db)
         seed_provisioning_if_empty(db)
     relay_task = asyncio.create_task(twin_client.relay_forever(settings.twin_engine_ws_url))
+    fault_consumer_client = start_fault_consumer()
     yield
     relay_task.cancel()
+    fault_consumer_client.loop_stop()
+    fault_consumer_client.disconnect()
 
 
 app = FastAPI(title="MeridianGrid API", version="0.2.0", lifespan=lifespan)
@@ -73,6 +79,8 @@ app.include_router(payments.router)
 app.include_router(poi.router)
 app.include_router(advanced_features.router)
 app.include_router(twin.router)
+app.include_router(simulation.router)
+app.include_router(weather.router)
 
 Instrumentator().instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 

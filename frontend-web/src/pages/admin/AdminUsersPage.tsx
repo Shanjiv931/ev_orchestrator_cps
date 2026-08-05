@@ -29,9 +29,9 @@ export function AdminUsersPage() {
       {error && <p className="text-red-400 text-sm">{error}</p>}
 
       {users && (
-        <GlassCard className="p-0 overflow-hidden overflow-x-auto">
+        <GlassCard className="p-0 overflow-hidden overflow-x-auto max-h-[70vh] overflow-y-auto">
           <table className="w-full text-sm">
-            <thead className="text-left text-slate-400 border-b border-white/10">
+            <thead className="text-left text-xs text-slate-400 uppercase tracking-wide border-b border-white/10 sticky top-0 z-10 bg-[#151515]">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
                 <th className="px-4 py-3 font-medium">Email</th>
@@ -42,7 +42,7 @@ export function AdminUsersPage() {
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
+                <tr key={u.id} className="border-b border-white/5 odd:bg-white/[0.015] hover:bg-white/[0.05] transition-colors duration-150">
                   <td className="px-4 py-3">{u.name}</td>
                   <td className="px-4 py-3 text-slate-400">{u.email}</td>
                   <td className="px-4 py-3">

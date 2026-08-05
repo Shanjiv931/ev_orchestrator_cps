@@ -272,6 +272,7 @@ class ChargerRead(BaseModel):
     maintenance_risk_score: float
     port_number: int | None
     charger_type: str
+    reserved_until: datetime | None
 
 
 class SwapSlotRead(BaseModel):
@@ -291,6 +292,7 @@ class StationRead(BaseModel):
     safety_score: float
     has_solar: bool
     city: str | None
+    queue_length: int = 0
     chargers: list[ChargerRead] = []
     swap_slots: list[SwapSlotRead] = []
 

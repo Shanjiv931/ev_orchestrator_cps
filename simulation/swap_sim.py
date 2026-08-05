@@ -100,6 +100,9 @@ def build_kiosks(env: simpy.Environment, publish: PublishFn, specs: List[SwapKio
 def main() -> None:
     import paho.mqtt.client as mqtt
 
+    from sim_seed import apply_random_seed
+    apply_random_seed("swap-sim")
+
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     while True:
         try:

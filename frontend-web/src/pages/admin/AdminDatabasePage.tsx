@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  DatabaseIcon, PencilSimpleIcon, TrashIcon, PlusIcon, XIcon, CheckIcon,
-  CaretLeftIcon, CaretRightIcon,
+  DatabaseIcon, PencilSimpleIcon, PlusIcon, XIcon, CheckIcon,
+  CaretLeftIcon, CaretRightIcon, LockSimpleIcon, ClockCounterClockwiseIcon,
 } from "@phosphor-icons/react";
 import { api, ApiError } from "../../api/client";
-import type { DbColumn, DbRow, DbRowsResponse, DbTable } from "../../api/types";
+import type { AdminAuditLogEntry, DbColumn, DbRow, DbRowsResponse, DbTable } from "../../api/types";
 import { GlassCard } from "../../components/ui/GlassCard";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
@@ -36,10 +36,19 @@ export function AdminDatabasePage() {
   const [editValues, setEditValues] = useState<Record<string, string | boolean>>({});
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [showAuditLog, setShowAuditLog] = useState(false);
+  const [auditEntries, setAuditEntries] = useState<AdminAuditLogEntry[]>([]);
 
   const selectedTable = tables.find((t) => t.name === selectedTableName) ?? null;
   const pk = selectedTable ? primaryKeyOf(selectedTable) : undefined;
-  const editableColumns = selectedTable ? selectedTable.columns.filter((c) => !c.primary_key) : [];
+  // Create form: every non-PK column (create is table-level gated, not
+  // field-level - see backend/app/routers/admin_database.py). Edit form:
+  // only the fields the backend's allow-list actually accepts - the two
+  // are deliberately different write surfaces.
+  const creatableColumns = selectedTable ? selectedTable.columns.filter((c) => !c.primary_key) : [];
+  const editableColumns = selectedTable
+    ? selectedTable.columns.filter((c) => selectedTable.editable_fields.includes(c.name))
+    : [];
 
   async function loadTables() {
     try {
@@ -61,12 +70,22 @@ export function AdminDatabasePage() {
     }
   }
 
+  async function loadAuditLog(tableName: string) {
+    try {
+      const result = await api.get<{ entries: AdminAuditLogEntry[] }>(`/admin/db/audit-log?table_name=${tableName}&limit=20`);
+      setAuditEntries(result.entries);
+    } catch {
+      setAuditEntries([]);
+    }
+  }
+
   useEffect(() => { loadTables(); }, []);
   useEffect(() => {
     if (!selectedTableName) return;
     setOffset(0);
     setEditingRowKey(null);
     setAdding(false);
+    setShowAuditLog(false);
     loadRows(selectedTableName, 0);
   }, [selectedTableName]);
 
@@ -75,8 +94,14 @@ export function AdminDatabasePage() {
     loadRows(selectedTableName, newOffset);
   }
 
+  function toggleAuditLog() {
+    const next = !showAuditLog;
+    setShowAuditLog(next);
+    if (next) loadAuditLog(selectedTableName);
+  }
+
   function startEdit(row: DbRow) {
-    if (!pk) return;
+    if (!pk || editableColumns.length === 0) return;
     setAdding(false);
     setEditingRowKey(String(row[pk.name]));
     const values: Record<string, string | boolean> = {};
@@ -90,7 +115,7 @@ export function AdminDatabasePage() {
     setEditingRowKey(null);
     setAdding(true);
     const values: Record<string, string | boolean> = {};
-    for (const col of editableColumns) {
+    for (const col of creatableColumns) {
       values[col.name] = isBooleanColumn(col) ? false : "";
     }
     setEditValues(values);
@@ -102,9 +127,9 @@ export function AdminDatabasePage() {
     setError(null);
   }
 
-  function buildPayload(forCreate: boolean): Record<string, string | boolean | null> {
+  function buildPayload(columns: DbColumn[], forCreate: boolean): Record<string, string | boolean | null> {
     const payload: Record<string, string | boolean | null> = {};
-    for (const col of editableColumns) {
+    for (const col of columns) {
       const raw = editValues[col.name];
       if (isBooleanColumn(col)) {
         payload[col.name] = raw as boolean;
@@ -129,10 +154,11 @@ export function AdminDatabasePage() {
     setBusy(true);
     setError(null);
     try {
-      await api.patch(`/admin/db/tables/${selectedTableName}/rows/${row[pk.name]}`, buildPayload(false));
+      await api.patch(`/admin/db/tables/${selectedTableName}/rows/${row[pk.name]}`, buildPayload(editableColumns, false));
       cancelEdit();
       loadRows(selectedTableName, offset);
       loadTables();
+      if (showAuditLog) loadAuditLog(selectedTableName);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not save row.");
     } finally {
@@ -145,28 +171,13 @@ export function AdminDatabasePage() {
     setBusy(true);
     setError(null);
     try {
-      await api.post(`/admin/db/tables/${selectedTableName}/rows`, buildPayload(true));
+      await api.post(`/admin/db/tables/${selectedTableName}/rows`, buildPayload(creatableColumns, true));
       cancelEdit();
       loadRows(selectedTableName, offset);
       loadTables();
+      if (showAuditLog) loadAuditLog(selectedTableName);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not create row.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function deleteRow(row: DbRow) {
-    if (!pk || !selectedTableName) return;
-    if (!confirm(`Delete this ${selectedTableName} row? This can't be undone.`)) return;
-    setBusy(true);
-    setError(null);
-    try {
-      await api.delete(`/admin/db/tables/${selectedTableName}/rows/${row[pk.name]}`);
-      loadRows(selectedTableName, offset);
-      loadTables();
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not delete row - it may still be referenced elsewhere.");
     } finally {
       setBusy(false);
     }
@@ -188,9 +199,17 @@ export function AdminDatabasePage() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-4">
-        <DatabaseIcon size={24} weight="duotone" className="text-emerald-400" />
-        <h1 className="font-display text-2xl font-bold">Database</h1>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <DatabaseIcon size={24} weight="duotone" className="text-emerald-400" />
+          <h1 className="font-display text-2xl font-bold">Database</h1>
+        </div>
+        {selectedTable && (
+          <button onClick={toggleAuditLog}
+                  className="text-xs flex items-center gap-1.5 text-slate-400 hover:text-slate-200 cursor-pointer">
+            <ClockCounterClockwiseIcon size={15} /> {showAuditLog ? "Hide" : "View"} audit log
+          </button>
+        )}
       </div>
 
       {error && !selectedTable && <p className="text-red-400 text-sm mb-4">{error}</p>}
@@ -208,6 +227,26 @@ export function AdminDatabasePage() {
         </div>
       )}
 
+      {selectedTable && showAuditLog && (
+        <GlassCard className="mb-4 max-h-64 overflow-y-auto">
+          <p className="text-xs font-medium mb-2 flex items-center gap-1.5 text-slate-300">
+            <ClockCounterClockwiseIcon size={14} /> Recent changes to {selectedTableName}
+          </p>
+          {auditEntries.length === 0 ? (
+            <p className="text-xs text-slate-500">No recorded changes yet.</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {auditEntries.map((e) => (
+                <li key={e.id} className="text-[11px] text-slate-400 font-mono">
+                  <span className={e.action === "create" ? "text-emerald-400" : "text-cyan-400"}>{e.action}</span>
+                  {" "}row {e.row_id.slice(0, 8)} &middot; {new Date(e.created_at).toLocaleString()}
+                </li>
+              ))}
+            </ul>
+          )}
+        </GlassCard>
+      )}
+
       {selectedTable && data && (
         <>
           <div className="flex items-center justify-between mb-3">
@@ -221,18 +260,24 @@ export function AdminDatabasePage() {
               <Button variant="ghost" className="!py-1 !px-2" disabled={offset + PAGE_SIZE >= data.total} onClick={() => goToPage(offset + PAGE_SIZE)}>
                 <CaretRightIcon size={14} />
               </Button>
-              <Button onClick={startAdd} disabled={adding} className="!py-1 !px-2.5 text-xs">
-                <PlusIcon size={13} weight="bold" /> Add row
-              </Button>
+              {selectedTable.creatable ? (
+                <Button onClick={startAdd} disabled={adding} className="!py-1 !px-2.5 text-xs">
+                  <PlusIcon size={13} weight="bold" /> Add row
+                </Button>
+              ) : (
+                <span className="text-[11px] text-slate-500 flex items-center gap-1" title="This table is written only by the system - manual rows would falsify its audit trail.">
+                  <LockSimpleIcon size={12} /> System-managed
+                </span>
+              )}
             </div>
           </div>
 
           {error && <p className="text-red-400 text-xs mb-3">{error}</p>}
 
-          <div className="overflow-x-auto rounded-2xl glass-panel">
-            <table className="text-sm">
-              <thead>
-                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide border-b border-white/10">
+          <div className="overflow-x-auto rounded-2xl glass-panel max-h-[70vh] overflow-y-auto">
+            <table className="text-sm w-full">
+              <thead className="sticky top-0 z-10 bg-[#151515]">
+                <tr className="text-left text-xs text-slate-400 font-medium uppercase tracking-wide border-b border-white/10">
                   {selectedTable.columns.map((col) => (
                     <th key={col.name} className="px-3 py-2.5 whitespace-nowrap">
                       {col.name}{col.primary_key && " 🔑"}
@@ -261,10 +306,10 @@ export function AdminDatabasePage() {
                   const rowKey = pk ? String(row[pk.name]) : JSON.stringify(row);
                   const isEditing = editingRowKey === rowKey;
                   return (
-                    <tr key={rowKey} className="hover:bg-white/[0.02]">
+                    <tr key={rowKey} className="odd:bg-white/[0.015] hover:bg-white/[0.05] transition-colors duration-150">
                       {selectedTable.columns.map((col) => (
                         <td key={col.name} className="px-3 py-2 whitespace-nowrap font-mono text-xs">
-                          {isEditing && !col.primary_key ? renderCellInput(col) : (
+                          {isEditing && editableColumns.some((c) => c.name === col.name) ? renderCellInput(col) : (
                             col.primary_key
                               ? <span className="text-slate-500">{toFormValue(row[col.name]).slice(0, 8)}</span>
                               : toFormValue(row[col.name]) || <span className="text-slate-600">null</span>
@@ -278,11 +323,10 @@ export function AdminDatabasePage() {
                               <button onClick={() => saveEdit(row)} disabled={busy} className="text-emerald-400 hover:text-emerald-300 cursor-pointer"><CheckIcon size={16} /></button>
                               <button onClick={cancelEdit} disabled={busy} className="text-slate-400 hover:text-slate-200 cursor-pointer"><XIcon size={16} /></button>
                             </>
+                          ) : editableColumns.length > 0 ? (
+                            <button onClick={() => startEdit(row)} disabled={!pk} className="text-cyan-400 hover:text-cyan-300 cursor-pointer disabled:opacity-30"><PencilSimpleIcon size={15} /></button>
                           ) : (
-                            <>
-                              <button onClick={() => startEdit(row)} disabled={!pk} className="text-cyan-400 hover:text-cyan-300 cursor-pointer disabled:opacity-30"><PencilSimpleIcon size={15} /></button>
-                              <button onClick={() => deleteRow(row)} disabled={!pk} className="text-red-400 hover:text-red-300 cursor-pointer disabled:opacity-30"><TrashIcon size={15} /></button>
-                            </>
+                            <LockSimpleIcon size={13} className="text-slate-600" title="No fields on this table are editable here" />
                           )}
                         </div>
                       </td>
@@ -297,9 +341,12 @@ export function AdminDatabasePage() {
           </div>
           {!pk && (
             <p className="text-[11px] text-amber-400/80 mt-2">
-              This table has no single-column primary key, so rows can't be edited or deleted here - view only.
+              This table has no single-column primary key, so rows can't be edited here - view only.
             </p>
           )}
+          <p className="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
+            <LockSimpleIcon size={11} /> Hard delete is disabled in this console - deactivate a row via its status field, or use that resource's dedicated page.
+          </p>
         </>
       )}
 

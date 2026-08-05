@@ -16,7 +16,9 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import os
+import random
 import threading
 import time
 from typing import Dict
@@ -32,6 +34,13 @@ log = logging.getLogger("grid-sim")
 MQTT_HOST = os.environ.get("MQTT_HOST", "mosquitto")
 MQTT_PORT = int(os.environ.get("MQTT_PORT", "1883"))
 STEP_SECONDS = float(os.environ.get("GRID_SIM_STEP_SECONDS", "5"))
+
+# Modern power-electronics-based EV chargers (active PFC rectifiers) run
+# close to unity but not exactly at it - 0.97 lagging is a realistic
+# industry figure, not the physically-impossible 1.0 the load model
+# implicitly assumed while q_mvar was hardcoded to 0.
+CHARGER_LOAD_POWER_FACTOR = 0.97
+NOMINAL_FREQUENCY_HZ = 50.0  # Indian grid nominal (IEGC)
 
 
 class Feeder:
@@ -60,19 +69,86 @@ class Feeder:
         self.load_idx = pp.create_load(self.net, bus=lv_bus, p_mw=0.0, q_mvar=0.0, name=f"{spec.feeder_id}-load")
 
     def step(self, load_kw: float) -> dict:
-        self.net.load.at[self.load_idx, "p_mw"] = max(load_kw, 0.0) / 1000.0
+        p_mw = max(load_kw, 0.0) / 1000.0
+        # Real EVSE loads draw reactive power too (PFC-corrected but not
+        # perfectly unity) - modeling q_mvar via the assumed power factor
+        # instead of leaving it at 0 is what makes the transformer's
+        # loading/voltage-drop results physically meaningful rather than
+        # just re-deriving current_load_kw/capacity_kw as a percentage.
+        q_mvar = p_mw * math.tan(math.acos(CHARGER_LOAD_POWER_FACTOR))
+        self.net.load.at[self.load_idx, "p_mw"] = p_mw
+        self.net.load.at[self.load_idx, "q_mvar"] = q_mvar
         pp.runpp(self.net, algorithm="nr")
-        loading_percent = float(self.net.res_trafo.loading_percent.iloc[0])
+        trafo = self.net.res_trafo.iloc[0]
+        loading_percent = float(trafo.loading_percent)
+        lv_bus_idx = int(self.net.trafo.at[0, "lv_bus"])
+        voltage_lv_pu = float(self.net.res_bus.at[lv_bus_idx, "vm_pu"])
+        # A lightweight frequency-deviation heuristic, not a dynamic
+        # frequency-domain simulation - real weak/rural feeders do sag
+        # slightly under heavy load, and this gives that a visible, bounded
+        # signal (49.85-50.00 Hz) without pretending to model generator
+        # droop control or AGC.
+        frequency_hz = NOMINAL_FREQUENCY_HZ - min(0.15, (loading_percent / 100.0) * 0.15) + random.uniform(-0.01, 0.01)
         return {
             "feeder_id": self.spec.feeder_id,
             "feeder_zone": self.spec.feeder_zone,
             "capacity_kw": self.spec.capacity_kw,
             "current_load_kw": round(load_kw, 2),
+            "reactive_power_kvar": round(q_mvar * 1000.0, 2),
+            "power_factor": CHARGER_LOAD_POWER_FACTOR,
             "loading_percent": round(loading_percent, 2),
             "is_overloaded": loading_percent > 100.0,
             "is_rural_minigrid": self.spec.is_rural_minigrid,
+            "voltage_lv_v": round(voltage_lv_pu * 400.0, 1),
+            "voltage_lv_pu": round(voltage_lv_pu, 4),
+            "current_lv_a": round(float(trafo.i_lv_ka) * 1000.0, 1),
+            "frequency_hz": round(frequency_hz, 3),
             "ts": time.time(),
         }
+
+
+class GridStressState:
+    """Live grid_stress axis from the active scenario (backend/app/
+    scenario_engine.py, broadcast over MQTT as scenario/active). "Extreme
+    heat drives up AC load across the zone" isn't something any charger/
+    swap-kiosk publishes - modeled here as extra non-EV demand layered onto
+    the real charger-driven load, so the feeder_overload scenario is
+    reliably demonstrable rather than depending on organic charger load
+    happening to spike at the moment it's shown."""
+
+    # Additive, not multiplicative: real AC/heat-driven demand doesn't scale
+    # with however much EV load happens to exist at that instant (often
+    # near-zero, since most chargers are idle most of the time in the
+    # SimPy queueing model) - it's independent background load. Sized as a
+    # fraction of the feeder's own design capacity so the effect is
+    # reliably visible regardless of organic EV load, on every feeder.
+    NON_EV_STRESS_FRACTION_OF_CAPACITY = 0.85
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._feeder_overload = False
+
+    def update(self, grid_stress: str) -> None:
+        with self._lock:
+            self._feeder_overload = grid_stress == "feeder_overload"
+
+    def apply(self, load_kw: float, capacity_kw: float) -> float:
+        with self._lock:
+            overloaded = self._feeder_overload
+        if not overloaded:
+            return load_kw
+        return load_kw + capacity_kw * self.NON_EV_STRESS_FRACTION_OF_CAPACITY
+
+
+def _on_scenario_message(stress_state: GridStressState):
+    def _handler(_client, _userdata, msg: mqtt.MQTTMessage) -> None:
+        try:
+            payload = json.loads(msg.payload.decode("utf-8"))
+        except (ValueError, UnicodeDecodeError):
+            return
+        stress_state.update(payload.get("grid_stress", "normal"))
+
+    return _handler
 
 
 class FeederLoadAggregator:
@@ -118,11 +194,16 @@ def on_message(aggregator: FeederLoadAggregator):
 
 
 def main() -> None:
+    from sim_seed import apply_random_seed
+    apply_random_seed("grid-sim")
+
     aggregator = FeederLoadAggregator()
+    stress_state = GridStressState()
     feeders = {spec.feeder_id: Feeder(spec) for spec in FEEDERS}
 
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     client.on_message = on_message(aggregator)
+    client.message_callback_add("scenario/active", _on_scenario_message(stress_state))
 
     while True:
         try:
@@ -134,13 +215,14 @@ def main() -> None:
 
     client.subscribe("charger/status/#")
     client.subscribe("swap/status/#")
+    client.subscribe("scenario/active")
     client.loop_start()
 
     log.info("grid-sim running %d independent feeders", len(feeders))
     try:
         while True:
             for feeder_id, feeder in feeders.items():
-                load_kw = aggregator.total_for_feeder(feeder_id)
+                load_kw = stress_state.apply(aggregator.total_for_feeder(feeder_id), feeder.spec.capacity_kw)
                 reading = feeder.step(load_kw)
                 client.publish(f"feeder/load/{feeder_id}", json.dumps(reading), qos=0)
                 if reading["is_overloaded"]:

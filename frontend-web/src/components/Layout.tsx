@@ -55,8 +55,8 @@ export function Layout() {
           You're offline - showing the last known station list.
         </div>
       )}
-      <header className="sticky top-0 z-30 glass-panel border-x-0 border-t-0 px-4 py-3 flex items-center justify-between">
-        <span className="font-display font-bold text-lg bg-gradient-to-br from-emerald-300 to-cyan-400 bg-clip-text text-transparent">
+      <header className="sticky top-0 z-30 glass-panel border-x-0 border-t-0 px-4 sm:px-6 py-4 flex items-center justify-between">
+        <span className="font-display font-bold text-lg tracking-tight bg-gradient-to-br from-emerald-300 to-cyan-400 bg-clip-text text-transparent">
           MeridianGrid
         </span>
         <div className="flex items-center gap-2">
@@ -64,27 +64,27 @@ export function Layout() {
             <button
               onClick={requestAdminAccess}
               disabled={adminRequestState === "sent"}
-              className="hidden sm:inline text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-400 hover:bg-white/5 cursor-pointer disabled:opacity-50"
+              className="hidden sm:inline text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-400 hover:bg-white/[0.06] hover:border-white/18 transition-colors duration-150 cursor-pointer disabled:opacity-50"
             >
               {adminRequestState === "sent" ? "Request sent" : adminRequestState === "error" ? "Already requested" : "Request admin"}
             </button>
           )}
           {user && (
             <NavLink to="/profile" aria-label="My profile"
-                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer">
+                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/[0.06] hover:border-white/18 transition-colors duration-150 cursor-pointer">
               <UserCircleIcon size={16} />
             </NavLink>
           )}
           {user && (
             <button onClick={logout} aria-label="Log out"
-                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 cursor-pointer">
+                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-300 hover:bg-white/[0.06] hover:border-white/18 transition-colors duration-150 cursor-pointer">
               <SignOutIcon size={14} />
             </button>
           )}
         </div>
       </header>
 
-      <main className="flex-1 p-4 max-w-6xl w-full mx-auto">
+      <main className="flex-1 p-4 sm:p-6 max-w-6xl w-full mx-auto">
         <Outlet />
       </main>
 
@@ -94,13 +94,13 @@ export function Layout() {
           const isActive = location.pathname === item.to || (item.to !== "/admin" && location.pathname.startsWith(item.to));
           return (
             <NavLink key={item.to} to={item.to}
-                     className="relative flex flex-col items-center gap-0.5 px-3 py-1.5 min-w-16 text-xs">
+                     className="relative flex flex-col items-center gap-1 px-3 py-2 min-w-16 text-xs rounded-xl transition-colors duration-150 hover:bg-white/[0.04]">
               {isActive && (
-                <motion.div layoutId="nav-pill" className="absolute inset-0 rounded-xl bg-emerald-500/15"
+                <motion.div layoutId="nav-indicator" className="absolute top-0 inset-x-3 h-[2px] rounded-full bg-cyan-400"
                             transition={{ type: "spring", stiffness: 380, damping: 30 }} />
               )}
-              <span className={`relative z-10 ${isActive ? "text-emerald-400" : "text-slate-500"}`}>{item.icon}</span>
-              <span className={`relative z-10 ${isActive ? "text-emerald-300" : "text-slate-500"}`}>{item.label}</span>
+              <span className={`relative z-10 ${isActive ? "text-cyan-300" : "text-slate-500"}`}>{item.icon}</span>
+              <span className={`relative z-10 ${isActive ? "text-white font-medium" : "text-slate-500"}`}>{item.label}</span>
             </NavLink>
           );
         })}

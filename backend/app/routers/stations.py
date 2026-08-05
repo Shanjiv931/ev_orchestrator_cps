@@ -1,10 +1,12 @@
 import uuid
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
+from app.auth import get_current_user
 from app.database import get_db
-from app.models import Charger, Station, SwapSlot
+from app.models import Charger, Station, SwapSlot, User
 from app.schemas import (
     ChargerCreate,
     ChargerMaintenanceCheck,
@@ -21,11 +23,30 @@ from ml.maintenance_predictor import ChargerTelemetryWindow, compute_maintenance
 
 router = APIRouter(prefix="/stations", tags=["stations"])
 
+RESERVATION_HOLD_MINUTES = 10
+
+
+def _expire_stale_reservations(chargers: list[Charger], db: Session) -> None:
+    """Lazy expiry on read rather than a background sweep job - nothing
+    depends on a reservation's expiry firing at the exact moment it lapses,
+    only on it being gone by the next time anyone looks."""
+    now = datetime.now(timezone.utc)
+    changed = False
+    for charger in chargers:
+        if charger.status == "reserved" and charger.reserved_until is not None and charger.reserved_until <= now:
+            charger.status = "available"
+            charger.reserved_until = None
+            charger.reserved_by_user_id = None
+            changed = True
+    if changed:
+        db.commit()
+
 
 def _get_station(station_id: uuid.UUID, db: Session) -> Station:
     station = db.get(Station, station_id, options=[joinedload(Station.chargers), joinedload(Station.swap_slots)])
     if station is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="station not found")
+    _expire_stale_reservations(station.chargers, db)
     return station
 
 
@@ -39,11 +60,67 @@ def create_station(payload: StationCreate, db: Session = Depends(get_db)) -> Sta
 
 
 @router.get("", response_model=list[StationRead])
-def list_stations(station_type: str | None = None, db: Session = Depends(get_db)) -> list[Station]:
+def list_stations(station_type: str | None = None, city: str | None = None, db: Session = Depends(get_db)) -> list[Station]:
     query = db.query(Station)
     if station_type is not None:
         query = query.filter(Station.station_type == station_type)
-    return query.all()
+    if city is not None:
+        query = query.filter(Station.city == city)
+    stations = query.all()
+    all_chargers = [c for s in stations for c in s.chargers]
+    _expire_stale_reservations(all_chargers, db)
+    return stations
+
+
+@router.post("/{station_id}/reserve-any", response_model=ChargerRead)
+def reserve_any_charger(station_id: uuid.UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Charger:
+    """Same "the app picks a port for you" philosophy as start-at-station -
+    the caller shouldn't need to already know a specific charger_id."""
+    station = _get_station(station_id, db)
+    charger = (
+        db.query(Charger)
+        .filter(Charger.station_id == station_id, Charger.status == "available")
+        .order_by(Charger.port_number)
+        .first()
+    )
+    if charger is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="no available charger at this station right now")
+    charger.status = "reserved"
+    charger.reserved_until = datetime.now(timezone.utc) + timedelta(minutes=RESERVATION_HOLD_MINUTES)
+    charger.reserved_by_user_id = current_user.id
+    db.commit()
+    db.refresh(charger)
+    return charger
+
+
+@router.post("/chargers/{charger_id}/reserve", response_model=ChargerRead)
+def reserve_charger(charger_id: uuid.UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Charger:
+    charger = db.get(Charger, charger_id)
+    if charger is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="charger not found")
+    _expire_stale_reservations([charger], db)
+    if charger.status != "available":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"charger is {charger.status}, not available")
+    charger.status = "reserved"
+    charger.reserved_until = datetime.now(timezone.utc) + timedelta(minutes=RESERVATION_HOLD_MINUTES)
+    charger.reserved_by_user_id = current_user.id
+    db.commit()
+    db.refresh(charger)
+    return charger
+
+
+@router.post("/chargers/{charger_id}/cancel-reservation", response_model=ChargerRead)
+def cancel_reservation(charger_id: uuid.UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Charger:
+    charger = db.get(Charger, charger_id)
+    if charger is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="charger not found")
+    if charger.status == "reserved" and charger.reserved_by_user_id == current_user.id:
+        charger.status = "available"
+        charger.reserved_until = None
+        charger.reserved_by_user_id = None
+        db.commit()
+        db.refresh(charger)
+    return charger
 
 
 @router.get("/{station_id}", response_model=StationRead)

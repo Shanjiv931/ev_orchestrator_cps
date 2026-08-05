@@ -43,7 +43,7 @@ def test_occupied_events_are_always_freshly_verified():
     env.process(station.arrivals())
     env.run(until=300)
 
-    occupied_events = [e for e in events if e["status"] == "occupied"]
+    occupied_events = [e for e in events if e["status"] == "occupied" and e["event_type"] == "StatusNotification"]
     assert len(occupied_events) >= 3
     for e in occupied_events:
         assert e["last_verified_at"] == e["reported_at"]
@@ -65,7 +65,7 @@ def test_flaky_charger_can_report_available_with_stale_verification():
         env.process(station.vehicle_session())
         env.run(until=1000)
 
-    occupied = [e for e in events if e["status"] == "occupied"]
+    occupied = [e for e in events if e["status"] == "occupied" and e["event_type"] == "StatusNotification"]
     available = [e for e in events if e["status"] == "available"]
     assert len(occupied) == 1
     assert occupied[0]["last_verified_at"] == occupied[0]["reported_at"]

@@ -46,10 +46,10 @@ export function AdminFleetPage() {
           <Input value={query} onChange={(e) => setQuery(e.target.value)}
                  placeholder="Search plate, owner, profession, model..." className="mb-4 max-w-md" />
 
-          <div className="overflow-x-auto rounded-2xl glass-panel mb-8">
+          <div className="overflow-x-auto rounded-2xl glass-panel mb-8 max-h-[70vh] overflow-y-auto">
             <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide border-b border-white/10">
+              <thead className="sticky top-0 z-10 bg-[#151515]">
+                <tr className="text-left text-xs text-slate-400 font-medium uppercase tracking-wide border-b border-white/10">
                   <th className="px-3 py-2.5">Plate</th>
                   <th className="px-3 py-2.5">Vehicle</th>
                   <th className="px-3 py-2.5">Owner</th>
@@ -60,7 +60,7 @@ export function AdminFleetPage() {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {filtered.map((v) => (
-                  <tr key={v.vehicle_id} className="hover:bg-white/[0.02]">
+                  <tr key={v.vehicle_id} className="odd:bg-white/[0.015] hover:bg-white/[0.05] transition-colors duration-150">
                     <td className="px-3 py-2.5 font-mono text-xs">{v.number_plate}</td>
                     <td className="px-3 py-2.5">
                       {v.brand ? `${v.brand} ${v.vehicle_model}` : v.vehicle_class}

@@ -26,8 +26,8 @@ interface StressTestResult {
   recommended_additional_stations: number;
 }
 
-const CHART_TOOLTIP_STYLE = { background: "#0f1420", border: "1px solid rgba(148,163,184,0.2)", borderRadius: 8, fontSize: 12 };
-const AXIS_PROPS = { stroke: "#64748b", tick: { fill: "#94a3b8", fontSize: 11 } };
+const CHART_TOOLTIP_STYLE = { background: "#151515", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12, fontSize: 12, color: "#ffffff" };
+const AXIS_PROPS = { stroke: "#4d4d4d", tick: { fill: "#8a8a8a", fontSize: 11 } };
 
 export function AdminPage() {
   const [zones, setZones] = useState<string[]>([]);
@@ -122,11 +122,11 @@ export function AdminPage() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={forecast}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
               <XAxis dataKey="hour" {...AXIS_PROPS} />
               <YAxis {...AXIS_PROPS} />
-              <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
-              <Bar dataKey="predicted_sessions" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+              <Bar dataKey="predicted_sessions" fill="#00e5ff" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -163,13 +163,13 @@ export function AdminPage() {
           <div className="h-48 mt-3">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stressResult.results}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" />
-                <XAxis dataKey="density_multiplier" label={{ value: "density x", position: "insideBottom", offset: -2, fill: "#64748b" }} {...AXIS_PROPS} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                <XAxis dataKey="density_multiplier" label={{ value: "density x", position: "insideBottom", offset: -2, fill: "#4d4d4d" }} {...AXIS_PROPS} />
                 <YAxis {...AXIS_PROPS} />
-                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
-                <Bar dataKey="simultaneous_load_kw">
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                <Bar dataKey="simultaneous_load_kw" radius={[4, 4, 0, 0]}>
                   {stressResult.results.map((r, i) => (
-                    <Cell key={i} fill={r.is_overloaded ? "#ef4444" : "#10b981"} />
+                    <Cell key={i} fill={r.is_overloaded ? "#ef4444" : "#22c55e"} />
                   ))}
                 </Bar>
               </BarChart>

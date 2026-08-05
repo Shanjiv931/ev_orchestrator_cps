@@ -1,3 +1,5 @@
+import pytest
+
 from ml.event_stress_test import recommend_additional_stations, sweep_density
 
 
@@ -43,3 +45,26 @@ def test_recommend_additional_stations_rounds_up_to_cover_the_deficit():
     assert recommend_additional_stations(additional_capacity_needed_kw=250.0, station_capacity_kw=100.0) == 3
     assert recommend_additional_stations(additional_capacity_needed_kw=0.0, station_capacity_kw=100.0) == 0
     assert recommend_additional_stations(additional_capacity_needed_kw=100.0, station_capacity_kw=100.0) == 1
+
+
+def test_recommend_additional_stations_defaults_to_no_reliability_derating():
+    """fleet_availability_ratio defaults to 1.0 - existing callers with no
+    fault data see identical output to before this parameter existed."""
+    assert recommend_additional_stations(250.0, 100.0) == recommend_additional_stations(250.0, 100.0, 1.0)
+
+
+def test_recommend_additional_stations_derates_for_a_faulty_fleet():
+    """A fleet with a nonzero fault-driven maintenance rate needs *more*
+    new stations to cover the same deficit, since new stations will fail
+    at a comparable rate once deployed - a plan built on 100% nameplate
+    availability would under-provision."""
+    full_reliability = recommend_additional_stations(250.0, 100.0, fleet_availability_ratio=1.0)
+    derated = recommend_additional_stations(250.0, 100.0, fleet_availability_ratio=0.8)
+    assert derated >= full_reliability
+
+
+def test_recommend_additional_stations_rejects_invalid_availability_ratio():
+    with pytest.raises(ValueError):
+        recommend_additional_stations(250.0, 100.0, fleet_availability_ratio=0.0)
+    with pytest.raises(ValueError):
+        recommend_additional_stations(250.0, 100.0, fleet_availability_ratio=1.5)

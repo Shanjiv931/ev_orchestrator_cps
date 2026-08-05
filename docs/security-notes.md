@@ -38,7 +38,7 @@ against the simulator - Section 4.7 explicitly scopes it this way):**
    monotonic per-device sequence number and a timestamp, e.g.:
    ```json
    {
-     "charger_id": "station-koramangala-dc-01-charger-0",
+     "charger_id": "station-vit-dc-01-charger-0",
      "status": "available",
      "power_kw": 60.0,
      "seq": 4821,

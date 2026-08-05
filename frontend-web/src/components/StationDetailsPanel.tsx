@@ -1,6 +1,6 @@
 import {
   MapPinIcon, XIcon, ShieldCheckIcon, SunIcon, RulerIcon,
-  LightningIcon, PlugsIcon, ArrowsLeftRightIcon, NavigationArrowIcon,
+  LightningIcon, PlugsIcon, ArrowsLeftRightIcon, NavigationArrowIcon, HourglassIcon, BookmarkSimpleIcon,
 } from "@phosphor-icons/react";
 import type { Station } from "../api/types";
 import { formatStationType, safetyBadgeClasses } from "../lib/format";
@@ -16,6 +16,25 @@ interface StationDetailsPanelProps {
   startChargingLabel?: string;
   busy?: boolean;
   className?: string;
+  onReserve?: () => void;
+  reserving?: boolean;
+  reservedPortNumber?: number | null;
+}
+
+// Mirrors simulation/station_sim.py's STATION_PROFILES mean_session_minutes
+// per type - the two services communicate only over MQTT (no cross-import),
+// so this is a deliberate, small, documented duplication rather than a
+// shared dependency, same pattern as backend/app/services/fault_consumer.py's
+// SIMULATION_STATION_COORDS.
+const MEAN_SESSION_MINUTES: Record<string, number> = {
+  public_dc_hub: 20, highway_corridor: 18, housing_society_ac: 300,
+};
+
+function estimateWaitMinutes(station: Station): number | null {
+  if (station.queue_length <= 0) return null;
+  const meanSession = MEAN_SESSION_MINUTES[station.station_type] ?? 25;
+  const chargerCount = Math.max(1, station.chargers.length);
+  return Math.round((station.queue_length * meanSession) / chargerCount);
 }
 
 function ChargerTypeSummary({ type, chargers }: { type: "AC" | "DC"; chargers: Station["chargers"] }) {
@@ -50,7 +69,9 @@ function ChargerTypeSummary({ type, chargers }: { type: "AC" | "DC"; chargers: S
 
 export function StationDetailsPanel({
   station, distanceKm, onClose, onStartCharging, startChargingLabel = "Start charging here", busy, className,
+  onReserve, reserving, reservedPortNumber,
 }: StationDetailsPanelProps) {
+  const waitMinutes = estimateWaitMinutes(station);
   return (
     <GlassCard className={className}>
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -81,6 +102,11 @@ export function StationDetailsPanel({
             <RulerIcon size={11} /> {distanceKm.toFixed(1)} km away
           </span>
         )}
+        {waitMinutes !== null && (
+          <span className="text-[11px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 bg-amber-500/15 text-amber-300">
+            <HourglassIcon size={11} weight="fill" /> ~{waitMinutes} min wait ({station.queue_length} waiting)
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-2 mb-3">
@@ -92,6 +118,16 @@ export function StationDetailsPanel({
         <p className="text-xs text-slate-400 flex items-center gap-1.5 mb-3">
           <ArrowsLeftRightIcon size={13} /> {station.swap_slots.reduce((sum, s) => sum + s.batteries_available, 0)} swap batteries available
         </p>
+      )}
+
+      {reservedPortNumber != null ? (
+        <p className="text-xs text-cyan-300 flex items-center gap-1.5 mb-2">
+          <BookmarkSimpleIcon size={14} weight="fill" /> Port {reservedPortNumber} held for you (10 min)
+        </p>
+      ) : onReserve && (
+        <Button fullWidth variant="secondary" onClick={onReserve} disabled={reserving} className="mb-2">
+          <BookmarkSimpleIcon size={16} /> {reserving ? "Reserving..." : "Reserve a port (10 min hold)"}
+        </Button>
       )}
 
       {onStartCharging && (

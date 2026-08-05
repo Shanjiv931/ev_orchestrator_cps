@@ -2,24 +2,79 @@
 
 @theme {
   --font-sans: "Inter", system-ui, sans-serif;
-  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
 
-  --color-bg: #05070d;
-  --color-bg-navy: #0a1229;
-  --color-bg-elevated: #0b0f1a;
-  --color-surface: #0f1420;
-  --color-surface-hover: #141a29;
-  --color-border-subtle: rgba(148, 163, 184, 0.12);
-  --color-border-strong: rgba(148, 163, 184, 0.24);
+  /* --- Surfaces (Premium enterprise dark palette) --- */
+  --color-bg: #000000;
+  --color-bg-navy: #0a0a0a;
+  --color-bg-elevated: #1a1a1a;
+  --color-surface: #111111;
+  --color-surface-hover: #151515;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-divider: rgba(255, 255, 255, 0.06);
 
-  --color-brand: #10b981;
-  --color-brand-glow: #34d399;
-  --color-electric: #22d3ee;
-  --color-own-vehicle: #ef4444;
+  /* --- Brand / accent / status --- */
+  --color-brand: #22c55e;
+  --color-brand-glow: #3ed97e;
+  --color-electric: #00e5ff;
+  --color-electric-hover: #18ffff;
+  --color-own-vehicle: #00e5ff;
   --color-warn: #f59e0b;
+  --color-info: #3b82f6;
+  --color-danger: #ef4444;
+  --color-focus-ring: rgba(0, 229, 255, 0.35);
+  --color-selection: rgba(0, 229, 255, 0.15);
 
-  --shadow-glow-brand: 0 0 32px -4px rgba(16, 185, 129, 0.45);
-  --shadow-glow-electric: 0 0 32px -4px rgba(34, 211, 238, 0.4);
+  --shadow-glow-brand: 0 0 24px -8px rgba(34, 197, 94, 0.35);
+  --shadow-glow-electric: 0 0 24px -8px rgba(0, 229, 255, 0.35);
+
+  /* --- Palette overrides ---
+     Most pages use Tailwind's built-in palette utilities (emerald / cyan /
+     amber / red / purple / slate / green) directly instead of the custom
+     tokens above. Redefining the exact shades in use is what reskins the
+     whole app to the design-spec colors without touching component logic:
+       emerald -> Success (#22C55E)     cyan   -> Accent (#00E5FF)
+       amber   -> Warning (#F59E0B)     red    -> Danger (#EF4444)
+       purple  -> Info (#3B82F6)        slate  -> neutral text/surface grays
+       green   -> Success (badge tints) */
+  --color-emerald-300: #6fe3a0;
+  --color-emerald-400: #3ed97e;
+  --color-emerald-500: #22c55e;
+  --color-emerald-600: #16a34a;
+
+  --color-cyan-200: #79f5ff;
+  --color-cyan-300: #3aefff;
+  --color-cyan-400: #00e5ff;
+  --color-cyan-500: #00b8cc;
+
+  --color-amber-100: #fcebd0;
+  --color-amber-300: #fbc56b;
+  --color-amber-400: #f7b84a;
+  --color-amber-500: #f59e0b;
+  --color-amber-900: #4a3208;
+  --color-amber-950: #2e1e05;
+
+  --color-red-100: #fbdcdc;
+  --color-red-300: #ff9e9e;
+  --color-red-400: #f2696a;
+  --color-red-500: #ef4444;
+  --color-red-900: #4c1414;
+
+  --color-purple-300: #93c5fd;
+  --color-purple-400: #60a5fa;
+  --color-purple-500: #3b82f6;
+
+  --color-green-100: #d8f6e3;
+  --color-green-900: #123420;
+
+  --color-slate-100: #f5f5f5;
+  --color-slate-200: #d0d0d0;
+  --color-slate-300: #b5b5b5;
+  --color-slate-400: #8a8a8a;
+  --color-slate-500: #737373;
+  --color-slate-600: #4d4d4d;
+  --color-slate-900: #111111;
 }
 
 :root {
@@ -36,23 +91,30 @@ body {
   /* Solid black everywhere by default - the intro splash still paints its
      own opaque full-screen background on top of this while it's showing. */
   background: #000000;
-  color: #e2e8f0;
+  color: #d0d0d0;
   min-height: 100dvh;
 }
 
 h1, h2, h3, .font-display {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.35);
+  background: rgba(0, 229, 255, 0.15);
 }
 
 /* Slim, unobtrusive scrollbar that still respects dark mode */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.24); }
+
+/* Visible, on-brand keyboard focus ring app-wide */
+:focus-visible {
+  outline: 2px solid rgba(0, 229, 255, 0.55);
+  outline-offset: 2px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -63,25 +125,60 @@ h1, h2, h3, .font-display {
   }
 }
 
+/* Premium minimal card surface - a shift away from heavy glassmorphism
+   toward a mostly-solid #111111 panel with a subtle border. A light blur
+   is kept only so sticky headers/sheets still soften whatever briefly
+   scrolls behind them. */
 .glass-panel {
-  background: rgba(15, 20, 32, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 10, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--color-border-subtle);
 }
 
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: var(--color-bg-elevated) !important;
+  background: #0a0a0a !important;
+  font-family: var(--font-sans);
+}
+
+/* Dark map theme - inverts the OSM tile imagery only, leaving markers,
+   routes and popups (rendered on separate Leaflet panes) untouched. */
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.65);
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 10, 10, 0.85) !important;
+  color: #8a8a8a !important;
+  border-radius: 8px 0 0 0;
+}
+.leaflet-control-attribution a { color: #8a8a8a !important; }
+
+.leaflet-control-zoom a {
+  background: #111111 !important;
+  color: #d0d0d0 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: #151515 !important;
+  color: #ffffff !important;
 }
 
 /* Restyle Leaflet's default light popup chrome to match the dark theme */
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  background: var(--color-surface);
-  color: #e2e8f0;
+  background: #111111;
+  color: #d0d0d0;
 }
 .leaflet-popup-content-wrapper {
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+}
+.leaflet-popup-close-button {
+  color: #8a8a8a !important;
+}
+.leaflet-popup-close-button:hover {
+  color: #ffffff !important;
 }

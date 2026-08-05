@@ -2,8 +2,8 @@ from ml.rural_minigrid import estimate_safe_ev_capacity, validate_recommendation
 
 
 def test_rural_minigrid_supports_far_fewer_simultaneous_evs_than_an_urban_feeder():
-    rural = estimate_safe_ev_capacity(feeder_capacity_kw=25.0)  # matches simulation's Holenarsipura feeder
-    urban = estimate_safe_ev_capacity(feeder_capacity_kw=1000.0)  # matches simulation's Koramangala DC hub feeder
+    rural = estimate_safe_ev_capacity(feeder_capacity_kw=25.0)  # matches simulation's Anaicut feeder
+    urban = estimate_safe_ev_capacity(feeder_capacity_kw=1000.0)  # matches simulation's VIT DC hub feeder
     assert rural.max_safe_vehicle_count < urban.max_safe_vehicle_count
 
 

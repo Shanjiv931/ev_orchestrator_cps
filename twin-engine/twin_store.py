@@ -17,6 +17,7 @@ TOPIC_PREFIX_TO_ENTITY_TYPE = {
     "swap/status": "swap",
     "feeder/load": "feeder",
     "station/solar": "solar",
+    "charger/fault": "charger_fault",
 }
 
 ENTITY_TYPES = set(TOPIC_PREFIX_TO_ENTITY_TYPE.values())

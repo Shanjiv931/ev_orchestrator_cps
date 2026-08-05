@@ -57,10 +57,21 @@ def sweep_density(feeder_id: str, feeder_capacity_kw: float, baseline_vehicle_co
     )
 
 
-def recommend_additional_stations(additional_capacity_needed_kw: float, station_capacity_kw: float) -> int:
+def recommend_additional_stations(additional_capacity_needed_kw: float, station_capacity_kw: float,
+                                   fleet_availability_ratio: float = 1.0) -> int:
+    """fleet_availability_ratio is the fraction of chargers *not* currently
+    flagged for maintenance by the fault-detection layer
+    (app/services/fault_consumer.py) - a capacity plan built on each new
+    station's full nameplate rating is optimistic if the existing fleet is
+    already showing a nonzero fault-driven maintenance rate, since new
+    stations will fail at a comparable rate once deployed. Defaults to 1.0
+    (no derating) so callers with no fault data behave exactly as before."""
     if additional_capacity_needed_kw <= 0:
         return 0
-    return math.ceil(additional_capacity_needed_kw / station_capacity_kw)
+    if not 0 < fleet_availability_ratio <= 1.0:
+        raise ValueError("fleet_availability_ratio must be in (0, 1]")
+    effective_station_capacity_kw = station_capacity_kw * fleet_availability_ratio
+    return math.ceil(additional_capacity_needed_kw / effective_station_capacity_kw)
 
 
 # India's on-road EV adoption rate is roughly 2% of the total vehicle fleet
